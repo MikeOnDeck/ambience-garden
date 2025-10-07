@@ -9,10 +9,6 @@ public class Advancements extends Setup<PathConverting> {
         super(feature);
     }
 
-    public void convertedDirtToPath(ServerPlayer player) {
-        AdvancementHelper.trigger("converted_dirt_to_path", player);
-    }
-
     public void convertedPathToDirt(ServerPlayer player) {
         AdvancementHelper.trigger("converted_path_to_dirt", player);
     }

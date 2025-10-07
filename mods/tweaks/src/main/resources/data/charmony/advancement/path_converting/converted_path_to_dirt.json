@@ -1,5 +1,5 @@
 {
-  "parent": "charmony:path_converting/converted_dirt_to_path",
+  "parent": "charmony:root",
   "display": {
     "icon": {
       "id": "minecraft:dirt"
