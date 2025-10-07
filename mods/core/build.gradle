@@ -5,9 +5,9 @@ plugins {
 group = 'dev.charmony.charmony'
 
 dependencies {
-    implementation project(':api')
+	implementation project(':mods:api')
 }
 
 // True to bundle.
 addTomlDependencies(true)
-addSubprojectDependency('api', true)
+addSubprojectDependency(':mods:api', true)

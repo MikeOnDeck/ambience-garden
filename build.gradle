@@ -6,6 +6,7 @@ plugins {
 }
 
 subprojects {
+    if (!project.hasProperty('mod_version')) return
     apply plugin: 'java'
     apply plugin: 'fabric-loom'
 
@@ -83,8 +84,8 @@ subprojects {
             "homepage_link": rootProject.homepage_link,
             "pack_version": rootProject.pack_version,
             "java_version": rootProject.java_version,
-            "charmony_version": project(":core").mod_version,
-            "api_version": project(":api").mod_version
+            "charmony_version": project(":mods:core").mod_version,
+            "api_version": project(":mods:api").mod_version
         ]
 
         filesMatching(["fabric.mod.json", "pack.mcmeta"]) {

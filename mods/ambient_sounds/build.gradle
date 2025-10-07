@@ -5,8 +5,8 @@ plugins {
 group = 'dev.charmony.ambient_sounds'
 
 addTomlDependencies()
-addSubprojectDependency('api')
-addSubprojectDependency('core')
+addSubprojectDependency(':mods:api')
+addSubprojectDependency(':mods:core')
 
 def assetUrls = [
     biomes: 'https://charmony.dev/assets/ambient_sounds/biomes.zip',
