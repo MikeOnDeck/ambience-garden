@@ -19,9 +19,6 @@
     ],
     "client": [
       "svenhjol.charmony.core.client.ClientInitializer"
-    ],
-    "modmenu": [
-      "svenhjol.charmony.core.integration.ModMenuPlugin"
     ]
   },
 
