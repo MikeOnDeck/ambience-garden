@@ -15,4 +15,4 @@ pluginManagement {
 rootProject.name = 'charmony'
 
 // Add subprojects/modules here.
-include 'core', 'api', 'ambient_sounds', 'travel_journal'
+include 'core', 'api', 'ambient_sounds', 'travel_journal', 'tweaks'

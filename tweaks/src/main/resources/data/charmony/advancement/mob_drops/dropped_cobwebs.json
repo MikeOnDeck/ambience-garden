@@ -1,0 +1,31 @@
+{
+  "parent": "charmony:mob_drops/dropped_sand",
+  "display": {
+    "icon": {
+      "id": "minecraft:cobweb"
+    },
+    "title": {
+      "translate": "advancements.charmony.dropped_cobwebs.title"
+    },
+    "description": {
+      "translate": "advancements.charmony.dropped_cobwebs.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "dropped_cobwebs": {
+      "trigger": "charmony_action_performed",
+      "conditions": {
+        "action": "charmony:dropped_cobwebs"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "dropped_cobwebs"
+    ]
+  ]
+}

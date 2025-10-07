@@ -1,0 +1,32 @@
+{
+  "required": true,
+  "package": "svenhjol.charmony.tweaks.client.mixins",
+  "compatibilityLevel": "JAVA_21",
+  "refmap": "${refmap_file}",
+  "plugin": "svenhjol.charmony.tweaks.client.mixins.ClientMixinConfig",
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "client": [
+    "burning_has_reduced_view_blocking.ScreenEffectRendererMixin",
+    "grindstone_disenchanting.GrindstoneScreenMixin",
+    "item_tidying.AbstractContainerScreenMixin",
+    "jukeboxes_stop_background_music.MusicManagerMixin",
+    "piglin_pointing.LivingEntityRendererMixin",
+    "piglin_pointing.PiglinModelMixin",
+    "pigs_find_mushrooms.LivingEntityRendererMixin",
+    "pigs_find_mushrooms.PigModelMixin",
+    "repair_cost_unlimited.AnvilScreenMixin",
+    "repair_cost_visible.AnvilScreenMixin",
+    "shields_have_reduced_view_blocking.ItemInHandRendererMixin",
+    "shulker_box_menu_colors.ShulkerBoxScreenMixin",
+    "shulker_box_transferring.AbstractContainerScreenMixin",
+    "spyglass_scope_hiding.GuiMixin",
+    "telemetry.ClientTelemetryManagerMixin",
+    "telemetry.DisableToastMixin",
+    "telemetry.RealmsAvailabilityMixin",
+    "telemetry.WorldOpenFlowsMixin",
+    "totem_emergency_swap.InventoryScreenMixin",
+    "totem_emergency_swap.KeyMappingMixin"
+  ]
+}

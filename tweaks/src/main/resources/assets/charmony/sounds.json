@@ -1,0 +1,83 @@
+{
+  "convert_dirt_to_path": {
+    "sounds": [
+      {
+        "name": "minecraft:item/shovel/flatten1",
+        "volume": 1.0
+      },
+      {
+        "name": "minecraft:item/shovel/flatten2",
+        "volume": 1.0
+      },
+      {
+        "name": "minecraft:item/shovel/flatten3",
+        "volume": 1.0
+      },
+      {
+        "name": "minecraft:item/shovel/flatten4",
+        "volume": 1.0
+      }
+    ],
+    "subtitle": "subtitles.charmony.block.dirt.convert_to_path"
+  },
+  "convert_path_to_dirt": {
+    "sounds": [
+      {
+        "name": "minecraft:item/shovel/flatten1",
+        "volume": 1.0
+      },
+      {
+        "name": "minecraft:item/shovel/flatten2",
+        "volume": 1.0
+      },
+      {
+        "name": "minecraft:item/shovel/flatten3",
+        "volume": 1.0
+      },
+      {
+        "name": "minecraft:item/shovel/flatten4",
+        "volume": 1.0
+      }
+    ],
+    "subtitle": "subtitles.charmony.block.path.convert_to_dirt"
+  },
+  "create_suspicious_block": {
+    "sounds": [
+      {
+        "name": "block/suspicious_gravel/place1"
+      },
+      {
+        "name": "block/suspicious_gravel/place2"
+      },
+      {
+        "name": "block/suspicious_gravel/place3"
+      },
+      {
+        "name": "block/suspicious_gravel/place4"
+      }
+    ],
+    "subtitle": "subtitles.charmony.block.suspicious_block.create"
+  },
+  "shed_feather": {
+    "sounds": [
+      {
+        "name": "charmony:chicken_shedding_feather1",
+        "volume": 1.0
+      },
+      {
+        "name": "charmony:chicken_shedding_feather2",
+        "volume": 1.0
+      }
+    ],
+    "subtitle": "subtitles.charmony.entity.chicken.shed_feather"
+  },
+  "pig_sniffing": {
+    "sounds": [
+      {
+        "name": "charmony:pig_sniffing",
+        "volume": 0.65
+      }
+    ],
+    "subtitle": "subtitles.charmony.entity.pig.sniffing"
+  }
+}

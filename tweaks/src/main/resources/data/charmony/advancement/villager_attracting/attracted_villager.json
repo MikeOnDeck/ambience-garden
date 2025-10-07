@@ -1,0 +1,31 @@
+{
+  "parent": "charmony:root",
+  "display": {
+    "icon": {
+      "id": "minecraft:emerald_block"
+    },
+    "title": {
+      "translate": "advancements.charmony.attracted_villager.title"
+    },
+    "description": {
+      "translate": "advancements.charmony.attracted_villager.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "attracted_villager": {
+      "trigger": "charmony_action_performed",
+      "conditions": {
+        "action": "charmony:attracted_villager"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "attracted_villager"
+    ]
+  ]
+}

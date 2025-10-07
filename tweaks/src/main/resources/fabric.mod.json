@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "id": "charmony-tweaks",
+  "version": "${mod_version}",
+
+  "name": "Charmony Tweaks",
+  "description": "Small tweaks that don't change core gameplay. Compatible with vanilla servers such as Realms.",
+
+  "authors": [
+    "svenhjol",
+    "F43nd1r",
+    "Coranthes",
+    "WarlordWossman"
+  ],
+  "icon": "assets/charmony/textures/gui/sprites/charmony-tweaks.png",
+  "license": "MIT",
+  "environment": "*",
+  "accessWidener": "charmony-tweaks.accesswidener",
+  "entrypoints": {
+    "main": [
+        "svenhjol.charmony.tweaks.common.CommonInitializer"
+    ],
+    "client": [
+        "svenhjol.charmony.tweaks.client.ClientInitializer"
+    ]
+  },
+
+  "mixins": [
+    "charmony-tweaks.client.mixins.json",
+    "charmony-tweaks.common.mixins.json"
+  ],
+
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "minecraft": "*",
+    "java": ">=${java_version}",
+    "fabric-api": "*",
+    "charmony": ">=${charmony_version}",
+    "charmony-api": ">=${api_version}"
+  },
+
+  "contact": {
+    "homepage": "${homepage_link}",
+    "sources": "https://github.com/svenhjol/${mod_id}"
+  },
+
+  "custom": {
+    "modmenu": {
+      "links": {
+        "modmenu.discord": "${discord_link}"
+      },
+      "update_checker": true
+    }
+  }
+}

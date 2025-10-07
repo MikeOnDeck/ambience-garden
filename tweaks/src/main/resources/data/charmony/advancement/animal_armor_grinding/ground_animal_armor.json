@@ -1,0 +1,31 @@
+{
+  "parent": "charmony:root",
+  "display": {
+    "icon": {
+      "id": "minecraft:leather_horse_armor"
+    },
+    "title": {
+      "translate": "advancements.charmony.ground_animal_armor.title"
+    },
+    "description": {
+      "translate": "advancements.charmony.ground_animal_armor.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "ground_animal_armor": {
+      "trigger": "charmony_action_performed",
+      "conditions": {
+        "action": "charmony:ground_animal_armor"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "ground_animal_armor"
+    ]
+  ]
+}

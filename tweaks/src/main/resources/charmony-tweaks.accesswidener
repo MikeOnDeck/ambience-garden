@@ -1,0 +1,74 @@
+accessWidener v2 named
+
+accessible field net/minecraft/client/particle/Particle friction F
+accessible field net/minecraft/client/particle/Particle speedUpWhenYMotionIsBlocked Z
+accessible field net/minecraft/world/entity/player/Inventory items Lnet/minecraft/core/NonNullList;
+accessible method net/minecraft/core/component/DataComponents register (Ljava/lang/String;Ljava/util/function/UnaryOperator;)Lnet/minecraft/core/component/DataComponentType;
+accessible method net/minecraft/client/particle/SingleQuadParticle setAlpha (F)V
+accessible class net/minecraft/client/particle/ParticleResources$SpriteParticleRegistration
+
+# AnimalReviving
+accessible field net/minecraft/world/entity/animal/horse/AbstractHorse inventory Lnet/minecraft/world/SimpleContainer;
+
+# ItemTidying
+accessible field net/minecraft/client/gui/screens/inventory/AbstractContainerScreen leftPos I
+accessible field net/minecraft/client/gui/screens/inventory/AbstractContainerScreen topPos I
+accessible method net/minecraft/client/gui/screens/Screen addRenderableWidget (Lnet/minecraft/client/gui/components/events/GuiEventListener;)Lnet/minecraft/client/gui/components/events/GuiEventListener;
+accessible method net/minecraft/world/inventory/AbstractContainerMenu doClick (IILnet/minecraft/world/inventory/ClickType;Lnet/minecraft/world/entity/player/Player;)V
+accessible method net/minecraft/client/gui/screens/inventory/AbstractContainerScreen slotClicked (Lnet/minecraft/world/inventory/Slot;IILnet/minecraft/world/inventory/ClickType;)V
+accessible field net/minecraft/client/gui/components/ImageButton sprites Lnet/minecraft/client/gui/components/WidgetSprites;
+mutable    field net/minecraft/client/gui/components/ImageButton sprites Lnet/minecraft/client/gui/components/WidgetSprites;
+
+# JukeboxesStopBackgroundMusic
+accessible field net/minecraft/client/sounds/SoundManager soundEngine Lnet/minecraft/client/sounds/SoundEngine;
+accessible field net/minecraft/client/sounds/SoundEngine instanceBySource Lcom/google/common/collect/Multimap;
+
+# MineshaftImprovements
+accessible class net/minecraft/world/level/levelgen/structure/structures/MineshaftPieces$MineShaftPiece
+accessible method net/minecraft/world/level/levelgen/structure/structures/MineshaftPieces$MineShaftPiece isSupportingBox (Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/world/level/levelgen/structure/BoundingBox;IIII)Z
+accessible method net/minecraft/world/level/levelgen/structure/StructurePiece placeBlock (Lnet/minecraft/world/level/WorldGenLevel;Lnet/minecraft/world/level/block/state/BlockState;IIILnet/minecraft/world/level/levelgen/structure/BoundingBox;)V
+accessible method net/minecraft/world/level/levelgen/structure/structures/MineshaftPieces$MineShaftCorridor hasSturdyNeighbours (Lnet/minecraft/world/level/WorldGenLevel;Lnet/minecraft/world/level/levelgen/structure/BoundingBox;IIII)Z
+accessible method net/minecraft/world/level/levelgen/structure/StructurePiece getWorldX (II)I
+accessible method net/minecraft/world/level/levelgen/structure/StructurePiece getWorldY (I)I
+accessible method net/minecraft/world/level/levelgen/structure/StructurePiece getWorldZ (II)I
+accessible field net/minecraft/world/level/levelgen/structure/structures/MineshaftPieces$MineShaftPiece type Lnet/minecraft/world/level/levelgen/structure/structures/MineshaftStructure$Type;
+
+# MobTextures
+accessible field net/minecraft/client/renderer/entity/EntityRenderDispatcher renderers Ljava/util/Map;
+accessible field net/minecraft/client/renderer/entity/LivingEntityRenderer layers Ljava/util/List;
+accessible field net/minecraft/client/renderer/entity/layers/RenderLayer renderer Lnet/minecraft/client/renderer/entity/RenderLayerParent;
+mutable    field net/minecraft/client/renderer/entity/layers/RenderLayer renderer Lnet/minecraft/client/renderer/entity/RenderLayerParent;
+
+# NetherPortalBlocks
+accessible field net/minecraft/world/level/portal/PortalShape FRAME Lnet/minecraft/world/level/block/state/BlockBehaviour$StatePredicate;
+mutable    field net/minecraft/world/level/portal/PortalShape FRAME Lnet/minecraft/world/level/block/state/BlockBehaviour$StatePredicate;
+
+# ParrotsStayOnShoulder
+accessible method net/minecraft/server/level/ServerPlayer respawnEntityOnShoulder (Lnet/minecraft/nbt/CompoundTag;)V
+accessible method net/minecraft/server/level/ServerPlayer setShoulderEntityLeft (Lnet/minecraft/nbt/CompoundTag;)V
+accessible method net/minecraft/server/level/ServerPlayer setShoulderEntityRight (Lnet/minecraft/nbt/CompoundTag;)V
+
+# PiglinPointing
+accessible method net/minecraft/world/entity/monster/piglin/PiglinAi holdInOffhand (Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/monster/piglin/Piglin;Lnet/minecraft/world/item/ItemStack;)V
+accessible field net/minecraft/world/entity/monster/piglin/Piglin MEMORY_TYPES Lcom/google/common/collect/ImmutableList;
+mutable    field net/minecraft/world/entity/monster/piglin/Piglin MEMORY_TYPES Lcom/google/common/collect/ImmutableList;
+
+# PigsFindMushrooms
+accessible field net/minecraft/world/entity/Mob goalSelector Lnet/minecraft/world/entity/ai/goal/GoalSelector;
+
+# ShulkerBoxMenuColors
+accessible field net/minecraft/world/inventory/ShulkerBoxMenu container Lnet/minecraft/world/Container;
+accessible field net/minecraft/client/gui/screens/inventory/ShulkerBoxScreen CONTAINER_TEXTURE Lnet/minecraft/resources/ResourceLocation;
+
+# SuspiciousBlockCreating
+accessible field net/minecraft/world/level/block/entity/BrushableBlockEntity lootTable Lnet/minecraft/resources/ResourceKey;
+accessible field net/minecraft/world/level/block/entity/BrushableBlockEntity item Lnet/minecraft/world/item/ItemStack;
+
+# TorchflowersEmitLight
+accessible method net/minecraft/world/level/block/state/BlockBehaviour$BlockStateBase asState ()Lnet/minecraft/world/level/block/state/BlockState;
+
+# TotemEmergencySwap
+accessible method net/minecraft/client/gui/screens/inventory/AbstractRecipeBookScreen slotClicked (Lnet/minecraft/world/inventory/Slot;IILnet/minecraft/world/inventory/ClickType;)V
+
+# WanderingTraderTiers
+accessible method net/minecraft/world/entity/npc/AbstractVillager addOffersFromItemListings (Lnet/minecraft/world/item/trading/MerchantOffers;[Lnet/minecraft/world/entity/npc/VillagerTrades$ItemListing;I)V

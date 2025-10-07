@@ -1,0 +1,33 @@
+{
+  "required": true,
+  "package": "svenhjol.charmony.tweaks.common.mixins",
+  "compatibilityLevel": "JAVA_21",
+  "refmap": "${refmap_file}",
+  "plugin": "svenhjol.charmony.tweaks.common.mixins.CommonMixinConfig",
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "mixins": [
+    "animal_damage_immunity.LivingEntityMixin",
+    "animal_reviving.LivingEntityMixin",
+    "animal_reviving.NameTagItemMixin",
+    "campfires_heal_players.CampfireBlockEntityMixin",
+    "chiseled_bookshelves_show_book_on_hover.ChiseledBookShelfBlockEntityMixin",
+    "crop_feather_falling.FarmBlockMixin",
+    "deepslate_dungeons.MonsterRoomFeatureMixin",
+    "item_restocking.AnimalMixin",
+    "item_restocking.ComposterBlockMixin",
+    "item_restocking.ParrotMixin",
+    "mineshaft_improvements.MineshaftPiecesMixin",
+    "parrots_stay_on_shoulder.ServerPlayerMixin",
+    "piglin_pointing.PiglinAiMixin",
+    "pigs_find_mushrooms.PigMixin",
+    "repair_cost_unlimited.AnvilMenuMixin",
+    "respawn_anchors_work_everywhere.RespawnAnchorBlockMixin",
+    "suspicious_block_creating.PistonBaseBlockMixin",
+    "torchflowers_emit_light.BlockBehaviourPropertiesMixin",
+    "totems_work_from_inventory.LivingEntityMixin",
+    "villager_attracting.VillagerMixin",
+    "wandering_trader_tiers.WanderingTraderMixin"
+  ]
+}

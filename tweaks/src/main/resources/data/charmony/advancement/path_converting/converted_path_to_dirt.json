@@ -1,0 +1,31 @@
+{
+  "parent": "charmony:path_converting/converted_dirt_to_path",
+  "display": {
+    "icon": {
+      "id": "minecraft:dirt"
+    },
+    "title": {
+      "translate": "advancements.charmony.converted_path_to_dirt.title"
+    },
+    "description": {
+      "translate": "advancements.charmony.converted_path_to_dirt.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "converted_path_to_dirt": {
+      "trigger": "charmony_action_performed",
+      "conditions": {
+        "action": "charmony:converted_path_to_dirt"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "converted_path_to_dirt"
+    ]
+  ]
+}

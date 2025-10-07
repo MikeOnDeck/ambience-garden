@@ -1,0 +1,31 @@
+{
+  "parent": "charmony:root",
+  "display": {
+    "icon": {
+      "id": "minecraft:sand"
+    },
+    "title": {
+      "translate": "advancements.charmony.dropped_sand.title"
+    },
+    "description": {
+      "translate": "advancements.charmony.dropped_sand.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "dropped_sand": {
+      "trigger": "charmony_action_performed",
+      "conditions": {
+        "action": "charmony:dropped_sand"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "dropped_sand"
+    ]
+  ]
+}

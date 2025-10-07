@@ -1,0 +1,31 @@
+{
+  "parent": "charmony:root",
+  "display": {
+    "icon": {
+      "id": "minecraft:farmland"
+    },
+    "title": {
+      "translate": "advancements.charmony.prevented_crop_damage.title"
+    },
+    "description": {
+      "translate": "advancements.charmony.prevented_crop_damage.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "prevented_crop_damage": {
+      "trigger": "charmony_action_performed",
+      "conditions": {
+        "action": "charmony:prevented_crop_damage"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "prevented_crop_damage"
+    ]
+  ]
+}
