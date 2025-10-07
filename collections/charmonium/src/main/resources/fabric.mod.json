@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "id": "charmonium",
+  "version": "${mod_version}",
+
+  "name": "Charmonium",
+  "description": "Adds ambient sounds to the environment in keeping with vanilla Minecraft.",
+
+  "authors": [
+    "svenhjol"
+  ],
+  "icon": "assets/charmony/textures/gui/sprites/charmonium.png",
+  "license": "MIT",
+  "environment": "client",
+  
+  
+
+  "mixins": [],
+
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "minecraft": "*",
+    "java": ">=${java_version}",
+    "fabric-api": "*",
+    "charmony": ">=${charmony_version}",
+    "charmony-api": ">=${api_version}"
+  },
+
+  "contact": {
+    "homepage": "${homepage_link}",
+    "sources": "https://github.com/svenhjol/${mod_id}"
+  },
+
+  "custom": {
+    "modmenu": {
+      "links": {
+        "modmenu.discord": "${discord_link}"
+      },
+      "update_checker": true
+    }
+  }
+}
