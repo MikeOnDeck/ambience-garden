@@ -2,8 +2,6 @@ plugins {
     id 'java'
 }
 
-group = 'dev.charmony.tweaks'
-
 addTomlDependencies()
 addSubprojectDependency(':mods:api')
 addSubprojectDependency(':mods:core')

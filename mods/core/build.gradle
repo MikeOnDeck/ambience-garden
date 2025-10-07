@@ -2,8 +2,6 @@ plugins {
 	id 'java'
 }
 
-group = 'dev.charmony.charmony'
-
-// True to bundle.
+// Use "true" to bundle.
 addTomlDependencies(true)
 addSubprojectDependency(':mods:api', true)

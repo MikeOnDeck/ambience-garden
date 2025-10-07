@@ -2,8 +2,6 @@ plugins {
     id 'java'
 }
 
-group = 'dev.charmony.travel_journal'
-
 addTomlDependencies()
 addSubprojectDependency(':mods:api')
 addSubprojectDependency(':mods:core')

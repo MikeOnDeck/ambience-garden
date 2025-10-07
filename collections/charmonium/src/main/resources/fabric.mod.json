@@ -3,14 +3,14 @@
   "id": "charmonium",
   "version": "${mod_version}",
 
-  "name": "Charmonium",
-  "description": "Adds ambient sounds to the environment in keeping with vanilla Minecraft.",
+  "name": "${mod_name}",
+  "description": "${mod_description}",
 
   "authors": [
     "svenhjol"
   ],
   "icon": "assets/charmony/textures/gui/sprites/charmonium.png",
-  "license": "MIT",
+  "license": "${license}",
   "environment": "client",
   
   
@@ -28,7 +28,7 @@
 
   "contact": {
     "homepage": "${homepage_link}",
-    "sources": "https://github.com/svenhjol/${mod_id}"
+    "sources": "${sources_link}"
   },
 
   "custom": {

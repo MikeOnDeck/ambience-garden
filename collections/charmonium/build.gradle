@@ -2,8 +2,6 @@ plugins {
     id 'java'
 }
 
-group = 'dev.charmony.charmonium'
-
 addTomlDependencies()
 addSubprojectDependency(':mods:api')
 addSubprojectDependency(':mods:core', true)
