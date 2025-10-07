@@ -68,7 +68,7 @@ subprojects {
             if (bundle) {
                 include project(":${subproject}")
             }
-            implementation project(":${subproject}")
+            modImplementation project(":${subproject}")
         }
     }
 
