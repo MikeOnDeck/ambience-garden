@@ -3,8 +3,8 @@
   "id": "realms-companion",
   "version": "${mod_version}",
 
-  "name": "Realms Companion",
-  "description": "A small collection of Realms-compatible Charmony mods.",
+  "name": "${mod_name}",
+  "description": "${mod_description}",
   "authors": [
     "svenhjol", "Coranthes"
   ],
@@ -24,7 +24,7 @@
 
   "contact": {
     "homepage": "https://charmony.dev/mods/${mod_id}",
-    "sources": "https://github.com/svenhjol/${mod_id}"
+    "sources": "${sources_link}"
   },
 
   "custom": {

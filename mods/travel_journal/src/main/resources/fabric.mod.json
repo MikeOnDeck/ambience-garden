@@ -3,8 +3,8 @@
   "id": "charmony-travel-journal",
   "version": "${mod_version}",
 
-  "name": "Charmony Travel Journal",
-  "description": "A journal to record interesting places around the world. Compatible with vanilla servers such as Realms.",
+  "name": "${mod_name}",
+  "description": "${mod_description}",
 
   "authors": [
     "svenhjol"
@@ -35,7 +35,7 @@
 
   "contact": {
     "homepage": "${homepage_link}",
-    "sources": "https://github.com/svenhjol/${mod_id}"
+    "sources": "${sources_link}"
   },
 
   "custom": {

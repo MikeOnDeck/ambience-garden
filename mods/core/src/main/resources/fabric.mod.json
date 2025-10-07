@@ -3,8 +3,8 @@
   "id": "charmony",
   "version": "${mod_version}",
 
-  "name": "Charmony",
-  "description": "Core library for Charmony mods.",
+  "name": "${mod_name}",
+  "description": "${mod_description}",
 
   "authors": [
     "svenhjol"
@@ -37,7 +37,7 @@
 
   "contact": {
     "homepage": "${homepage_link}",
-    "sources": "https://github.com/svenhjol/${mod_id}"
+    "sources": "${sources_link}"
   },
 
   "custom": {
