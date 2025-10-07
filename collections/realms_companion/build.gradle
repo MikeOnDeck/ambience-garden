@@ -1,0 +1,12 @@
+plugins {
+    id 'java'
+}
+
+group = 'dev.charmony.realms_companion'
+
+addTomlDependencies()
+addSubprojectDependency(':mods:api')
+addSubprojectDependency(':mods:core', true)
+addSubprojectDependency(':mods:ambient_sounds', true)
+addSubprojectDependency(':mods:travel_journal', true)
+addSubprojectDependency(':mods:tweaks', true)
