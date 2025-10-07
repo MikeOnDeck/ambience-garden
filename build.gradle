@@ -65,7 +65,7 @@ subprojects {
     ext.addSubprojectDependency = { subproject, bundle = false ->
         dependencies {
             if (bundle) {
-                include project(path: ":${subproject}", configuration: "namedElements")
+                include project(":${subproject}")
             }
             // We have to use 'namedElements' here so that the dev environment works. Without it, all the accessWideners fail.
             // modImplementation *looks* like the correct thing to use but it expects dependency jars to exist and they don't.
