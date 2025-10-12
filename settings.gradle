@@ -16,3 +16,5 @@ rootProject.name = 'charmony'
 
 include 'mods:core', 'mods:api', 'mods:ambient_sounds', 'mods:travel_journal', 'mods:tweaks'
 include 'collections:realms_companion', 'collections:charmonium'
+
+include 'mods:tasks'

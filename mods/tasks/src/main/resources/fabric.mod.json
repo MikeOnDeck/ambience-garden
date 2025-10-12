@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "id": "charmony-tasks",
+  "version": "${mod_version}",
+
+  "name": "${mod_name}",
+  "description": "${mod_description}",
+
+  "authors": [
+    "svenhjol"
+  ],
+  "icon": "assets/charmony/textures/gui/sprites/charmony-tasks.png",
+  "license": "MIT",
+  "environment": "*",
+  "accessWidener": "charmony-tasks.accesswidener",
+  "entrypoints": {
+    "main": [
+      "charmony.tasks.common.CommonInitializer"
+    ],
+    "client": [
+      "charmony.tasks.client.ClientInitializer"
+    ]
+  },
+
+  "mixins": [],
+
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "minecraft": "*",
+    "java": ">=${java_version}",
+    "fabric-api": "*",
+    "charmony": ">=${charmony_version}",
+    "charmony-api": ">=${api_version}"
+  },
+
+  "contact": {
+    "homepage": "${homepage_link}",
+    "sources": "${sources_link}"
+  },
+
+  "custom": {
+    "modmenu": {
+      "links": {
+        "modmenu.discord": "${discord_link}"
+      },
+      "update_checker": true
+    }
+  }
+}
