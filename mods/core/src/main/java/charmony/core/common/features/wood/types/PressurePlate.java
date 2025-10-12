@@ -1,0 +1,26 @@
+package charmony.core.common.features.wood.types;
+
+import charmony.core.common.features.wood.CustomWood;
+import charmony.core.common.features.wood.CustomWoodType;
+import charmony.core.common.features.wood.WoodMaterial;
+import charmony.core.common.features.wood.WoodRegistry;
+import charmony.core.common.features.wood.blocks.CustomWoodenPressurePlateBlock;
+
+import java.util.function.Supplier;
+
+public class PressurePlate extends CustomWoodType {
+    public final Supplier<CustomWoodenPressurePlateBlock> block;
+    public final Supplier<CustomWoodenPressurePlateBlock.WoodenPressurePlateBlockItem> item;
+
+    public PressurePlate(WoodRegistry woodRegistry, WoodMaterial material) {
+        super(woodRegistry, material);
+
+        var commonRegistry = woodRegistry.commonRegistry();
+        var id = material.getSerializedName() + "_pressure_plate";
+
+        block = commonRegistry.block(id, key -> new CustomWoodenPressurePlateBlock(key, material));
+        item = commonRegistry.item(id, key -> new CustomWoodenPressurePlateBlock.WoodenPressurePlateBlockItem(key, block));
+
+        woodRegistry.addItemToCreativeTab(item, material, CustomWood.PRESSURE_PLATE);
+    }
+}

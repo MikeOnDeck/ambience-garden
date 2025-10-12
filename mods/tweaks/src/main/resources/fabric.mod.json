@@ -18,10 +18,10 @@
   "accessWidener": "charmony-tweaks.accesswidener",
   "entrypoints": {
     "main": [
-        "svenhjol.charmony.tweaks.common.CommonInitializer"
+      "charmony.tweaks.common.CommonInitializer"
     ],
     "client": [
-        "svenhjol.charmony.tweaks.client.ClientInitializer"
+      "charmony.tweaks.client.ClientInitializer"
     ]
   },
 

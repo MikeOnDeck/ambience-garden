@@ -1,9 +1,9 @@
 {
   "required": true,
-  "package": "svenhjol.charmony.core.common.mixins",
+  "package": "charmony.core.common.mixins",
   "compatibilityLevel": "JAVA_21",
   "refmap": "${refmap_file}",
-  "plugin": "svenhjol.charmony.core.common.mixins.CommonMixinConfig",
+  "plugin": "charmony.core.common.mixins.CommonMixinConfig",
   "injectors": {
     "defaultRequire": 1
   },

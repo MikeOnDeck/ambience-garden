@@ -1,9 +1,9 @@
 {
   "required": true,
-  "package": "svenhjol.charmony.tweaks.client.mixins",
+  "package": "charmony.tweaks.client.mixins",
   "compatibilityLevel": "JAVA_21",
   "refmap": "${refmap_file}",
-  "plugin": "svenhjol.charmony.tweaks.client.mixins.ClientMixinConfig",
+  "plugin": "charmony.tweaks.client.mixins.ClientMixinConfig",
   "injectors": {
     "defaultRequire": 1
   },

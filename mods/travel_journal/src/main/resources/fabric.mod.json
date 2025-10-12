@@ -15,10 +15,10 @@
   "accessWidener": "charmony-travel-journal.accesswidener",
   "entrypoints": {
     "main": [
-      "svenhjol.charmony.travel_journal.common.CommonInitializer"
+      "charmony.travel_journal.common.CommonInitializer"
     ],
     "client": [
-      "svenhjol.charmony.travel_journal.client.ClientInitializer"
+      "charmony.travel_journal.client.ClientInitializer"
     ]
   },
 

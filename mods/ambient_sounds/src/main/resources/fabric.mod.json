@@ -15,7 +15,7 @@
   "accessWidener": "charmony-ambient-sounds.accesswidener",
   "entrypoints": {
     "client": [
-      "svenhjol.charmony.ambient_sounds.client.ClientInitializer"
+      "charmony.ambient_sounds.client.ClientInitializer"
     ]
   },
 
