@@ -1,7 +1,7 @@
-package charmony.tasks.client;
+package charmony.villager_tasks.client;
 
 import charmony.api.core.Side;
-import charmony.tasks.TasksMod;
+import charmony.villager_tasks.VillagerTasksMod;
 import net.fabricmc.api.ClientModInitializer;
 
 public class ClientInitializer implements ClientModInitializer {
@@ -11,8 +11,7 @@ public class ClientInitializer implements ClientModInitializer {
         charmony.core.client.ClientInitializer.init();
 
         // Bootstrap and run the mod.
-        var travelJournal = TasksMod.instance();
-//        travelJournal.addSidedFeature(TravelJournal.class);
-        travelJournal.run(Side.Client);
+        var villagerTasks = VillagerTasksMod.instance();
+        villagerTasks.run(Side.Client);
     }
 }

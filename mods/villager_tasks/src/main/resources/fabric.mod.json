@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "charmony-tasks",
+  "id": "charmony-villager-tasks",
   "version": "${mod_version}",
 
   "name": "${mod_name}",
@@ -9,16 +9,16 @@
   "authors": [
     "svenhjol"
   ],
-  "icon": "assets/charmony/textures/gui/sprites/charmony-tasks.png",
+  "icon": "assets/charmony/textures/gui/sprites/charmony-villager-tasks.png",
   "license": "MIT",
   "environment": "*",
-  "accessWidener": "charmony-tasks.accesswidener",
+  "accessWidener": "charmony-villager-tasks.accesswidener",
   "entrypoints": {
     "main": [
-      "charmony.tasks.common.CommonInitializer"
+      "charmony.villager_tasks.common.CommonInitializer"
     ],
     "client": [
-      "charmony.tasks.client.ClientInitializer"
+      "charmony.villager_tasks.client.ClientInitializer"
     ]
   },
 

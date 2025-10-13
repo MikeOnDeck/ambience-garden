@@ -1,7 +1,7 @@
-package charmony.tasks.common;
+package charmony.villager_tasks.common;
 
 import charmony.api.core.Side;
-import charmony.tasks.TasksMod;
+import charmony.villager_tasks.VillagerTasksMod;
 import net.fabricmc.api.ModInitializer;
 
 public class CommonInitializer implements ModInitializer {
@@ -11,8 +11,7 @@ public class CommonInitializer implements ModInitializer {
         charmony.core.common.CommonInitializer.init();
 
         // Bootstrap and run the common features.
-        var travelJournal = TasksMod.instance();
-//        travelJournal.addSidedFeature(TravelJournal.class);
-        travelJournal.run(Side.Common);
+        var villagerTasks = VillagerTasksMod.instance();
+        villagerTasks.run(Side.Common);
     }
 }
