@@ -1,0 +1,43 @@
+{
+  "level": 1,
+  "types": ["collect"],
+  "villagers": "minecraft:farmer",
+  "multiplier": 1.0,
+  "time": 0,
+  "collect": {
+    "min": 2,
+    "max": 3,
+    "items": [
+      {
+        "item": "minecraft:wheat",
+        "exactly": 5,
+        "weight": 1
+      },
+      {
+        "item": "minecraft:carrot",
+        "exactly": 5,
+        "weight": 1
+      },
+      {
+        "item": "minecraft:potato",
+        "exactly": 5,
+        "weight": 1
+      }
+    ]
+  },
+  "rewards": {
+    "min": 1,
+    "max": 2,
+    "experience": 5,
+    "items": [
+      {
+        "item": "minecraft:copper_leggings",
+        "weight": 1
+      },
+      {
+        "item": "minecraft:iron_leggings",
+        "weight": 1
+      }
+    ]
+  }
+}
