@@ -117,7 +117,7 @@ public class Handlers extends Setup<RuneDictionary> {
      * @param words The words to add to the player's knowledge.
      */
     public void learnWords(ServerPlayer player, List<ResourceLocation> words) {
-        if (!(player.level() instanceof ServerLevel serverLevel)) return;
+        ServerLevel serverLevel = player.level();
 
         var knowledge = KNOWLEDGE.get(player);
         if (knowledge == null) return;
