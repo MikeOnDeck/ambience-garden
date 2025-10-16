@@ -17,4 +17,5 @@ rootProject.name = 'charmony'
 include 'mods:core', 'mods:api', 'mods:ambient_sounds', 'mods:travel_journal', 'mods:tweaks'
 include 'collections:realms_companion', 'collections:charmonium'
 
-include 'mods:villager_tasks'
+// Content mods.
+include 'mods:rune_dictionary', 'mods:villager_tasks'
