@@ -8,9 +8,11 @@ import charmony.core.base.SidedFeature;
 @FeatureDefinition(side = Side.Common, canBeDisabledInConfig = false)
 public final class VillagerTasks extends SidedFeature {
     public final Registers registers;
+    public final Handlers handlers;
 
     public VillagerTasks(Mod mod) {
         super(mod);
+        handlers = new Handlers(this);
         registers = new Registers(this);
     }
 
