@@ -18,17 +18,18 @@ import java.util.function.Supplier;
  */
 @SuppressWarnings({"NullableProblems", "unused"})
 public enum ChorusCoreMaterial implements StringRepresentable {
-    Quartz(0, "quartz", () -> Items.QUARTZ, DyeColor.WHITE),
-    Iron(1, "iron", () -> Items.IRON_INGOT, DyeColor.GRAY),
-    Netherite(2, "netherite", () -> Items.NETHERITE_INGOT, DyeColor.BLACK),
-    Copper(3, "copper", () -> Items.COPPER_INGOT, DyeColor.BROWN),
-    Redstone(4, "redstone", () -> Items.REDSTONE, DyeColor.RED),
-    Resin(5, "resin", () -> Items.RESIN_BRICK, DyeColor.ORANGE),
-    Gold(6, "gold", () -> Items.GOLD_INGOT, DyeColor.YELLOW),
-    Emerald(7, "emerald", () -> Items.EMERALD, DyeColor.GREEN),
-    Diamond(8, "diamond", () -> Items.DIAMOND, DyeColor.CYAN),
-    Lapis(9, "lapis", () -> Items.LAPIS_LAZULI, DyeColor.BLUE),
-    Amethyst(10, "amethyst", () -> Items.AMETHYST_SHARD, DyeColor.PURPLE);
+    Unspecified(0, "unspecified", () -> Items.AIR, DyeColor.WHITE),
+    Quartz(1, "quartz", () -> Items.QUARTZ, DyeColor.WHITE),
+    Iron(2, "iron", () -> Items.IRON_INGOT, DyeColor.GRAY),
+    Netherite(3, "netherite", () -> Items.NETHERITE_INGOT, DyeColor.BLACK),
+    Copper(4, "copper", () -> Items.COPPER_INGOT, DyeColor.BROWN),
+    Redstone(5, "redstone", () -> Items.REDSTONE, DyeColor.RED),
+    Resin(6, "resin", () -> Items.RESIN_BRICK, DyeColor.ORANGE),
+    Gold(7, "gold", () -> Items.GOLD_INGOT, DyeColor.YELLOW),
+    Emerald(8, "emerald", () -> Items.EMERALD, DyeColor.GREEN),
+    Diamond(9, "diamond", () -> Items.DIAMOND, DyeColor.CYAN),
+    Lapis(10, "lapis", () -> Items.LAPIS_LAZULI, DyeColor.BLUE),
+    Amethyst(11, "amethyst", () -> Items.AMETHYST_SHARD, DyeColor.PURPLE);
 
     public static final EnumCodec<ChorusCoreMaterial> CODEC = StringRepresentable.fromEnum(ChorusCoreMaterial::values);
     public static final IntFunction<ChorusCoreMaterial> BY_ID = ByIdMap.continuous(ChorusCoreMaterial::getId, values(), ByIdMap.OutOfBoundsStrategy.ZERO);
