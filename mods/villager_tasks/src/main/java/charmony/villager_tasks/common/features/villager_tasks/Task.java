@@ -41,28 +41,18 @@ public class Task {
         this.type = type;
     }
 
-    public static Task create(ServerPlayer player, Villager villager, ResourceLocation definitionId, TaskModifier modifier, long seed) {
-        var definition = VillagerTasks.feature().handlers.definition(definitionId).orElseThrow();
+    public static Task create(ServerPlayer player, Villager villager, TaskModifier modifier, long seed) {
+        var level = player.level();
         var random = RandomSource.create(seed);
-        var villagerUuid = villager.getUUID();
+        var definition = VillagerTasks.feature().handlers.definition(level, villager, random).orElseThrow();
+        return create(player, definition, villager.getUUID(), modifier, seed);
+    }
 
-//        var registryAccess = player.level().registryAccess();
-//        var entityRegistry = registryAccess.lookupOrThrow(Registries.ENTITY_TYPE);
-//        ResourceLocation villager;
-//
-//        if (definition.villager.startsWith("#")) {
-//            var tag = TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.parse(definition.villager.substring(1)));
-//            var values = TagHelper.getValues(entityRegistry, tag);
-//            var value = values.get(random.nextInt(values.size()));
-//            villager = entityRegistry.getKey(value);
-//        } else {
-//            villager = ResourceLocation.parse(definition.villager);
-//        }
-
+    public static Task create(ServerPlayer player, Definition definition, UUID uuid, TaskModifier modifier, long seed) {
+        var random = RandomSource.create(seed);
         var expiry = definition.expiry;
         var type = TaskType.valueOf(definition.types.get(random.nextInt(definition.types.size())));
         var multiplier = Math.max(definition.multiplier, modifier.getMultiplier(random)) + (player.getLuck() * 1.0d);
-
-        return new Task(type, definitionId, villagerUuid, modifier.isEpic(), seed, multiplier, expiry);
+        return new Task(type, definition.id, uuid, modifier.isEpic(), seed, multiplier, expiry);
     }
 }

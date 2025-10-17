@@ -3,6 +3,7 @@ package charmony.villager_tasks;
 import charmony.api.core.ModDefinition;
 import charmony.api.core.Side;
 import charmony.core.base.Mod;
+import net.minecraft.resources.ResourceLocation;
 
 @ModDefinition(id = VillagerTasksMod.ID, sides = {Side.Common, Side.Client},
     name = "Villager Tasks",
@@ -17,5 +18,9 @@ public class VillagerTasksMod extends Mod {
             instance = new VillagerTasksMod();
         }
         return instance;
+    }
+
+    public static ResourceLocation id(String path) {
+        return ResourceLocation.fromNamespaceAndPath(ID, path);
     }
 }

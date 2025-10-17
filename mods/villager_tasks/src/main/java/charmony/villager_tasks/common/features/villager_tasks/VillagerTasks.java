@@ -9,11 +9,13 @@ import charmony.core.base.SidedFeature;
 public final class VillagerTasks extends SidedFeature {
     public final Registers registers;
     public final Handlers handlers;
+    public final Networking networking;
 
     public VillagerTasks(Mod mod) {
         super(mod);
         handlers = new Handlers(this);
         registers = new Registers(this);
+        networking = new Networking(this);
     }
 
     public static VillagerTasks feature() {

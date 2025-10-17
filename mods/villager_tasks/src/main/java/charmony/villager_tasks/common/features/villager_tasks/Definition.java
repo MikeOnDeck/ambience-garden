@@ -1,10 +1,17 @@
 package charmony.villager_tasks.common.features.villager_tasks;
 
 import com.google.gson.Gson;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.npc.Villager;
 
+import javax.annotation.Nullable;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -14,15 +21,15 @@ import java.util.Map;
 
 @SuppressWarnings({"FieldMayBeFinal", "unused"})
 public class Definition {
-    private ResourceLocation id;
     private ResourceManager manager; // TODO: check why this is needed
 
     // These are loaded from the JSON definition.
+    public ResourceLocation id;
     public List<String> types = new ArrayList<>();
     public int level = 0;
     public int expiry = 0;
     public double multiplier = 1.0d;
-    public String villager = "";
+    public String villager = ""; // Don't reference this directly; use appliesTo().
     public Map<String, Object> collect = new HashMap<>();
     public Map<String, Object> deliver = new HashMap<>();
     public Map<String, Object> treasure = new HashMap<>();
@@ -33,6 +40,9 @@ public class Definition {
     public Map<String, Object> penalties = new HashMap<>();
     public Map<String, Object> effects = new HashMap<>();
 
+    private @Nullable ResourceKey<EntityType<?>> villagerKey = null;
+    private @Nullable TagKey<EntityType<?>> villagerTag = null;
+
     public static Definition fromJson(ResourceLocation id, ResourceManager manager, Resource resource) throws IOException {
         BufferedReader reader;
 
@@ -41,6 +51,27 @@ public class Definition {
 
         def.id = id;
         def.manager = manager;
+
+        // Convert villager to a tag or resource key for lookup later.
+        if (def.villager.startsWith("#")) {
+            def.villagerTag = TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.parse(def.villager.substring(1)));
+        } else {
+            def.villagerKey = ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.parse(def.villager));
+        }
+
         return def;
+    }
+
+    /**
+     * True if this definition applies to the given villager.
+     */
+    public boolean appliesTo(Registry<EntityType<?>> entityRegistry, Villager villager) {
+        if (villagerTag != null) {
+            return villager.getType().is(villagerTag);
+        } else {
+            return entityRegistry.getOptional(villagerKey)
+                .map(type -> villager.getType().equals(type))
+                .orElse(false);
+        }
     }
 }
