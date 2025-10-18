@@ -9,6 +9,7 @@ import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.npc.Villager;
 
 import javax.annotation.Nullable;
@@ -55,7 +56,7 @@ public class Definition {
         // Convert villager to a tag or resource key for lookup later.
         if (def.villager.startsWith("#")) {
             def.villagerTag = TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.parse(def.villager.substring(1)));
-        } else {
+        } else if (!def.villager.isEmpty()) {
             def.villagerKey = ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.parse(def.villager));
         }
 
@@ -65,12 +66,28 @@ public class Definition {
     /**
      * True if this definition applies to the given villager.
      */
-    public boolean appliesTo(Registry<EntityType<?>> entityRegistry, Villager villager) {
+    public boolean appliesTo(Registry<EntityType<?>> entityRegistry, AbstractVillager abstractVillager) {
+        if (this.villager.isEmpty()) {
+            return true; // Allows all villagers if undefined.
+        }
+
+        int tradingLevel;
+
+        if (abstractVillager instanceof Villager v) {
+            tradingLevel = v.getVillagerData().level();
+        } else {
+            tradingLevel = 0;
+        }
+
+        if (this.level > 0 && tradingLevel > 0 && tradingLevel < this.level) {
+            return false;
+        }
+
         if (villagerTag != null) {
-            return villager.getType().is(villagerTag);
+            return abstractVillager.getType().is(villagerTag);
         } else {
             return entityRegistry.getOptional(villagerKey)
-                .map(type -> villager.getType().equals(type))
+                .map(type -> abstractVillager.getType().equals(type))
                 .orElse(false);
         }
     }

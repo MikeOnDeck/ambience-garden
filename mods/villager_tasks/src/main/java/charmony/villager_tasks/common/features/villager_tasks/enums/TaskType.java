@@ -23,6 +23,15 @@ public enum TaskType implements StringRepresentable {
         this.name = name;
     }
 
+    public static TaskType fromString(String name) {
+        for (var type : values()) {
+            if (type.name.equalsIgnoreCase(name)) {
+                return type;
+            }
+        }
+        return Unspecified;
+    }
+
     public int getId() {
         return id;
     }

@@ -9,7 +9,6 @@ import net.minecraft.core.UUIDUtil;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.npc.Villager;
 
 import java.util.UUID;
 
@@ -53,17 +52,10 @@ public class Task {
         this.duration = duration;
     }
 
-    public static Task create(ServerPlayer player, Villager villager, TaskModifier modifier, long seed) {
-        var level = player.level();
-        var random = RandomSource.create(seed);
-        var definition = VillagerTasks.feature().handlers.definition(level, villager, random).orElseThrow();
-        return create(player, definition, villager.getUUID(), modifier, seed);
-    }
-
     public static Task create(ServerPlayer player, Definition definition, UUID uuid, TaskModifier modifier, long seed) {
         var random = RandomSource.create(seed);
         var expiry = definition.expiry;
-        var type = TaskType.valueOf(definition.types.get(random.nextInt(definition.types.size())));
+        var type = TaskType.fromString(definition.types.get(random.nextInt(definition.types.size())));
         var multiplier = Math.max(definition.multiplier, modifier.getMultiplier(random)) + (player.getLuck() * 1.0d);
         return new Task(type, definition.id, uuid, modifier.isEpic(), seed, multiplier, expiry);
     }

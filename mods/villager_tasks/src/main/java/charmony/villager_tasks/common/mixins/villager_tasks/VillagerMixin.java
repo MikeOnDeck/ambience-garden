@@ -18,6 +18,6 @@ public class VillagerMixin {
         at = @At("HEAD")
     )
     private void hookMobInteract(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
-        VillagerTasks.feature().handlers.generateVillagerTasks((AbstractVillager)(Object)this);
+        VillagerTasks.feature().handlers.makeAvailableTasks(player, (AbstractVillager)(Object)this);
     }
 }

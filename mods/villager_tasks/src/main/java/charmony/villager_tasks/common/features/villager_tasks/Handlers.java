@@ -1,6 +1,7 @@
 package charmony.villager_tasks.common.features.villager_tasks;
 
 import charmony.core.base.Setup;
+import charmony.villager_tasks.common.features.villager_tasks.enums.TaskModifier;
 import net.minecraft.Util;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -13,16 +14,15 @@ import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.player.Player;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class Handlers extends Setup<VillagerTasks> {
-    private static final Map<Player, Tasks> TASKS = new HashMap<>();
-
+    public static final Map<Player, Tasks> TASKS = new HashMap<>();
     public static final String DEFINITIONS_DIR = "villager_tasks";
+    public static final Map<UUID, Map<Long, List<Task>>> CACHED_VILLAGER_TASKS = new WeakHashMap<>();
+
     public final Map<ResourceLocation, Definition> definitions = new HashMap<>();
+
 
     public Handlers(VillagerTasks feature) {
         super(feature);
@@ -52,8 +52,63 @@ public class Handlers extends Setup<VillagerTasks> {
         }
     }
 
-    public void generateVillagerTasks(AbstractVillager villager) {
+    public void makeAvailableTasks(Player player, AbstractVillager villager) {
+        if (!(player instanceof ServerPlayer serverPlayer)) {
+            return;
+        }
 
+        var level = serverPlayer.level();
+        var uuid = villager.getUUID();
+
+        // Get the current minecraft day.
+        var day = level.getDayTime() / 24000L;
+
+        // Create a unique seed based on the level seed, the day and the villager's UUID.
+        var seed = (level.getSeed() / 2) + day * 31 + uuid.hashCode() * 17L;
+
+        if (CACHED_VILLAGER_TASKS.containsKey(uuid)) {
+            var cached = CACHED_VILLAGER_TASKS.get(uuid);
+            if (cached != null && cached.containsKey(seed)) {
+                // Tasks are already cached for this villager for this seed.
+                return;
+            }
+        } else {
+            // Prep cache
+            CACHED_VILLAGER_TASKS.put(uuid, new HashMap<>());
+        }
+
+
+        var random = RandomSource.create(seed);
+        var defs = new ArrayList<>(definitions.values());
+        Util.shuffle(defs, random);
+
+        // Get top three valid definitions.
+        var valid = defs.stream()
+            .filter(def -> def.appliesTo(level.registryAccess().lookupOrThrow(Registries.ENTITY_TYPE), villager))
+            .limit(3)
+            .toList();
+
+        if (valid.isEmpty()) {
+            // TODO: we need to let the client know.
+            return;
+        }
+
+        // Generate tasks from definitions
+        var tasks = new ArrayList<Task>();
+        for (var def : valid) {
+            try {
+                tasks.add(Task.create(serverPlayer, def, uuid, TaskModifier.Normal, seed));
+            } catch (Exception e) {
+                log().error("Failed to create task from definition " + def.id + ": " + e.getMessage());
+            }
+        }
+
+        if (tasks.isEmpty()) {
+            // TODO: we need to let the client know.
+            return;
+        }
+
+        CACHED_VILLAGER_TASKS.get(uuid).put(seed, tasks);
     }
 
     /**
