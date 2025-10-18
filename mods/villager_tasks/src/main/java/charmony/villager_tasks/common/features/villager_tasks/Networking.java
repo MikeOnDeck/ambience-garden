@@ -13,13 +13,13 @@ public class Networking extends Setup<VillagerTasks> {
         super(feature);
     }
 
-    public record S2CTasks(Tasks tasks) implements CustomPacketPayload {
-        public static Type<S2CTasks> TYPE = new Type<>(VillagerTasksMod.id("send_tasks"));
-        public static StreamCodec<FriendlyByteBuf, S2CTasks> CODEC =
-            StreamCodec.of(S2CTasks::encode, S2CTasks::decode);
+    public record S2CSendActiveTasks(Tasks tasks) implements CustomPacketPayload {
+        public static Type<S2CSendActiveTasks> TYPE = new Type<>(VillagerTasksMod.id("send_active_tasks"));
+        public static StreamCodec<FriendlyByteBuf, S2CSendActiveTasks> CODEC =
+            StreamCodec.of(S2CSendActiveTasks::encode, S2CSendActiveTasks::decode);
 
         public static void send(ServerPlayer player, Tasks tasks) {
-            ServerPlayNetworking.send(player, new S2CTasks(tasks));
+            ServerPlayNetworking.send(player, new S2CSendActiveTasks(tasks));
         }
 
         @Override
@@ -27,14 +27,14 @@ public class Networking extends Setup<VillagerTasks> {
             return TYPE;
         }
 
-        private static void encode(FriendlyByteBuf buf, S2CTasks self) {
+        private static void encode(FriendlyByteBuf buf, S2CSendActiveTasks self) {
             buf.writeNbt(self.tasks.save());
         }
 
-        private static S2CTasks decode(FriendlyByteBuf buf) {
+        private static S2CSendActiveTasks decode(FriendlyByteBuf buf) {
             var nbt = buf.readNbt();
             if (nbt != null) {
-                return new S2CTasks(Tasks.load(nbt));
+                return new S2CSendActiveTasks(Tasks.load(nbt));
             }
 
             throw new RuntimeException("Missing tasks nbt data");

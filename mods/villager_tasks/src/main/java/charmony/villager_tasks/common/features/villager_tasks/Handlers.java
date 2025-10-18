@@ -9,6 +9,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.player.Player;
 
@@ -47,8 +48,12 @@ public class Handlers extends Setup<VillagerTasks> {
     public void syncTasks(ServerPlayer player) {
         var tasks = TASKS.get(player);
         if (tasks != null) {
-            Networking.S2CTasks.send(player, tasks);
+            Networking.S2CSendActiveTasks.send(player, tasks);
         }
+    }
+
+    public void generateVillagerTasks(AbstractVillager villager) {
+
     }
 
     /**

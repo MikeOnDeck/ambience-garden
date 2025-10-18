@@ -22,7 +22,9 @@
     ]
   },
 
-  "mixins": [],
+  "mixins": [
+    "charmony-villager-tasks.common.mixins.json"
+  ],
 
   "depends": {
     "fabricloader": ">=${loader_version}",

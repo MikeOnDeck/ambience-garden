@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "package": "charmony.villager_tasks.common.mixins",
+  "compatibilityLevel": "JAVA_21",
+  "refmap": "${refmap_file}",
+  "plugin": "charmony.villager_tasks.common.mixins.CommonMixinConfig",
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "mixins": [
+    "villager_tasks.VillagerMixin",
+    "villager_tasks.WanderingTraderMixin"
+  ]
+}

@@ -3,7 +3,6 @@ package charmony.villager_tasks.common.features.villager_tasks;
 import charmony.api.core.Side;
 import charmony.core.base.Setup;
 import charmony.core.common.CommonRegistry;
-import charmony.villager_tasks.common.features.villager_tasks.Networking.S2CTasks;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 
@@ -13,7 +12,7 @@ public class Registers extends Setup<VillagerTasks> {
         var registry = CommonRegistry.forFeature(feature);
 
         // Packet registration.
-        registry.packetSender(Side.Common, S2CTasks.TYPE, S2CTasks.CODEC);
+        registry.packetSender(Side.Common, Networking.S2CSendActiveTasks.TYPE, Networking.S2CSendActiveTasks.CODEC);
     }
 
     @Override
