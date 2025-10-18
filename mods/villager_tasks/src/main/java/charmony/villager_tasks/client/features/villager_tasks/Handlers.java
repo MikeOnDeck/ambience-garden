@@ -2,6 +2,8 @@ package charmony.villager_tasks.client.features.villager_tasks;
 
 import charmony.core.base.Setup;
 import charmony.villager_tasks.common.features.villager_tasks.Networking.S2CTasks;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.MerchantScreen;
 import net.minecraft.world.entity.player.Player;
 
 public class Handlers extends Setup<VillagerTasks> {
@@ -11,5 +13,19 @@ public class Handlers extends Setup<VillagerTasks> {
 
     public void handleTasks(Player player, S2CTasks payload) {
         feature().common.get().handlers.setTasks(player, payload.tasks());
+    }
+
+    public void setupScreen(Screen screen) {
+        if (!(screen instanceof MerchantScreen merchantScreen)) {
+            return;
+        }
+
+        var midX = merchantScreen.width / 2;
+        var baseY = merchantScreen.topPos + 174;
+
+        screen.addRenderableWidget(new Buttons.ViewTasksButton(
+            midX - (Buttons.ViewTasksButton.WIDTH / 2),
+            baseY,
+            b -> {}));
     }
 }
