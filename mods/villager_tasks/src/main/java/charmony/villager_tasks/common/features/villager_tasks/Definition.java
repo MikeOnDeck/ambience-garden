@@ -79,7 +79,7 @@ public class Definition {
             tradingLevel = 0;
         }
 
-        if (this.level > 0 && tradingLevel > 0 && tradingLevel < this.level) {
+        if (tradingLevel > 0 && tradingLevel < this.level) {
             return false;
         }
 
