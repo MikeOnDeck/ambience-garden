@@ -13,6 +13,35 @@ public class Networking extends Setup<VillagerTasks> {
         super(feature);
     }
 
+    public record S2CSendAvailableTasks(Tasks tasks) implements CustomPacketPayload {
+        public static Type<S2CSendAvailableTasks> TYPE = new Type<>(VillagerTasksMod.id("send_available_tasks"));
+        public static StreamCodec<FriendlyByteBuf, S2CSendAvailableTasks> CODEC =
+            StreamCodec.of(S2CSendAvailableTasks::encode, S2CSendAvailableTasks::decode);
+
+        public static void send(ServerPlayer player, Tasks tasks) {
+            ServerPlayNetworking.send(player, new S2CSendAvailableTasks(tasks));
+        }
+
+        @Override
+        public Type<? extends CustomPacketPayload> type() {
+            return TYPE;
+        }
+
+        private static void encode(FriendlyByteBuf buf, S2CSendAvailableTasks self) {
+            buf.writeNbt(self.tasks.save());
+        }
+
+        private static S2CSendAvailableTasks decode(FriendlyByteBuf buf) {
+            var nbt = buf.readNbt();
+
+            if (nbt != null) {
+                return new S2CSendAvailableTasks(Tasks.load(nbt));
+            }
+
+            throw new RuntimeException("Missing S2CSendAvailableTasks NBT data");
+        }
+    }
+
     public record S2CSendActiveTasks(Tasks tasks) implements CustomPacketPayload {
         public static Type<S2CSendActiveTasks> TYPE = new Type<>(VillagerTasksMod.id("send_active_tasks"));
         public static StreamCodec<FriendlyByteBuf, S2CSendActiveTasks> CODEC =
@@ -37,7 +66,7 @@ public class Networking extends Setup<VillagerTasks> {
                 return new S2CSendActiveTasks(Tasks.load(nbt));
             }
 
-            throw new RuntimeException("Missing tasks nbt data");
+            throw new RuntimeException("Missing S2CSendActiveTasks NBT data");
         }
     }
 }

@@ -13,6 +13,7 @@ public class Registers extends Setup<VillagerTasks> {
 
         // Packet registration.
         registry.packetSender(Side.Common, Networking.S2CSendActiveTasks.TYPE, Networking.S2CSendActiveTasks.CODEC);
+        registry.packetSender(Side.Common, Networking.S2CSendAvailableTasks.TYPE, Networking.S2CSendAvailableTasks.CODEC);
     }
 
     @Override

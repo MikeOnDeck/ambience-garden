@@ -15,9 +15,7 @@ import net.minecraft.world.entity.npc.Villager;
 import javax.annotation.Nullable;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @SuppressWarnings({"FieldMayBeFinal", "unused"})
@@ -26,7 +24,6 @@ public class Definition {
 
     // These are loaded from the JSON definition.
     public ResourceLocation id;
-    public List<String> types = new ArrayList<>();
     public int level = 0;
     public int expiry = 0;
     public double multiplier = 1.0d;

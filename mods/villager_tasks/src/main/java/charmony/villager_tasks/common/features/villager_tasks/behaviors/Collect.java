@@ -7,6 +7,7 @@ import charmony.villager_tasks.common.features.villager_tasks.Requirement;
 import charmony.villager_tasks.common.features.villager_tasks.requirements.CollectCriteria;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
@@ -19,11 +20,23 @@ import java.util.Optional;
 
 @SuppressWarnings("unchecked")
 public class Collect extends Behavior {
+    public static final String ID = "collect";
+
     @Override
     public void onComplete(ServerPlayer player) {
-        getTask().getRequirements().forEach(
+        getRequirements().forEach(
             req -> req.collectItems().forEach(
                 criteria -> criteria.onComplete(player)));
+    }
+
+    @Override
+    public String getId() {
+        return ID;
+    }
+
+    @Override
+    public Component getName() {
+        return Component.translatable("gui.charmony.villager_tasks.behavior.collect");
     }
 
     public static Optional<Requirement> makeRequirement(RegistryAccess registryAccess, Definition definition, double multiplier, RandomSource random) {

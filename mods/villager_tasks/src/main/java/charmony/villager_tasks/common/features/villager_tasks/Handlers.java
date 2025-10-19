@@ -19,7 +19,7 @@ import java.util.*;
 public class Handlers extends Setup<VillagerTasks> {
     public static final Map<Player, Tasks> TASKS = new HashMap<>();
     public static final String DEFINITIONS_DIR = "villager_tasks";
-    public static final Map<UUID, Map<Long, List<Task>>> CACHED_VILLAGER_TASKS = new WeakHashMap<>();
+    public static final Map<UUID, Map<Long, Tasks>> CACHED_VILLAGER_TASKS = new WeakHashMap<>();
 
     public final Map<ResourceLocation, Definition> definitions = new HashMap<>();
 
@@ -33,30 +33,30 @@ public class Handlers extends Setup<VillagerTasks> {
             var tasks = state.getTasks(player);
 
             // Update this player's tasks.
-            setTasks(player, tasks);
+            setActiveTasks(player, tasks);
 
             // Sync tasks to the client.
-            syncTasks(player);
+            syncActiveTasks(player);
         }
     }
 
-    public void setTasks(Player player, Tasks tasks) {
+    public void setActiveTasks(Player player, Tasks tasks) {
         TASKS.put(player, tasks);
     }
 
-    public void syncTasks(ServerPlayer player) {
+    public void syncActiveTasks(ServerPlayer player) {
         var tasks = TASKS.get(player);
         if (tasks != null) {
             Networking.S2CSendActiveTasks.send(player, tasks);
         }
     }
 
-    public void makeAvailableTasks(Player player, AbstractVillager villager) {
-        if (!(player instanceof ServerPlayer serverPlayer)) {
-            return;
-        }
+    public void syncAvailableTasks(ServerPlayer player, Tasks tasks) {
+        Networking.S2CSendAvailableTasks.send(player, tasks);
+    }
 
-        var level = serverPlayer.level();
+    public void makeAvailableTasks(ServerPlayer player, AbstractVillager villager) {
+        var level = player.level();
         var uuid = villager.getUUID();
 
         // Get the current minecraft day.
@@ -68,7 +68,7 @@ public class Handlers extends Setup<VillagerTasks> {
         if (CACHED_VILLAGER_TASKS.containsKey(uuid)) {
             var cached = CACHED_VILLAGER_TASKS.get(uuid);
             if (cached != null && cached.containsKey(seed)) {
-                // Tasks are already cached for this villager for this seed.
+                syncAvailableTasks(player, cached.get(seed));
                 return;
             }
         } else {
@@ -87,27 +87,19 @@ public class Handlers extends Setup<VillagerTasks> {
             .limit(3)
             .toList();
 
-        if (valid.isEmpty()) {
-            // TODO: we need to let the client know.
-            return;
-        }
-
         // Generate tasks from definitions
-        var tasks = new ArrayList<Task>();
+        var taskList = new ArrayList<Task>();
         for (var def : valid) {
             try {
-                tasks.add(Task.create(serverPlayer, def, uuid, TaskModifier.Normal, seed));
+                taskList.add(Task.create(player, def, uuid, TaskModifier.Normal, seed));
             } catch (Exception e) {
                 log().error("Failed to create task from definition " + def.id + ": " + e.getMessage());
             }
         }
 
-        if (tasks.isEmpty()) {
-            // TODO: we need to let the client know.
-            return;
-        }
-
+        var tasks = new Tasks(uuid, "merchant", taskList);
         CACHED_VILLAGER_TASKS.get(uuid).put(seed, tasks);
+        syncAvailableTasks(player, tasks);
     }
 
     /**

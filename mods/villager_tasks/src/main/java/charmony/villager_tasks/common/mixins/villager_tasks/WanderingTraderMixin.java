@@ -1,6 +1,7 @@
 package charmony.villager_tasks.common.mixins.villager_tasks;
 
 import charmony.villager_tasks.common.features.villager_tasks.VillagerTasks;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.npc.AbstractVillager;
@@ -18,6 +19,8 @@ public class WanderingTraderMixin {
         at = @At("HEAD")
     )
     private void hookMobInteract(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
-        VillagerTasks.feature().handlers.makeAvailableTasks(player, (AbstractVillager)(Object)this);
+        if (player instanceof ServerPlayer serverPlayer) {
+            VillagerTasks.feature().handlers.makeAvailableTasks(serverPlayer, (AbstractVillager)(Object)this);
+        }
     }
 }

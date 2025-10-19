@@ -14,7 +14,7 @@ public class Handlers extends Setup<VillagerTasks> {
     }
 
     public void handleSendActiveTasks(Player player, Networking.S2CSendActiveTasks payload) {
-        feature().common.get().handlers.setTasks(player, payload.tasks());
+        feature().common.get().handlers.setActiveTasks(player, payload.tasks());
     }
 
     public void setupScreen(Screen screen) {
@@ -32,5 +32,9 @@ public class Handlers extends Setup<VillagerTasks> {
             midX - (Buttons.ViewTasksButton.WIDTH / 2),
             baseY,
             b -> minecraft.setScreen(new AvailableTasksScreen(merchant))));
+    }
+
+    public void handleSendAvailableTasks(Player player, Networking.S2CSendAvailableTasks payload) {
+        // TODO: Hold this in client handlers, render on AvailableTasksScreen.
     }
 }
