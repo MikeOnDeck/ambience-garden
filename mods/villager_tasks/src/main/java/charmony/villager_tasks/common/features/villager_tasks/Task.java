@@ -1,6 +1,6 @@
 package charmony.villager_tasks.common.features.villager_tasks;
 
-import charmony.villager_tasks.common.features.villager_tasks.behaviors.Collect;
+import charmony.villager_tasks.common.features.villager_tasks.behaviors.CollectBehavior;
 import charmony.villager_tasks.common.features.villager_tasks.enums.TaskModifier;
 import charmony.villager_tasks.common.features.villager_tasks.enums.TaskStatus;
 import charmony.villager_tasks.common.features.villager_tasks.interfaces.EventListener;
@@ -72,7 +72,7 @@ public class Task implements EventListener, Satisfiable, PlayerHolder {
      */
     public static List<Behavior> loadBehaviors() {
         return List.of(
-            new Collect()
+            new CollectBehavior()
         );
     }
 

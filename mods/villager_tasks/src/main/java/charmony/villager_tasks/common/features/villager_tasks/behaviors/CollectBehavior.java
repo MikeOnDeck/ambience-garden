@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @SuppressWarnings("unchecked")
-public class Collect extends Behavior {
+public class CollectBehavior extends Behavior {
     public static final String ID = "collect";
 
     @Override
