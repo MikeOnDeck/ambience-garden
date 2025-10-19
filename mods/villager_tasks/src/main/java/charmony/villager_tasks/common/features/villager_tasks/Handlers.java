@@ -23,7 +23,6 @@ public class Handlers extends Setup<VillagerTasks> {
 
     public final Map<ResourceLocation, Definition> definitions = new HashMap<>();
 
-
     public Handlers(VillagerTasks feature) {
         super(feature);
     }

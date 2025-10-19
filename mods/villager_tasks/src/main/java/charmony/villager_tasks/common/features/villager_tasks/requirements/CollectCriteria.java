@@ -1,6 +1,7 @@
 package charmony.villager_tasks.common.features.villager_tasks.requirements;
 
 import charmony.villager_tasks.common.features.villager_tasks.Criteria;
+import charmony.villager_tasks.common.features.villager_tasks.interfaces.HasWeight;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.server.level.ServerPlayer;
@@ -9,7 +10,7 @@ import net.minecraft.world.item.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CollectCriteria extends Criteria {
+public class CollectCriteria extends Criteria implements HasWeight {
     private final ItemStack stack;
     private final int total;
     private final int weight;
@@ -75,15 +76,16 @@ public class CollectCriteria extends Criteria {
         }
     }
 
+    @Override
+    public int getWeight() {
+        return weight;
+    }
+
     public ItemStack getStack() {
         return stack;
     }
 
     public int getTotal() {
         return total;
-    }
-
-    public int getWeight() {
-        return weight;
     }
 }

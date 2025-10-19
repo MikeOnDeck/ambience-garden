@@ -56,28 +56,8 @@ public class Collect extends Behavior {
             }
         }
 
-        // Order criteria by weight.
-        criteria.sort((a, b) -> Integer.compare(b.getWeight(), a.getWeight()));
-
-        // LLM: Take items randomly up to count.
-        var selectedCriteria = new ArrayList<CollectCriteria>();
-        var totalWeight = criteria.stream().mapToInt(CollectCriteria::getWeight).sum();
-        for (var i = 0; i < count; i++) {
-            var r = random.nextInt(totalWeight);
-            var cumulative = 0;
-
-            for (var crit : criteria) {
-                cumulative += crit.getWeight();
-                if (r < cumulative) {
-                    selectedCriteria.add(crit);
-                    totalWeight -= crit.getWeight();
-                    criteria.remove(crit);
-                    break;
-                }
-            }
-        }
-
-        var requirement = new Requirement(selectedCriteria);
+        var sortedCriteria = Helpers.getItemsRandomlyByWeight(criteria, count, random);
+        var requirement = new Requirement(sortedCriteria);
         return Optional.of(requirement);
     }
 }
