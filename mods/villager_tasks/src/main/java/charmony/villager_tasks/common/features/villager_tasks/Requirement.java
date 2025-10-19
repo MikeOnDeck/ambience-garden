@@ -34,7 +34,7 @@ public class Requirement implements Satisfiable, TaskHolder {
         return task;
     }
 
-    public List<CollectCriteria> collectItems() {
+    public List<CollectCriteria> collectCriteria() {
         return collectCriteria;
     }
 

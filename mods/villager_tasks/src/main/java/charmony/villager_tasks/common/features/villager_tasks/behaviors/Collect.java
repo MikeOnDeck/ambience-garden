@@ -72,7 +72,7 @@ public class Collect extends Behavior {
 
     public List<CollectCriteria> getCriteria() {
         return getRequirements().stream()
-            .flatMap(req -> req.collectItems().stream())
+            .flatMap(req -> req.collectCriteria().stream())
             .toList();
     }
 
