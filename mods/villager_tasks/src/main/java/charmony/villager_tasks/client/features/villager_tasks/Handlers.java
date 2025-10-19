@@ -36,5 +36,6 @@ public class Handlers extends Setup<VillagerTasks> {
 
     public void handleReceiveAvailableTasks(Player player, Networking.S2CSendAvailableTasks payload) {
         // TODO: Hold this in client handlers, render on AvailableTasksScreen.
+        log().info("handleReceiveAvailableTasks");
     }
 }
