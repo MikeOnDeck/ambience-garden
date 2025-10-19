@@ -1,7 +1,7 @@
 {
   "level": 1,
   "multiplier": 1.0,
-  "time": 0,
+  "expiry": 0,
   "collect": {
     "min": 2,
     "max": 3,
