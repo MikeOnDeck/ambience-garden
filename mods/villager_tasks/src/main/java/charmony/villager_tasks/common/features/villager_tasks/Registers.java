@@ -5,6 +5,7 @@ import charmony.core.base.Setup;
 import charmony.core.common.CommonRegistry;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
+import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 
 public class Registers extends Setup<VillagerTasks> {
     public Registers(VillagerTasks feature) {
@@ -14,6 +15,7 @@ public class Registers extends Setup<VillagerTasks> {
         // Packet registration.
         registry.packetSender(Side.Common, Networking.S2CSendActiveTasks.TYPE, Networking.S2CSendActiveTasks.CODEC);
         registry.packetSender(Side.Common, Networking.S2CSendAvailableTasks.TYPE, Networking.S2CSendAvailableTasks.CODEC);
+        registry.packetSender(Side.Common, Networking.S2CSendMerchantInteraction.TYPE, Networking.S2CSendMerchantInteraction.CODEC);
     }
 
     @Override
@@ -25,6 +27,7 @@ public class Registers extends Setup<VillagerTasks> {
             }));
 
             ServerEntityEvents.ENTITY_LOAD.register(feature().handlers::entityJoin);
+            UseEntityCallback.EVENT.register(feature().handlers::handleUseEntity);
         };
     }
 }

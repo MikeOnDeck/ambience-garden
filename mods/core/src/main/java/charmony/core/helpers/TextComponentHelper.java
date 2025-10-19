@@ -72,6 +72,11 @@ public class TextComponentHelper {
         return Arrays.stream(wrapped.split("\n")).map(s -> (Component) Component.literal(s)).toList();
     }
 
+    public static void drawCenteredString(GuiGraphics guiGraphics, Font font, Component component, int x, int y, int color) {
+        var formattedCharSequence = component.getVisualOrderText();
+        guiGraphics.drawString(font, formattedCharSequence, x - font.width(formattedCharSequence) / 2, y, color, false);
+    }
+
     public static void drawCenteredString(GuiGraphics guiGraphics, Font font, Component component, int x, int y, int color, boolean dropShadow) {
         var formattedCharSequence = component.getVisualOrderText();
         guiGraphics.drawString(font, formattedCharSequence, x - font.width(formattedCharSequence) / 2, y, color, dropShadow);

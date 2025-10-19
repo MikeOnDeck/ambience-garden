@@ -154,6 +154,10 @@ public class Task implements EventListener, Satisfiable, PlayerHolder {
         return status.equals(TaskStatus.Abandoned);
     }
 
+    public ResourceLocation getDefinitionId() {
+        return definitionId;
+    }
+
     public List<Component> getActiveBehaviorNames() {
         return behaviors.stream()
             .filter(Behavior::hasRequirements)

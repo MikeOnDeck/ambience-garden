@@ -5,15 +5,9 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.phys.Vec3;
 
 @SuppressWarnings("unused")
-public final class Color {
-    private final int color;
-
-    public Color(int color) {
-        this.color = color;
-    }
-
+public record Color(int color) {
     public Color(DyeColor color) {
-        this.color = color.getTextureDiffuseColor();
+        this(color.getTextureDiffuseColor());
     }
 
     public float getRed() {

@@ -8,9 +8,35 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 
+import java.util.UUID;
+
 public class Networking extends Setup<VillagerTasks> {
     public Networking(VillagerTasks feature) {
         super(feature);
+    }
+
+    public record S2CSendMerchantInteraction(UUID uuid) implements CustomPacketPayload {
+        public static Type<S2CSendMerchantInteraction> TYPE = new Type<>(VillagerTasksMod.id("send_merchant_interaction"));
+        public static StreamCodec<FriendlyByteBuf, S2CSendMerchantInteraction> CODEC =
+            StreamCodec.of(S2CSendMerchantInteraction::encode, S2CSendMerchantInteraction::decode);
+
+        public static void send(ServerPlayer player, UUID uuid) {
+            ServerPlayNetworking.send(player, new S2CSendMerchantInteraction(uuid));
+        }
+
+        private static void encode(FriendlyByteBuf buf, S2CSendMerchantInteraction self) {
+            buf.writeUUID(self.uuid);
+        }
+
+        private static S2CSendMerchantInteraction decode(FriendlyByteBuf buf) {
+            var uuid = buf.readUUID();
+            return new S2CSendMerchantInteraction(uuid);
+        }
+
+        @Override
+        public Type<? extends CustomPacketPayload> type() {
+            return TYPE;
+        }
     }
 
     public record S2CSendAvailableTasks(Tasks tasks) implements CustomPacketPayload {

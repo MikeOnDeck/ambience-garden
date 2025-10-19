@@ -5,6 +5,7 @@ import charmony.core.base.Setup;
 import charmony.core.client.ClientRegistry;
 import charmony.villager_tasks.common.features.villager_tasks.Networking.S2CSendActiveTasks;
 import charmony.villager_tasks.common.features.villager_tasks.Networking.S2CSendAvailableTasks;
+import charmony.villager_tasks.common.features.villager_tasks.Networking.S2CSendMerchantInteraction;
 
 public class Registers extends Setup<VillagerTasks> {
     public Registers(VillagerTasks feature) {
@@ -14,6 +15,7 @@ public class Registers extends Setup<VillagerTasks> {
 
         registry.packetReceiver(S2CSendActiveTasks.TYPE, feature.handlers::handleReceiveActiveTasks);
         registry.packetReceiver(S2CSendAvailableTasks.TYPE, feature.handlers::handleReceiveAvailableTasks);
+        registry.packetReceiver(S2CSendMerchantInteraction.TYPE, feature.handlers::handleReceiveMerchantInteraction);
     }
 
     @Override

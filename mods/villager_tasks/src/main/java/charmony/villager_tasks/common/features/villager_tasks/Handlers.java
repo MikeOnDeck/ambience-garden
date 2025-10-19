@@ -9,10 +9,15 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.EntityHitResult;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -163,5 +168,17 @@ public class Handlers extends Setup<VillagerTasks> {
             definitions.put(id, def);
             log().debug("Loaded villager task definition: " + path);
         }
+    }
+
+    /**
+     * Handle player interaction with a merchant entity (villager, wandering trader).
+     */
+    public InteractionResult handleUseEntity(Player player, Level level, InteractionHand hand, Entity entity, @Nullable EntityHitResult entityHitResult) {
+        if (entity instanceof AbstractVillager villager && player instanceof ServerPlayer serverPlayer) {
+            // We need to hold the UUID of the last interacted merchant on the client.
+            Networking.S2CSendMerchantInteraction.send(serverPlayer, villager.getUUID());
+        }
+
+        return InteractionResult.PASS;
     }
 }
