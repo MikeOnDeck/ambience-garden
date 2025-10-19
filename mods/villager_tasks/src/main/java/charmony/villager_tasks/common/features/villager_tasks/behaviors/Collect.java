@@ -2,6 +2,7 @@ package charmony.villager_tasks.common.features.villager_tasks.behaviors;
 
 import charmony.villager_tasks.common.features.villager_tasks.Behavior;
 import charmony.villager_tasks.common.features.villager_tasks.Definition;
+import charmony.villager_tasks.common.features.villager_tasks.Helpers;
 import charmony.villager_tasks.common.features.villager_tasks.Requirement;
 import charmony.villager_tasks.common.features.villager_tasks.requirements.CollectCriteria;
 import net.minecraft.core.RegistryAccess;
@@ -38,7 +39,7 @@ public class Collect extends Behavior {
             throw new IllegalStateException("Collect behavior requires at least one item to collect.");
         }
 
-        var count = Math.min(items.size(), getCountFromMap(map, multiplier, random));
+        var count = Math.min(items.size(), Helpers.getCountFromMap(map, multiplier, random));
         var criteria = new ArrayList<CollectCriteria>();
 
         for (var i = 0; i < items.size(); i++) {
@@ -47,7 +48,7 @@ public class Collect extends Behavior {
                 var itemId = (String) itemMap.get("item");
                 var itemWeight = (double) itemMap.getOrDefault("weight", 1.0d);
                 var itemStack = new ItemStack(itemRegistry.get(ResourceLocation.parse(itemId)).orElseThrow());
-                var itemCount = getCountFromMap(itemMap, multiplier, random);
+                var itemCount = Helpers.getCountFromMap(itemMap, multiplier, random);
 
                 criteria.add(new CollectCriteria(itemStack, itemCount, (int)itemWeight));
             } catch (Exception e) {
@@ -78,23 +79,5 @@ public class Collect extends Behavior {
 
         var requirement = new Requirement(selectedCriteria);
         return Optional.of(requirement);
-    }
-
-    private static int getCountFromMap(Map<String, Object> map, double multiplier, RandomSource random) {
-        int count;
-
-        var min = (double)map.getOrDefault("min", 1.0d);
-        var max = (double)map.getOrDefault("max", 1.0d);
-        var exactly = map.getOrDefault("exactly", null);
-
-        if (exactly != null) {
-            count = (int)((double)exactly * multiplier);
-        } else {
-            var mmin = (int)(min * multiplier);
-            var mmax = (int)(max * multiplier);
-            count = random.nextIntBetweenInclusive(mmin, mmax);
-        }
-
-        return count;
     }
 }
