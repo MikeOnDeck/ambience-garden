@@ -15,8 +15,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class Handlers extends Setup<VillagerTasks> {
+    @Nullable private Tasks activeTasks = null;
     @Nullable private Tasks availableTasks = null;
-    @Nullable private UUID lastMerchantInteraction = null;
+    @Nullable private UUID lastVillagerInteraction = null;
 
     public Handlers(VillagerTasks feature) {
         super(feature);
@@ -27,42 +28,53 @@ public class Handlers extends Setup<VillagerTasks> {
             return;
         }
 
-        var menu = merchantScreen.getMenu();
         var midX = merchantScreen.width / 2;
         var baseY = merchantScreen.topPos + 174;
         var minecraft = Minecraft.getInstance();
-        var merchant = menu.trader;
 
         screen.addRenderableWidget(new Buttons.ViewTasksButton(
             midX - (Buttons.ViewTasksButton.WIDTH / 2),
             baseY,
             b -> {
                 merchantScreen.onClose();
-                minecraft.setScreen(new AvailableTasksScreen(merchant));
+                minecraft.setScreen(new AvailableTasksScreen());
             }));
     }
 
     public void handleReceiveActiveTasks(Player player, Networking.S2CSendActiveTasks payload) {
-        feature().common.get().handlers.setActiveTasks(player, payload.tasks());
+        var tasks = payload.tasks();
+        this.activeTasks = tasks;
+
+        log().info("Client received " + tasks.tasks().size() + " active tasks.");
     }
 
     public void handleReceiveAvailableTasks(Player player, Networking.S2CSendAvailableTasks payload) {
-        availableTasks = payload.tasks();
+        var tasks = payload.tasks();
+        this.availableTasks = tasks;
+
+        log().info("Client received " + tasks.tasks().size() + " available tasks.");
     }
 
-    public void handleReceiveMerchantInteraction(Player player, Networking.S2CSendMerchantInteraction payload) {
-        lastMerchantInteraction = payload.uuid();
+    public void handleReceiveVillagerInteraction(Player player, Networking.S2CSendVillagerInteraction payload) {
+        var uuid = payload.uuid();
+        this.lastVillagerInteraction = payload.uuid();
+
+        log().info("Client received villager interaction with UUID: " + uuid);
+    }
+
+    public Optional<Tasks> getActiveTasks() {
+        return Optional.ofNullable(activeTasks);
     }
 
     public Optional<Tasks> getAvailableTasks() {
         return Optional.ofNullable(availableTasks);
     }
 
-    public Optional<UUID> getLastMerchantInteraction() {
-        return Optional.ofNullable(lastMerchantInteraction);
+    public Optional<UUID> getLastVillagerInteraction() {
+        return Optional.ofNullable(lastVillagerInteraction);
     }
 
     public void acceptTask(Task task) {
-        log().info("acceptTask: " + task.getDefinitionId());
+        Networking.C2SAcceptTask.send(task.getDefinitionId(), task.getVillager());
     }
 }

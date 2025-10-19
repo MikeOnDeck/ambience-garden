@@ -19,6 +19,8 @@ import java.util.UUID;
  * Knowledge for every player is stored in the internal knowledge array.
  */
 public class KnowledgeSavedData extends SavedData {
+    private List<Knowledge> knowledge = new ArrayList<>();
+
     public static final Codec<KnowledgeSavedData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         Knowledge.CODEC.listOf().fieldOf("knowledge").forGetter(data -> data.knowledge)
     ).apply(instance, KnowledgeSavedData::new));
@@ -29,8 +31,6 @@ public class KnowledgeSavedData extends SavedData {
         CODEC,
         null
     );
-
-    private List<Knowledge> knowledge = new ArrayList<>();
 
     /**
      * Constructor loaded when the SavedDataType is created.

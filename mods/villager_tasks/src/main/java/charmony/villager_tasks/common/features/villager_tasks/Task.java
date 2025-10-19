@@ -154,8 +154,16 @@ public class Task implements EventListener, Satisfiable, PlayerHolder {
         return status.equals(TaskStatus.Abandoned);
     }
 
+    public void setStatus(TaskStatus status) {
+        this.status = status;
+    }
+
     public ResourceLocation getDefinitionId() {
         return definitionId;
+    }
+
+    public UUID getVillager() {
+        return villager;
     }
 
     public List<Component> getActiveBehaviorNames() {

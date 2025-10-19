@@ -8,23 +8,18 @@ import charmony.villager_tasks.client.features.villager_tasks.VillagerTasks;
 import charmony.villager_tasks.common.features.villager_tasks.Resources;
 import charmony.villager_tasks.common.features.villager_tasks.Tasks;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.trading.Merchant;
 
 import javax.annotation.Nullable;
 
 public class AvailableTasksScreen extends BaseScreen {
-    /**
-     * Reference for easy access to client handler functions.
-     */
-    private final Handlers handlers;
+    private final Handlers handlers; // Reference for easy access to handler functions.
 
     private int midX;
     private int textColor;
 
-    @Nullable private Tasks tasks = null;
+    @Nullable private Tasks availableTasks = null;
 
-    public AvailableTasksScreen(Merchant merchant) {
+    public AvailableTasksScreen() {
         super(Resources.AVAILABLE_TASKS);
         this.handlers = VillagerTasks.feature().handlers;
     }
@@ -34,17 +29,18 @@ public class AvailableTasksScreen extends BaseScreen {
         super.init();
         if (minecraft == null) return;
 
-        var merchant = handlers.getLastMerchantInteraction().orElse(null);
-        var tasks = handlers.getAvailableTasks().orElse(null);
+        var merchant = handlers.getLastVillagerInteraction().orElse(null);
+        var availableTasks = handlers.getAvailableTasks().orElse(null);
+        var activeTasks = handlers.getActiveTasks().orElse(null);
 
         midX = width / 2;
         textColor = new Color(0xffffff).getArgbColor();
 
-        if (tasks != null && tasks.uuid().equals(merchant)) {
-            this.tasks = tasks; // This allows the renderer to use the tasks.
+        if (availableTasks != null && availableTasks.uuid().equals(merchant)) {
+            this.availableTasks = availableTasks; // This allows the renderer to use the tasks.
 
-            for (var i = 0; i < this.tasks.tasks().size(); i++) {
-                var task = tasks.tasks().get(i);
+            for (var i = 0; i < this.availableTasks.tasks().size(); i++) {
+                var task = availableTasks.tasks().get(i);
                 var details = new Buttons.TaskDetailsButton(midX + 20, 50 + (i * 25),
                     b -> {
                         minecraft.setScreen(null);
@@ -56,7 +52,11 @@ public class AvailableTasksScreen extends BaseScreen {
                         minecraft.setScreen(null);
                     });
 
-                // TODO: disable button if task already accepted.
+                if (activeTasks != null) {
+                    // Set accept button disabled if the player already has this task.
+                    activeTasks.getTaskByDefinition(task.getDefinitionId()).ifPresent(
+                        activeTask -> accept.active = false);
+                }
 
                 addRenderableWidget(details);
                 addRenderableWidget(accept);
@@ -73,14 +73,14 @@ public class AvailableTasksScreen extends BaseScreen {
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float tickDelta) {
         super.render(guiGraphics, mouseX, mouseY, tickDelta);
 
-        if (tasks != null) {
-            for (var i = 0; i < tasks.tasks().size(); i++) {
-                var task = tasks.tasks().get(i);
+        if (availableTasks != null) {
+            for (var i = 0; i < availableTasks.tasks().size(); i++) {
+                var task = availableTasks.tasks().get(i);
                 var name = task.getActiveBehaviorNames().getFirst();
                 TextComponentHelper.drawCenteredString(guiGraphics, font, name, midX - 100,  56 + (i * 25), textColor);
             }
         } else {
-            TextComponentHelper.drawCenteredString(guiGraphics, font, Component.literal("No available tasks."), midX, 40, textColor);
+            TextComponentHelper.drawCenteredString(guiGraphics, font, Resources.NO_AVAILABLE_TASKS, midX, 40, textColor);
         }
     }
 }

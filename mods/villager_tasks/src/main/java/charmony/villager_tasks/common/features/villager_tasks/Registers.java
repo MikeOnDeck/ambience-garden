@@ -15,7 +15,11 @@ public class Registers extends Setup<VillagerTasks> {
         // Packet registration.
         registry.packetSender(Side.Common, Networking.S2CSendActiveTasks.TYPE, Networking.S2CSendActiveTasks.CODEC);
         registry.packetSender(Side.Common, Networking.S2CSendAvailableTasks.TYPE, Networking.S2CSendAvailableTasks.CODEC);
-        registry.packetSender(Side.Common, Networking.S2CSendMerchantInteraction.TYPE, Networking.S2CSendMerchantInteraction.CODEC);
+        registry.packetSender(Side.Common, Networking.S2CSendVillagerInteraction.TYPE, Networking.S2CSendVillagerInteraction.CODEC);
+        registry.packetSender(Side.Client, Networking.C2SAcceptTask.TYPE, Networking.C2SAcceptTask.CODEC);
+
+        // Packet handling from client.
+        registry.packetReceiver(Networking.C2SAcceptTask.TYPE, feature.handlers::handleReceiveAcceptTask);
     }
 
     @Override

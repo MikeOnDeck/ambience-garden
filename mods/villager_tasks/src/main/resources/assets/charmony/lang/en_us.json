@@ -1,4 +1,8 @@
 {
+  "gui.charmony.villager_tasks.accept": "Accept",
   "gui.charmony.villager_tasks.available_tasks": "Villager Tasks",
-  "gui.charmony.villager_tasks.behavior.collect": "Collect"
+  "gui.charmony.villager_tasks.behavior.collect": "Collect items",
+  "gui.charmony.villager_tasks.details": "Details",
+  "gui.charmony.villager_tasks.no_available_tasks": "No available tasks",
+  "gui.charmony.villager_tasks.view_tasks": "View tasks"
 }

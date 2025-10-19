@@ -4,8 +4,11 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public record Tasks(UUID uuid, String name, List<Task> tasks) {
@@ -29,5 +32,17 @@ public record Tasks(UUID uuid, String name, List<Task> tasks) {
 
     public boolean isEmpty() {
         return tasks.isEmpty();
+    }
+
+    public Optional<Task> getTaskByDefinition(ResourceLocation id) {
+        return tasks.stream()
+            .filter(task -> task.getDefinitionId().equals(id))
+            .findFirst();
+    }
+
+    public Tasks addTask(Task task) {
+        var updated = new ArrayList<>(tasks());
+        updated.add(task);
+        return new Tasks(uuid(), name(), updated);
     }
 }
