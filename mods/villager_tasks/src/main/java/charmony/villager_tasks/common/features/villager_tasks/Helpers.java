@@ -37,22 +37,22 @@ public final class Helpers {
         return count;
     }
 
-    public static <T extends HasWeight> List<T> getItemsRandomlyByWeight(List<T> items, int count, RandomSource random) {
+    public static <T extends HasWeight> List<T> getRandomlyByWeight(List<T> list, int count, RandomSource random) {
         var selected = new ArrayList<T>();
 
-        items.sort((a, b) -> Integer.compare(b.getWeight(), a.getWeight()));
-        var totalWeight = items.stream().mapToInt(T::getWeight).sum();
+        list.sort((a, b) -> Integer.compare(b.getWeight(), a.getWeight()));
+        var totalWeight = list.stream().mapToInt(T::getWeight).sum();
 
         for (var i = 0; i < count; i++) {
             var r = random.nextInt(totalWeight);
             var cumulative = 0;
 
-            for (var item : items) {
-                cumulative += item.getWeight();
+            for (var entry : list) {
+                cumulative += entry.getWeight();
                 if (r < cumulative) {
-                    selected.add(item);
-                    totalWeight -= item.getWeight();
-                    items.remove(item);
+                    selected.add(entry);
+                    totalWeight -= entry.getWeight();
+                    list.remove(entry);
                     break;
                 }
             }

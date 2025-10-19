@@ -60,7 +60,7 @@ public class Collect extends Behavior {
             }
         }
 
-        var sortedCriteria = Helpers.getItemsRandomlyByWeight(criteria, count, random);
+        var sortedCriteria = Helpers.getRandomlyByWeight(criteria, count, random);
         var requirement = new Requirement(sortedCriteria);
         return Optional.of(requirement);
     }
