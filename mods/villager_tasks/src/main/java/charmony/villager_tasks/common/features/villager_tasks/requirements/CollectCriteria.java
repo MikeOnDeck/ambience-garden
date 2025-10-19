@@ -1,6 +1,7 @@
 package charmony.villager_tasks.common.features.villager_tasks.requirements;
 
 import charmony.villager_tasks.common.features.villager_tasks.Criteria;
+import charmony.villager_tasks.common.features.villager_tasks.Task;
 import charmony.villager_tasks.common.features.villager_tasks.interfaces.HasWeight;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -34,7 +35,7 @@ public class CollectCriteria extends Criteria implements HasWeight {
 
     @Override
     public int remaining() {
-        var player = getTask().getPlayer().orElse(null);
+        var player = getTask().flatMap(Task::getPlayer).orElse(null);
         if (player == null) return total;
 
         var remainder = total;

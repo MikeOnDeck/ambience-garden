@@ -18,11 +18,8 @@ public abstract class Behavior implements EventListener, TaskHolder {
     }
 
     @Override
-    public Task getTask() {
-        if (task == null) {
-            throw new IllegalStateException("Task has not been set.");
-        }
-        return task;
+    public Optional<Task> getTask() {
+        return Optional.ofNullable(task);
     }
 
     public abstract String getId();
@@ -38,6 +35,6 @@ public abstract class Behavior implements EventListener, TaskHolder {
     }
 
     public List<Requirement> getRequirements() {
-        return getTask().getRequirements();
+        return getTask().map(Task::getRequirements).orElseThrow();
     }
 }

@@ -4,6 +4,8 @@ import charmony.villager_tasks.common.features.villager_tasks.interfaces.EventLi
 import charmony.villager_tasks.common.features.villager_tasks.interfaces.Satisfiable;
 import charmony.villager_tasks.common.features.villager_tasks.interfaces.TaskHolder;
 
+import java.util.Optional;
+
 public abstract class Criteria implements EventListener, Satisfiable, TaskHolder {
     private Task task;
 
@@ -13,10 +15,7 @@ public abstract class Criteria implements EventListener, Satisfiable, TaskHolder
     }
 
     @Override
-    public Task getTask() {
-        if (task == null) {
-            throw new IllegalStateException("Task has not been set.");
-        }
-        return task;
+    public Optional<Task> getTask() {
+        return Optional.ofNullable(task);
     }
 }

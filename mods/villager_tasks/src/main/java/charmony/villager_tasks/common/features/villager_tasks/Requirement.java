@@ -7,6 +7,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import java.util.List;
+import java.util.Optional;
 
 public class Requirement implements Satisfiable, TaskHolder {
     private final List<CollectCriteria> collectCriteria;
@@ -27,11 +28,8 @@ public class Requirement implements Satisfiable, TaskHolder {
     }
 
     @Override
-    public Task getTask() {
-        if (task == null) {
-            throw new IllegalStateException("Task has not been set.");
-        }
-        return task;
+    public Optional<Task> getTask() {
+        return Optional.ofNullable(task);
     }
 
     public List<CollectCriteria> collectCriteria() {
