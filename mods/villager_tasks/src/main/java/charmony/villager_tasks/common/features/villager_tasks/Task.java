@@ -29,9 +29,9 @@ public class Task implements EventListener, Satisfiable, PlayerHolder {
     private final int expiry;
     private final int level;
     private final List<Requirement> requirements = new ArrayList<>();
+    private final Behavior behavior; // Not serialized but we load it on-demand
 
     private TaskStatus status;
-    private Behavior behavior; // Not serialized but we load it on-demand
     private int duration = 0;
     private ServerPlayer player;
 
