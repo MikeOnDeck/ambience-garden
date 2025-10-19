@@ -28,6 +28,9 @@ public class Requirement implements Satisfiable, TaskHolder {
 
     @Override
     public Task getTask() {
+        if (task == null) {
+            throw new IllegalStateException("Task has not been set.");
+        }
         return task;
     }
 

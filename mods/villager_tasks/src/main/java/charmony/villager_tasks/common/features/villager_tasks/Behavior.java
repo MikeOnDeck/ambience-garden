@@ -13,7 +13,7 @@ public abstract class Behavior implements EventListener, TaskHolder {
 
     @Override
     public Task getTask() {
-        if (task == null) {;
+        if (task == null) {
             throw new IllegalStateException("Task has not been set.");
         }
         return task;
