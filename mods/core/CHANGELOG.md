@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.47.0
+
+- Remove need for supplier when registering server packet receivers.
+
+## 1.46.0
+
+- Update for Minecraft 1.21.10.
+
 ## 1.45.0
 
 - Update for 1.21.9 snapshot.

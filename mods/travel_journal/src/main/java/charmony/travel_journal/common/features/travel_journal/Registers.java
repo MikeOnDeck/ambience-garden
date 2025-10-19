@@ -1,12 +1,12 @@
 package charmony.travel_journal.common.features.travel_journal;
 
-import net.minecraft.sounds.SoundEvent;
+import charmony.api.core.Side;
 import charmony.core.base.Setup;
 import charmony.core.common.CommonRegistry;
-import charmony.api.core.Side;
 import charmony.travel_journal.common.features.travel_journal.Networking.C2SPlayerSettings;
 import charmony.travel_journal.common.features.travel_journal.Networking.C2SSendBookmarkToPlayer;
 import charmony.travel_journal.common.features.travel_journal.Networking.S2CSendBookmarkToPlayer;
+import net.minecraft.sounds.SoundEvent;
 
 import java.util.function.Supplier;
 
@@ -34,8 +34,8 @@ public class Registers extends Setup<TravelJournal> {
             registry.packetSender(Side.Client, C2SPlayerSettings.TYPE, C2SPlayerSettings.CODEC);
 
             // Client packet receivers.
-            registry.packetReceiver(C2SSendBookmarkToPlayer.TYPE, () -> feature().handlers::handleSendBookmarkToPlayerPacket);
-            registry.packetReceiver(C2SPlayerSettings.TYPE, () -> feature().handlers::handlePlayerSettingsPacket);
+            registry.packetReceiver(C2SSendBookmarkToPlayer.TYPE, feature().handlers::handleSendBookmarkToPlayerPacket);
+            registry.packetReceiver(C2SPlayerSettings.TYPE, feature().handlers::handlePlayerSettingsPacket);
         };
     }
 }

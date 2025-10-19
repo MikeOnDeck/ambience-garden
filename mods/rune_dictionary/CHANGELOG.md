@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.5.0
+
+- Update for Charmony 1.47.0.
+
 ## 1.4.0
 
 - Update for 1.21.10

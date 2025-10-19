@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.13.0
+
+- Update for Minecraft 1.21.10.
+- Update for Charmony 1.47.0.
+
 ## 1.10.4
 
 - Add button to take a new photo when in range of the bookmark.

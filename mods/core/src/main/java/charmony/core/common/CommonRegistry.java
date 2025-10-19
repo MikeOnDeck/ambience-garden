@@ -1,5 +1,15 @@
 package charmony.core.common;
 
+import charmony.api.core.FuelProvider;
+import charmony.api.core.IgniteProvider;
+import charmony.api.core.Side;
+import charmony.core.base.Mod;
+import charmony.core.base.Registerable;
+import charmony.core.base.SidedFeature;
+import charmony.core.common.dispenser.ConditionalDispenseItemBehavior;
+import charmony.core.common.features.conditional_recipes.ConditionalRecipe;
+import charmony.core.common.features.wood.WoodMaterial;
+import charmony.core.helpers.VillagerHelper;
 import com.mojang.serialization.MapCodec;
 import io.netty.buffer.ByteBuf;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
@@ -56,16 +66,6 @@ import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
 import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import org.apache.commons.lang3.tuple.Pair;
-import charmony.api.core.FuelProvider;
-import charmony.api.core.IgniteProvider;
-import charmony.api.core.Side;
-import charmony.core.base.Mod;
-import charmony.core.base.Registerable;
-import charmony.core.base.SidedFeature;
-import charmony.core.common.dispenser.ConditionalDispenseItemBehavior;
-import charmony.core.common.features.conditional_recipes.ConditionalRecipe;
-import charmony.core.common.features.wood.WoodMaterial;
-import charmony.core.helpers.VillagerHelper;
 
 import java.util.*;
 import java.util.function.*;
@@ -296,14 +296,14 @@ public final class CommonRegistry {
      * @return Empty registerable.
      * @param <P> Payload class.
      */
-    public <P extends CustomPacketPayload> Registerable<Void> packetReceiver(CustomPacketPayload.Type<P> type, Supplier<BiConsumer<Player, P>> handler) {
+    public <P extends CustomPacketPayload> Registerable<Void> packetReceiver(CustomPacketPayload.Type<P> type, BiConsumer<Player, P> handler) {
         return new Registerable<>(feature, () -> {
             ServerPlayNetworking.registerGlobalReceiver(type,
                 (payload, context) -> {
                 var player = context.player();
                 var server = context.server();
                 if (server != null) {
-                    server.execute(() -> handler.get().accept(player, payload));
+                    server.execute(() -> handler.accept(player, payload));
                 }
             });
             return null;

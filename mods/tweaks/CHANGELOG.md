@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.15.1
+
+- Update for Minecraft 1.21.10.
+- Update for Charmony 1.47.0.
+
 ## 1.14.1
 
 - Fix wandering trader textures.

@@ -23,8 +23,8 @@ public class Registers extends Setup<RuneDictionary> {
         registry.packetSender(Side.Client, C2SRequestDictionary.TYPE, C2SRequestDictionary.CODEC);
 
         // Packet handling.
-        registry.packetReceiver(C2SRequestKnowledge.TYPE, () -> feature().handlers::handleRequestKnowledge);
-        registry.packetReceiver(C2SRequestDictionary.TYPE, () -> feature().handlers::handleRequestDictionary);
+        registry.packetReceiver(C2SRequestKnowledge.TYPE, feature().handlers::handleRequestKnowledge);
+        registry.packetReceiver(C2SRequestDictionary.TYPE, feature().handlers::handleRequestDictionary);
     }
 
     /**
