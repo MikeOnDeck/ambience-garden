@@ -1,6 +1,6 @@
 package charmony.villager_tasks.client.features.villager_tasks.screens;
 
-import charmony.villager_tasks.client.features.villager_tasks.Resources;
+import charmony.villager_tasks.common.features.villager_tasks.Resources;
 import net.minecraft.world.item.trading.Merchant;
 
 public class AvailableTasksScreen extends BaseScreen {
