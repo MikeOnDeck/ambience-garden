@@ -59,7 +59,7 @@ public class Task implements EventListener, Satisfiable, PlayerHolder {
         this.duration = duration;
 
         // Setup behaviors and ensure all behaviors have a reference to this task.
-        this.registerBehaviors();
+        this.behaviors.addAll(loadBehaviors());
         this.behaviors.forEach(behavior -> behavior.setTask(this));
 
         // Setup requirements and ensure all requirements have a reference to this task.
@@ -68,10 +68,12 @@ public class Task implements EventListener, Satisfiable, PlayerHolder {
     }
 
     /**
-     * Ensure all behaviors are registered here.
+     * Ensure all behaviors are added here.
      */
-    private void registerBehaviors() {
-        this.behaviors.add(new Collect());
+    public static List<Behavior> loadBehaviors() {
+        return List.of(
+            new Collect()
+        );
     }
 
     public static Task create(ServerPlayer player, Definition definition, UUID uuid, TaskModifier modifier, long seed) {
@@ -86,20 +88,11 @@ public class Task implements EventListener, Satisfiable, PlayerHolder {
         var serverLevel = player.level();
         var registryAccess = serverLevel.registryAccess();
 
-        Collect.makeRequirement(registryAccess, definition, multiplier, random).ifPresent(requirements::add);
+        // Pass the definition to each behavior to see if it needs to set up a task requirement.
+        loadBehaviors().forEach(b -> b.makeRequirement(registryAccess, definition, multiplier, random).ifPresent(requirements::add));
 
-        return new Task(
-            TaskStatus.NotStarted,
-            definition.id,
-            requirements,
-            uuid,
-            modifier.isEpic(),
-            seed,
-            multiplier,
-            level,
-            expiry,
-            0
-        );
+        // Finally create the task instance.
+        return new Task(TaskStatus.NotStarted, definition.id, requirements, uuid, modifier.isEpic(), seed, multiplier, level, expiry, 0);
     }
 
     @Override

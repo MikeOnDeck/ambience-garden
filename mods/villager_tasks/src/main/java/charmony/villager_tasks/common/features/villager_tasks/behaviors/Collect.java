@@ -1,9 +1,6 @@
 package charmony.villager_tasks.common.features.villager_tasks.behaviors;
 
-import charmony.villager_tasks.common.features.villager_tasks.Behavior;
-import charmony.villager_tasks.common.features.villager_tasks.Definition;
-import charmony.villager_tasks.common.features.villager_tasks.Helpers;
-import charmony.villager_tasks.common.features.villager_tasks.Requirement;
+import charmony.villager_tasks.common.features.villager_tasks.*;
 import charmony.villager_tasks.common.features.villager_tasks.requirements.CollectCriteria;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
@@ -23,23 +20,22 @@ public class Collect extends Behavior {
     public static final String ID = "collect";
 
     @Override
-    public void onComplete(ServerPlayer player) {
-        getRequirements().forEach(
-            req -> req.collectItems().forEach(
-                criteria -> criteria.onComplete(player)));
-    }
-
-    @Override
     public String getId() {
         return ID;
     }
 
     @Override
     public Component getName() {
-        return Component.translatable("gui.charmony.villager_tasks.behavior.collect");
+        return Resources.COLLECT_BEHAVIOR;
     }
 
-    public static Optional<Requirement> makeRequirement(RegistryAccess registryAccess, Definition definition, double multiplier, RandomSource random) {
+    @Override
+    public void onComplete(ServerPlayer player) {
+        getCriteria().forEach(c -> c.onComplete(player));
+    }
+
+    @Override
+    public Optional<Requirement> makeRequirement(RegistryAccess registryAccess, Definition definition, double multiplier, RandomSource random) {
         var map = definition.collect;
         if (map.isEmpty()) return Optional.empty();
 
@@ -73,4 +69,11 @@ public class Collect extends Behavior {
         var requirement = new Requirement(sortedCriteria);
         return Optional.of(requirement);
     }
+
+    public List<CollectCriteria> getCriteria() {
+        return getRequirements().stream()
+            .flatMap(req -> req.collectItems().stream())
+            .toList();
+    }
+
 }
