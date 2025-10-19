@@ -13,7 +13,7 @@ public class Handlers extends Setup<VillagerTasks> {
         super(feature);
     }
 
-    public void handleSendActiveTasks(Player player, Networking.S2CSendActiveTasks payload) {
+    public void handleReceiveActiveTasks(Player player, Networking.S2CSendActiveTasks payload) {
         feature().common.get().handlers.setActiveTasks(player, payload.tasks());
     }
 
@@ -34,7 +34,7 @@ public class Handlers extends Setup<VillagerTasks> {
             b -> minecraft.setScreen(new AvailableTasksScreen(merchant))));
     }
 
-    public void handleSendAvailableTasks(Player player, Networking.S2CSendAvailableTasks payload) {
+    public void handleReceiveAvailableTasks(Player player, Networking.S2CSendAvailableTasks payload) {
         // TODO: Hold this in client handlers, render on AvailableTasksScreen.
     }
 }

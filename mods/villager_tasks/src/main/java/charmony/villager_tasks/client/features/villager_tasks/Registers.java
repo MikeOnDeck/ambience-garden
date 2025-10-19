@@ -12,8 +12,8 @@ public class Registers extends Setup<VillagerTasks> {
 
         var registry = ClientRegistry.forFeature(feature);
 
-        registry.packetReceiver(S2CSendActiveTasks.TYPE, feature.handlers::handleSendActiveTasks);
-        registry.packetReceiver(S2CSendAvailableTasks.TYPE, feature.handlers::handleSendAvailableTasks);
+        registry.packetReceiver(S2CSendActiveTasks.TYPE, feature.handlers::handleReceiveActiveTasks);
+        registry.packetReceiver(S2CSendAvailableTasks.TYPE, feature.handlers::handleReceiveAvailableTasks);
     }
 
     @Override
