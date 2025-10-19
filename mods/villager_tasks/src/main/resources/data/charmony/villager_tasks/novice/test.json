@@ -7,8 +7,8 @@
     "max": 3,
     "items": [
       {
-        "item": "minecraft:wheat",
-        "exactly": 5,
+        "item": "#minecraft:piglin_loved",
+        "exactly": 1,
         "weight": 1
       },
       {
