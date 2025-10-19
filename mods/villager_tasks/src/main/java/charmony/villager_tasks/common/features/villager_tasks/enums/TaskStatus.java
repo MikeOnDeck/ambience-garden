@@ -23,6 +23,15 @@ public enum TaskStatus implements StringRepresentable {
         this.name = name;
     }
 
+    public static TaskStatus fromString(String name) {
+        for (var status : values()) {
+            if (status.name.equalsIgnoreCase(name)) {
+                return status;
+            }
+        }
+        throw new RuntimeException("Unknown TaskStatus name: " + name);
+    }
+
     public int getId() {
         return id;
     }
