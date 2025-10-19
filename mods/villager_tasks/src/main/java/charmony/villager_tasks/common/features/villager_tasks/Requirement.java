@@ -46,9 +46,7 @@ public class Requirement implements Satisfiable, TaskHolder {
     @Override
     public int remaining() {
         var remaining = 0;
-
         remaining += collectCriteria.stream().anyMatch(ref -> !ref.isSatisfied()) ? 1 : 0;
-
         return remaining;
     }
 }

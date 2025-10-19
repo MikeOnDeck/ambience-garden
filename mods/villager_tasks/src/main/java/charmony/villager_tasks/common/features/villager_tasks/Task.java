@@ -6,6 +6,7 @@ import charmony.villager_tasks.common.features.villager_tasks.enums.TaskStatus;
 import charmony.villager_tasks.common.features.villager_tasks.enums.TaskType;
 import charmony.villager_tasks.common.features.villager_tasks.interfaces.EventListener;
 import charmony.villager_tasks.common.features.villager_tasks.interfaces.PlayerHolder;
+import charmony.villager_tasks.common.features.villager_tasks.interfaces.Satisfiable;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.UUIDUtil;
@@ -18,7 +19,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public class Task implements EventListener, PlayerHolder {
+public class Task implements EventListener, Satisfiable, PlayerHolder {
     private final TaskType type;
     private final ResourceLocation definitionId;
     private final UUID villager;
@@ -102,6 +103,18 @@ public class Task implements EventListener, PlayerHolder {
     @Override
     public Optional<ServerPlayer> getPlayer() {
         return Optional.ofNullable(player);
+    }
+
+    @Override
+    public boolean isSatisfied() {
+        return remaining() == 0;
+    }
+
+    @Override
+    public int remaining() {
+        var remaining = 0;
+        remaining += requirements.stream().anyMatch(req -> !req.isSatisfied()) ? 1 : 0;
+        return remaining;
     }
 
     @Override
