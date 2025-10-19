@@ -1,7 +1,14 @@
 package charmony.villager_tasks.common.features.villager_tasks;
 
+import charmony.core.helpers.TagHelper;
 import charmony.villager_tasks.common.features.villager_tasks.interfaces.HasWeight;
+import net.minecraft.Util;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.Item;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,5 +59,38 @@ public final class Helpers {
         }
 
         return selected;
+    }
+
+    /**
+     * Resolves an item ID string to a registered item instance and returns it.
+     * If the ID string starts with a # then the ID is first resolved to a tag.
+     * All tag values are loaded and one is selected at random to be returned.
+     *
+     * @param registryAccess Used to lookup the item registry.
+     * @param itemId ID in string format, e.g. "minecraft:wheat", "#minecraft:piglin_loved".
+     * @param random Random source to use when selecting an item from a tag.
+     * @return Resolved item instance.
+     */
+    public static Item resolveItem(RegistryAccess registryAccess, String itemId, RandomSource random) {
+        // Get the item registry; we need it to resolve item IDs.
+        var itemRegistry = registryAccess.lookupOrThrow(Registries.ITEM);
+
+        Item item;
+
+        // If itemId starts with a # then it's a tag; resolve all elements.
+        if (itemId.startsWith("#")) {
+            var tagKey = TagKey.create(Registries.ITEM, ResourceLocation.parse(itemId.substring(1)));
+            var values = TagHelper.getValues(itemRegistry, tagKey);
+            if (values.isEmpty()) {
+                throw new IllegalStateException("Could not get values for item tag");
+            }
+
+            Util.shuffle(values, random);
+            item = values.getFirst();
+        } else {
+            item = itemRegistry.getValue(ResourceLocation.parse(itemId));
+        }
+
+        return item;
     }
 }

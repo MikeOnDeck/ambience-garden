@@ -3,9 +3,7 @@ package charmony.villager_tasks.common.features.villager_tasks.behaviors;
 import charmony.villager_tasks.common.features.villager_tasks.*;
 import charmony.villager_tasks.common.features.villager_tasks.requirements.CollectCriteria;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
@@ -39,9 +37,6 @@ public class Collect extends Behavior {
         var map = definition.collect;
         if (map.isEmpty()) return Optional.empty();
 
-        // Get the item registry; we need it to resolve item IDs.
-        var itemRegistry = registryAccess.lookupOrThrow(Registries.ITEM);
-
         // Resolve items from map.
         var items = (List<Map<String, Object>>)map.getOrDefault("items", List.of());
         if (items.isEmpty()) {
@@ -56,7 +51,7 @@ public class Collect extends Behavior {
                 var itemMap = items.get(i);
                 var itemId = (String) itemMap.get("item");
                 var itemWeight = (double) itemMap.getOrDefault("weight", 1.0d);
-                var itemStack = new ItemStack(itemRegistry.get(ResourceLocation.parse(itemId)).orElseThrow());
+                var itemStack = new ItemStack(Helpers.resolveItem(registryAccess, itemId, random));
                 var itemCount = Helpers.getCountFromMap(itemMap, multiplier, random);
 
                 criteria.add(new CollectCriteria(itemStack, itemCount, (int)itemWeight));
