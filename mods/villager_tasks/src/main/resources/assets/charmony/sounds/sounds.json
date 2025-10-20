@@ -1,0 +1,38 @@
+{
+  "task_accept": {
+    "sounds": [
+      {
+        "name": "charmony:task_accept",
+        "volume": 1.0
+      }
+    ],
+    "subtitle": "subtitles.charmony.villager_tasks.accept"
+  },
+  "task_abandon": {
+    "sounds": [
+      {
+        "name": "charmony:task_abandon",
+        "volume": 1.0
+      }
+    ],
+    "subtitle": "subtitles.charmony.villager_tasks.abandon"
+  },
+  "task_complete": {
+    "sounds": [
+      {
+        "name": "charmony:task_complete",
+        "volume": 1.0
+      }
+    ],
+    "subtitle": "subtitles.charmony.villager_tasks.complete"
+  },
+  "task_epic_complete": {
+    "sounds": [
+      {
+        "name": "charmony:task_epic_complete",
+        "volume": 1.0
+      }
+    ],
+    "subtitle": "subtitles.charmony.villager_tasks.epic_complete"
+  }
+}
