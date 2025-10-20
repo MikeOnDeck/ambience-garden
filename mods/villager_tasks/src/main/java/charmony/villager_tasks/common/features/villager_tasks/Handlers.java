@@ -107,7 +107,7 @@ public class Handlers extends Setup<VillagerTasks> {
             }
         }
 
-        var tasks = new Tasks(uuid, "merchant", taskList);
+        var tasks = new Tasks(uuid, villager.getDisplayName().getString(), taskList);
         cachedTasksForPlayer.get(uuid).put(seed, tasks);
         syncAvailableTasks(player, tasks);
     }

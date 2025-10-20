@@ -21,6 +21,7 @@ import java.util.UUID;
 
 public class Task implements EventListener, Satisfiable, PlayerHolder {
     private final ResourceLocation definitionId;
+    private final String titleKey;
     private final UUID villager;
     private final boolean epic;
     private final long seed;
@@ -39,6 +40,7 @@ public class Task implements EventListener, Satisfiable, PlayerHolder {
         ResourceLocation.CODEC.fieldOf("definitionId").forGetter(task -> task.definitionId),
         Requirement.CODEC.listOf().fieldOf("requirements").forGetter(task -> task.requirements),
         UUIDUtil.CODEC.fieldOf("villager").forGetter(task -> task.villager),
+        Codec.STRING.fieldOf("titleKey").forGetter(task -> task.titleKey),
         Codec.BOOL.fieldOf("epic").forGetter(task -> task.epic),
         Codec.LONG.fieldOf("seed").forGetter(task -> task.seed),
         Codec.DOUBLE.fieldOf("multiplier").forGetter(task -> task.multiplier),
@@ -47,11 +49,12 @@ public class Task implements EventListener, Satisfiable, PlayerHolder {
         Codec.INT.fieldOf("duration").forGetter(task -> task.duration)
     ).apply(instance, Task::new));
 
-    private Task(TaskStatus status, ResourceLocation definitionId, List<Requirement> requirements, UUID villager, boolean epic, long seed, double multiplier, int level, int expiry, int duration) {
+    private Task(TaskStatus status, ResourceLocation definitionId, List<Requirement> requirements, UUID villager, String titleKey, boolean epic, long seed, double multiplier, int level, int expiry, int duration) {
         this.status = status;
         this.definitionId = definitionId;
         this.villager = villager;
         this.epic = epic;
+        this.titleKey = titleKey;
         this.seed = seed;
         this.multiplier = multiplier;
         this.expiry = expiry;
@@ -80,6 +83,7 @@ public class Task implements EventListener, Satisfiable, PlayerHolder {
         var random = RandomSource.create(seed);
         var expiry = definition.expiry;
         var level = definition.level;
+        var titleKey = definition.title;
 
         // The modifier and player luck affect the task multiplier.
         var multiplier = Math.max(definition.multiplier, modifier.getMultiplier(random)) + (player.getLuck() * 1.0d);
@@ -92,7 +96,7 @@ public class Task implements EventListener, Satisfiable, PlayerHolder {
         loadBehaviors().forEach(b -> b.makeRequirement(registryAccess, definition, multiplier, random).ifPresent(requirements::add));
 
         // Finally create the task instance.
-        return new Task(TaskStatus.NotStarted, definition.id, requirements, uuid, modifier.isEpic(), seed, multiplier, level, expiry, 0);
+        return new Task(TaskStatus.NotStarted, definition.id, requirements, uuid, titleKey, modifier.isEpic(), seed, multiplier, level, expiry, 0);
     }
 
     @Override
@@ -166,21 +170,36 @@ public class Task implements EventListener, Satisfiable, PlayerHolder {
         return villager;
     }
 
-    public List<Component> getActiveBehaviorNames() {
-        return behaviors.stream()
-            .filter(Behavior::hasRequirements)
-            .map(Behavior::getName)
-            .toList();
-    }
+    public Component getTitle() {
+        if (titleKey.isEmpty()) {
+            // If no title key is defined, try to generate a title from the behaviors.
+            var names = behaviors.stream()
+                .filter(Behavior::hasRequirements)
+                .map(Behavior::getName)
+                .toList();
 
-    public List<String> getActiveBehaviorIds() {
-        return behaviors.stream()
-            .filter(Behavior::hasRequirements)
-            .map(Behavior::getId)
-            .toList();
+            if (names.size() == 1) {
+                return names.getFirst();
+            } else if (names.size() > 1) {
+                return Resources.MULTIPLE_REQUIREMENTS;
+            }
+        } else {
+            if (titleKey.contains(".villager_tasks.")) {
+                // If it's a translatable key (containing the keyword villager_tasks) then translate it.
+                return Component.translatable(titleKey);
+            } else {
+                // Just output it literally.
+                return Component.literal(titleKey);
+            }
+        }
+        return Resources.MISSINGNO;
     }
 
     public List<Requirement> getRequirements() {
         return requirements;
+    }
+
+    public boolean isEpic() {
+        return epic;
     }
 }

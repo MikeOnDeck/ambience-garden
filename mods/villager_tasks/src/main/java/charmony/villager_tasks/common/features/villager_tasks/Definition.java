@@ -3,6 +3,7 @@ package charmony.villager_tasks.common.features.villager_tasks;
 import com.google.gson.Gson;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
@@ -17,6 +18,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @SuppressWarnings({"FieldMayBeFinal", "unused"})
 public class Definition {
@@ -24,6 +26,7 @@ public class Definition {
 
     // These are loaded from the JSON definition.
     public ResourceLocation id;
+    public String title = "";
     public int level = 0;
     public int expiry = 0;
     public double multiplier = 1.0d;
@@ -87,5 +90,12 @@ public class Definition {
                 .map(type -> abstractVillager.getType().equals(type))
                 .orElse(false);
         }
+    }
+
+    public Optional<Component> getTitle() {
+        if (title.isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.of(Component.translatable(title));
     }
 }
