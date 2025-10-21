@@ -20,7 +20,7 @@
       {
         "item": "minecraft:potato",
         "exactly": 5,
-        "weight": 1
+        "weight": 3
       }
     ]
   },
@@ -30,12 +30,10 @@
     "experience": 5,
     "items": [
       {
-        "item": "minecraft:copper_leggings",
-        "weight": 1
+        "item": "minecraft:copper_leggings"
       },
       {
-        "item": "minecraft:iron_leggings",
-        "weight": 1
+        "item": "minecraft:iron_leggings"
       }
     ]
   }
