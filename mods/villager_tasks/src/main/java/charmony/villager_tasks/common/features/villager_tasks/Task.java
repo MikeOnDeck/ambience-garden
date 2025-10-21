@@ -5,7 +5,6 @@ import charmony.villager_tasks.common.features.villager_tasks.aspects.Rewards;
 import charmony.villager_tasks.common.features.villager_tasks.enums.TaskModifier;
 import charmony.villager_tasks.common.features.villager_tasks.enums.TaskStatus;
 import charmony.villager_tasks.common.features.villager_tasks.interfaces.EventListener;
-import charmony.villager_tasks.common.features.villager_tasks.interfaces.PlayerHolder;
 import charmony.villager_tasks.common.features.villager_tasks.interfaces.Satisfiable;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -17,10 +16,9 @@ import net.minecraft.util.RandomSource;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
-public class Task implements EventListener, Satisfiable, PlayerHolder {
+public class Task implements EventListener, Satisfiable {
     private final String titleKey;
 
     public final UUID id;
@@ -38,7 +36,6 @@ public class Task implements EventListener, Satisfiable, PlayerHolder {
 
     private TaskStatus status;
     private int duration = 0;
-    private ServerPlayer player;
 
     public static final Codec<Task> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         UUIDUtil.CODEC.fieldOf("id").forGetter(task -> task.id),
@@ -97,11 +94,6 @@ public class Task implements EventListener, Satisfiable, PlayerHolder {
     }
 
     @Override
-    public Optional<ServerPlayer> getPlayer() {
-        return Optional.ofNullable(player);
-    }
-
-    @Override
     public boolean isSatisfied() {
         return remaining() == 0;
     }
@@ -125,7 +117,6 @@ public class Task implements EventListener, Satisfiable, PlayerHolder {
 
     @Override
     public void onTick(ServerPlayer player) {
-        this.player = player;
         this.aspects.forEach(b -> b.onTick(player));
     }
 
