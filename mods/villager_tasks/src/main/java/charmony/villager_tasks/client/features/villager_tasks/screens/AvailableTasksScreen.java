@@ -75,18 +75,9 @@ public class AvailableTasksScreen extends BaseScreen {
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float tickDelta) {
         super.render(guiGraphics, mouseX, mouseY, tickDelta);
-        TextComponentHelper.drawCenteredString(guiGraphics, font, getTitle(), midX, 19, textColor);
 
-        if (availableTasks != null) {
-            for (var i = 0; i < availableTasks.tasks().size(); i++) {
-                var task = availableTasks.tasks().get(i);
-                var title = task.getTitle();
-                var color = task.isEpic() ? epicTextColor : textColor;
-                TextComponentHelper.drawCenteredString(guiGraphics, font, title, midX - 105,  50 + (i * 25), color);
-            }
-        } else {
-            TextComponentHelper.drawCenteredString(guiGraphics, font, Resources.NO_AVAILABLE_TASKS, midX, 40, textColor);
-        }
+        renderTitle(guiGraphics);
+        renderTasks(guiGraphics);
     }
 
     @Override
@@ -95,5 +86,26 @@ public class AvailableTasksScreen extends BaseScreen {
             return Component.translatable("gui.charmony.villager_tasks.available_tasks_for_villager", availableTasks.name());
         }
         return super.getTitle();
+    }
+
+    private void renderTitle(GuiGraphics guiGraphics) {
+        TextComponentHelper.drawCenteredString(guiGraphics, font, getTitle(), midX, 19, textColor);
+    }
+
+    private void renderTasks(GuiGraphics guiGraphics) {
+        if (availableTasks != null) {
+            for (var i = 0; i < availableTasks.tasks().size(); i++) {
+                var task = availableTasks.tasks().get(i);
+                var titleColor = task.isEpic() ? epicTextColor : textColor;
+
+                // Title
+                TextComponentHelper.drawCenteredString(guiGraphics, font, task.getTitle(), midX - 105,  50 + (i * 25), titleColor);
+
+
+
+            }
+        } else {
+            TextComponentHelper.drawCenteredString(guiGraphics, font, Resources.NO_AVAILABLE_TASKS, midX, 40, textColor);
+        }
     }
 }
