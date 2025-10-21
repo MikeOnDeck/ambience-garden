@@ -1,4 +1,4 @@
-package charmony.villager_tasks.common.features.villager_tasks.behaviors;
+package charmony.villager_tasks.common.features.villager_tasks.types;
 
 import charmony.villager_tasks.common.features.villager_tasks.*;
 import charmony.villager_tasks.common.features.villager_tasks.requirements.CollectCriteria;
@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @SuppressWarnings("unchecked")
-public class CollectBehavior extends Behavior {
+public class Collect extends Type {
     public static final String ID = "collect";
 
     @Override
@@ -24,7 +24,7 @@ public class CollectBehavior extends Behavior {
 
     @Override
     public Component getName() {
-        return Resources.COLLECT_BEHAVIOR;
+        return Resources.COLLECT_TYPE;
     }
 
     @Override
@@ -40,7 +40,7 @@ public class CollectBehavior extends Behavior {
         // Resolve items from map.
         var items = (List<Map<String, Object>>)map.getOrDefault("items", List.of());
         if (items.isEmpty()) {
-            throw new IllegalStateException("Collect behavior requires at least one item to collect.");
+            throw new IllegalStateException("Collect requires at least one item to collect.");
         }
 
         var count = Math.min(items.size(), Helpers.getCountFromMap(map, multiplier, random));

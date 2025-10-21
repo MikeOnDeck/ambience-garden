@@ -9,7 +9,7 @@ import net.minecraft.util.RandomSource;
 import java.util.List;
 import java.util.Optional;
 
-public abstract class Behavior implements EventListener, TaskHolder {
+public abstract class Type implements EventListener, TaskHolder {
     private Task task;
 
     @Override

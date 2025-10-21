@@ -1,11 +1,11 @@
 package charmony.villager_tasks.common.features.villager_tasks;
 
-import charmony.villager_tasks.common.features.villager_tasks.behaviors.CollectBehavior;
 import charmony.villager_tasks.common.features.villager_tasks.enums.TaskModifier;
 import charmony.villager_tasks.common.features.villager_tasks.enums.TaskStatus;
 import charmony.villager_tasks.common.features.villager_tasks.interfaces.EventListener;
 import charmony.villager_tasks.common.features.villager_tasks.interfaces.PlayerHolder;
 import charmony.villager_tasks.common.features.villager_tasks.interfaces.Satisfiable;
+import charmony.villager_tasks.common.features.villager_tasks.types.Collect;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.UUIDUtil;
@@ -29,7 +29,7 @@ public class Task implements EventListener, Satisfiable, PlayerHolder {
     private final int expiry;
     private final int level;
     private final List<Requirement> requirements = new ArrayList<>();
-    private final List<Behavior> behaviors = new ArrayList<>();
+    private final List<Type> types = new ArrayList<>();
 
     private TaskStatus status;
     private int duration = 0;
@@ -61,9 +61,9 @@ public class Task implements EventListener, Satisfiable, PlayerHolder {
         this.level = level;
         this.duration = duration;
 
-        // Setup behaviors and ensure all behaviors have a reference to this task.
-        this.behaviors.addAll(loadBehaviors());
-        this.behaviors.forEach(behavior -> behavior.setTask(this));
+        // Setup types and ensure all types have a reference to this task.
+        this.types.addAll(loadTypes());
+        this.types.forEach(type -> type.setTask(this));
 
         // Setup requirements and ensure all requirements have a reference to this task.
         this.requirements.addAll(requirements);
@@ -71,11 +71,11 @@ public class Task implements EventListener, Satisfiable, PlayerHolder {
     }
 
     /**
-     * Ensure all behaviors are added here.
+     * Ensure all types are added here.
      */
-    public static List<Behavior> loadBehaviors() {
+    public static List<Type> loadTypes() {
         return List.of(
-            new CollectBehavior()
+            new Collect()
         );
     }
 
@@ -92,8 +92,8 @@ public class Task implements EventListener, Satisfiable, PlayerHolder {
         var serverLevel = player.level();
         var registryAccess = serverLevel.registryAccess();
 
-        // Pass the definition to each behavior to see if it needs to set up a task requirement.
-        loadBehaviors().forEach(b -> b.makeRequirement(registryAccess, definition, multiplier, random).ifPresent(requirements::add));
+        // Pass the definition to each type to see if it needs to set up a task requirement.
+        loadTypes().forEach(b -> b.makeRequirement(registryAccess, definition, multiplier, random).ifPresent(requirements::add));
 
         // Finally create the task instance.
         return new Task(TaskStatus.NotStarted, definition.id, requirements, uuid, titleKey, modifier.isEpic(), seed, multiplier, level, expiry, 0);
@@ -118,28 +118,28 @@ public class Task implements EventListener, Satisfiable, PlayerHolder {
 
     @Override
     public void onStart(ServerPlayer player) {
-        this.behaviors.forEach(b -> b.onStart(player));
+        this.types.forEach(b -> b.onStart(player));
     }
 
     @Override
     public void onStarted(ServerPlayer player) {
-        this.behaviors.forEach(b -> b.onStarted(player));
+        this.types.forEach(b -> b.onStarted(player));
     }
 
     @Override
     public void onTick(ServerPlayer player) {
         this.player = player;
-        this.behaviors.forEach(b -> b.onTick(player));
+        this.types.forEach(b -> b.onTick(player));
     }
 
     @Override
     public void onAbandon(ServerPlayer player) {
-        this.behaviors.forEach(b -> b.onAbandon(player));
+        this.types.forEach(b -> b.onAbandon(player));
     }
 
     @Override
     public void onComplete(ServerPlayer player) {
-        this.behaviors.forEach(b -> b.onComplete(player));
+        this.types.forEach(b -> b.onComplete(player));
     }
 
     public boolean isStarting() {
@@ -172,10 +172,10 @@ public class Task implements EventListener, Satisfiable, PlayerHolder {
 
     public Component getTitle() {
         if (titleKey.isEmpty()) {
-            // If no title key is defined, try to generate a title from the behaviors.
-            var names = behaviors.stream()
-                .filter(Behavior::hasRequirements)
-                .map(Behavior::getName)
+            // If no title key is defined, try to generate a title from the types.
+            var names = types.stream()
+                .filter(Type::hasRequirements)
+                .map(Type::getName)
                 .toList();
 
             if (names.size() == 1) {
