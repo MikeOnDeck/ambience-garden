@@ -40,18 +40,18 @@ public final class Helpers {
     public static <T extends HasWeight> List<T> getRandomlyByWeight(List<T> list, int count, RandomSource random) {
         var selected = new ArrayList<T>();
 
-        list.sort((a, b) -> Integer.compare(b.getWeight(), a.getWeight()));
-        var totalWeight = list.stream().mapToInt(T::getWeight).sum();
+        list.sort((a, b) -> Integer.compare(b.weight(), a.weight()));
+        var totalWeight = list.stream().mapToInt(T::weight).sum();
 
         for (var i = 0; i < count; i++) {
             var r = random.nextInt(totalWeight);
             var cumulative = 0;
 
             for (var entry : list) {
-                cumulative += entry.getWeight();
+                cumulative += entry.weight();
                 if (r < cumulative) {
                     selected.add(entry);
-                    totalWeight -= entry.getWeight();
+                    totalWeight -= entry.weight();
                     list.remove(entry);
                     break;
                 }
