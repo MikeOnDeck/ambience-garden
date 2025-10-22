@@ -83,9 +83,13 @@ public final class Collect extends Aspect implements Satisfiable {
         return new Collect(collectItems);
     }
 
+    public List<CollectItem> items() {
+        return items;
+    }
+
     public int total() {
         // Get the cumulative total of all items.
-        return items.stream().mapToInt(CollectItem::total).sum();
+        return items().stream().mapToInt(CollectItem::total).sum();
     }
 
     @Override
@@ -100,7 +104,7 @@ public final class Collect extends Aspect implements Satisfiable {
         var fullRemainder = total();
 
         // Iterate over the player's inventory and decrement the remainder for each matching item found.
-        for (var req : items) {
+        for (var req : items()) {
             var remainder = req.total();
 
             if (remainder > 0) {
@@ -127,7 +131,7 @@ public final class Collect extends Aspect implements Satisfiable {
 
     @Override
     public void onComplete(ServerPlayer player) {
-        for (var req : items) {
+        for (var req : items()) {
             var remainder = req.total();
 
             if (remainder > 0) {
