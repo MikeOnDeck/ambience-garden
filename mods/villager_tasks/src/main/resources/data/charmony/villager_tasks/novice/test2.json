@@ -1,0 +1,41 @@
+{
+  "title": "A collect task 2",
+  "level": 1,
+  "expiry": 0,
+  "collect": {
+    "min": 2,
+    "max": 3,
+    "items": [
+      {
+        "item": "#minecraft:axes",
+        "exactly": 1,
+        "weight": 3
+      },
+      {
+        "item": "minecraft:iron_sword",
+        "exactly": 1,
+        "weight": 1
+      },
+      {
+        "item": "minecraft:copper_sword",
+        "exactly": 1,
+        "weight": 1
+      }
+    ]
+  },
+  "rewards": {
+    "min": 3,
+    "max": 4,
+    "experience": 10,
+    "items": [
+      {
+        "item": "minecraft:diamond",
+        "exactly": 5
+      },
+      {
+        "item": "minecraft:gold_ingot",
+        "exactly": 5
+      }
+    ]
+  }
+}

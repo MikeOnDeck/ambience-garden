@@ -1,5 +1,5 @@
 {
-  "title": "The best task ever",
+  "title": "A collect task 1",
   "level": 1,
   "expiry": 0,
   "collect": {
@@ -30,11 +30,11 @@
     "items": [
       {
         "item": "minecraft:copper_leggings",
-        "exactly": 10
+        "exactly": 5
       },
       {
         "item": "minecraft:iron_leggings",
-        "exactly": 10
+        "exactly": 5
       }
     ]
   }
