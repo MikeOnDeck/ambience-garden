@@ -8,6 +8,7 @@ import charmony.villager_tasks.common.features.villager_tasks.interfaces.EventLi
 import charmony.villager_tasks.common.features.villager_tasks.interfaces.Satisfiable;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -19,17 +20,17 @@ import java.util.List;
 import java.util.UUID;
 
 public class Task implements EventListener, Satisfiable {
-    private final String titleKey;
+    public final List<Aspect> aspects = new ArrayList<>();
 
     public final UUID id;
-    public final ResourceLocation definitionId;
-    public final List<Aspect> aspects = new ArrayList<>();
     public final UUID villager;
+    public final ResourceLocation definitionId;
+    public final String titleKey;
     public final long seed;
-    public final double multiplier;
-    public final int expiry;
-    public final int level;
     public final boolean epic;
+    public final double multiplier;
+    public final int level;
+    public final int expiry;
 
     public final Collect collect;
     public final Rewards rewards;
@@ -39,12 +40,12 @@ public class Task implements EventListener, Satisfiable {
 
     public static final Codec<Task> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         UUIDUtil.CODEC.fieldOf("id").forGetter(task -> task.id),
-        TaskStatus.CODEC.fieldOf("status").forGetter(task -> task.status),
-        ResourceLocation.CODEC.fieldOf("definitionId").forGetter(task -> task.definitionId),
         UUIDUtil.CODEC.fieldOf("villager").forGetter(task -> task.villager),
+        ResourceLocation.CODEC.fieldOf("definitionId").forGetter(task -> task.definitionId),
+        TaskStatus.CODEC.fieldOf("status").forGetter(task -> task.status),
         Codec.STRING.fieldOf("titleKey").forGetter(task -> task.titleKey),
-        Codec.BOOL.fieldOf("epic").forGetter(task -> task.epic),
         Codec.LONG.fieldOf("seed").forGetter(task -> task.seed),
+        Codec.BOOL.fieldOf("epic").forGetter(task -> task.epic),
         Codec.DOUBLE.fieldOf("multiplier").forGetter(task -> task.multiplier),
         Codec.INT.fieldOf("level").forGetter(task -> task.level),
         Codec.INT.fieldOf("expiry").forGetter(task -> task.expiry),
@@ -53,9 +54,13 @@ public class Task implements EventListener, Satisfiable {
         Rewards.CODEC.fieldOf("rewards").forGetter(task -> task.rewards)
     ).apply(instance, Task::new));
 
-    private Task(UUID id, TaskStatus status, ResourceLocation definitionId, UUID villager, String titleKey, boolean epic, long seed, double multiplier, int level, int expiry, int duration,
-         Collect collect,
-         Rewards reward
+    public static final Task EMPTY = new Task(
+        UUID.randomUUID(), UUID.randomUUID(), ResourceLocation.parse("minecraft:empty"), TaskStatus.Unspecified, "", 0L, false, 1.0d, 0, 0, 0,
+        Collect.EMPTY, Rewards.EMPTY
+    );
+
+    private Task(UUID id, UUID villager, ResourceLocation definitionId, TaskStatus status, String titleKey, long seed, boolean epic, double multiplier, int level, int expiry, int duration,
+                 Collect collect, Rewards reward
     ) {
         this.id = id;
         this.status = status;
@@ -74,6 +79,8 @@ public class Task implements EventListener, Satisfiable {
     }
 
     public static Task create(ServerPlayer player, Definition definition, UUID uuid, TaskModifier modifier, long seed) {
+        Task task;
+
         var id = UUID.randomUUID();
         var random = RandomSource.create(seed);
         var expiry = definition.expiry;
@@ -83,14 +90,20 @@ public class Task implements EventListener, Satisfiable {
         // The modifier and player luck affect the task multiplier.
         var multiplier = Math.max(definition.multiplier, modifier.getMultiplier(random)) + (player.getLuck() * 1.0d);
 
-        var serverLevel = player.level();
-        var registryAccess = serverLevel.registryAccess();
+        // Finally create the task instance, including building all aspects.
+        var builder = new AspectBuilder(player.level().registryAccess(), definition, multiplier, random);
 
-        // Finally create the task instance.
-        return new Task(id, TaskStatus.NotStarted, definition.id, uuid, titleKey, modifier.isEpic(), seed, multiplier, level, expiry, 0,
-            Collect.make(registryAccess, definition, multiplier, random),
-            Rewards.make(registryAccess, definition, multiplier, random)
-        );
+        try {
+            task = new Task(id, uuid, definition.id, TaskStatus.NotStarted, titleKey, seed, modifier.isEpic(), multiplier, level, expiry, 0,
+                Collect.make(builder),
+                Rewards.make(builder)
+            );
+        } catch (Exception e) {
+            VillagerTasks.feature().log().error("Failed to create task for definition: " + definition.id, e);
+            task = EMPTY;
+        }
+
+        return task;
     }
 
     @Override
@@ -173,4 +186,6 @@ public class Task implements EventListener, Satisfiable {
     public boolean isEpic() {
         return epic;
     }
+
+    public record AspectBuilder(RegistryAccess registryAccess, Definition definition, double multiplier, RandomSource random) { }
 }

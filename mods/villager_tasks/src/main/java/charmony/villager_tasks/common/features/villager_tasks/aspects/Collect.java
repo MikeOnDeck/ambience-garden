@@ -1,17 +1,15 @@
 package charmony.villager_tasks.common.features.villager_tasks.aspects;
 
 import charmony.villager_tasks.common.features.villager_tasks.Aspect;
-import charmony.villager_tasks.common.features.villager_tasks.Definition;
 import charmony.villager_tasks.common.features.villager_tasks.Helpers;
 import charmony.villager_tasks.common.features.villager_tasks.Resources;
+import charmony.villager_tasks.common.features.villager_tasks.Task;
 import charmony.villager_tasks.common.features.villager_tasks.interfaces.Satisfiable;
 import charmony.villager_tasks.common.features.villager_tasks.requirements.CollectItem;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
@@ -49,11 +47,14 @@ public final class Collect extends Aspect implements Satisfiable {
         return Resources.COLLECT_ASPECT;
     }
 
-    public static Collect make(RegistryAccess registryAccess, Definition definition, double multiplier, RandomSource random) {
-        var map = definition.collect;
+    public static Collect make(Task.AspectBuilder builder) {
+        var map = builder.definition().collect;
         if (map.isEmpty()) {
             return EMPTY;
         }
+
+        var multiplier = builder.multiplier();
+        var random = builder.random();
 
         // Resolve items from map.
         var items = (List<Map<String, Object>>)map.getOrDefault("items", List.of());
@@ -69,7 +70,7 @@ public final class Collect extends Aspect implements Satisfiable {
                 var itemMap = items.get(i);
                 var itemId = (String) itemMap.get("item");
                 var itemWeight = (double) itemMap.getOrDefault("weight", 1.0d);
-                var itemStack = new ItemStack(Helpers.resolveItem(registryAccess, itemId, random));
+                var itemStack = new ItemStack(Helpers.resolveItem(builder.registryAccess(), itemId, random));
                 var itemCount = Helpers.getCountFromMap(itemMap, multiplier, random);
 
                 criteria.add(new CollectItem(itemStack, itemCount, (int)itemWeight));
