@@ -4,6 +4,7 @@
   "gui.charmony.villager_tasks.aspect.reward": "Rewards",
   "gui.charmony.villager_tasks.available_tasks": "Villager Tasks",
   "gui.charmony.villager_tasks.available_tasks_for_villager": "Available tasks for %s",
+  "gui.charmony.villager_tasks.experience_levels": "Experience levels: %s",
   "gui.charmony.villager_tasks.info": "Info",
   "gui.charmony.villager_tasks.label.rewards": "Rewards:",
   "gui.charmony.villager_tasks.missingno": "missingno",

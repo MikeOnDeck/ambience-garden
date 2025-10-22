@@ -232,7 +232,8 @@ public class AvailableTasksScreen extends BaseScreen {
 
         @Override
         public void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-            guiGraphics.setTooltipForNextFrame(Component.literal("Experience levels"), mouseX, mouseY);
+            var component = Component.translatable("gui.charmony.villager_tasks.experience_levels", text);
+            guiGraphics.setTooltipForNextFrame(component, mouseX, mouseY);
         }
     }
 }
