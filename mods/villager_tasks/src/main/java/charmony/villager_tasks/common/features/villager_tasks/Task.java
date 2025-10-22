@@ -25,10 +25,9 @@ public class Task implements EventListener, Satisfiable {
     public final UUID id;
     public final UUID villager;
     public final ResourceLocation definitionId;
+    public final TaskModifier modifier;
     public final String titleKey;
     public final long seed;
-    public final boolean epic;
-    public final double multiplier;
     public final int level;
     public final int expiry;
 
@@ -43,10 +42,9 @@ public class Task implements EventListener, Satisfiable {
         UUIDUtil.CODEC.fieldOf("villager").forGetter(task -> task.villager),
         ResourceLocation.CODEC.fieldOf("definitionId").forGetter(task -> task.definitionId),
         TaskStatus.CODEC.fieldOf("status").forGetter(task -> task.status),
+        TaskModifier.CODEC.fieldOf("modifier").forGetter(task -> task.modifier),
         Codec.STRING.fieldOf("titleKey").forGetter(task -> task.titleKey),
         Codec.LONG.fieldOf("seed").forGetter(task -> task.seed),
-        Codec.BOOL.fieldOf("epic").forGetter(task -> task.epic),
-        Codec.DOUBLE.fieldOf("multiplier").forGetter(task -> task.multiplier),
         Codec.INT.fieldOf("level").forGetter(task -> task.level),
         Codec.INT.fieldOf("expiry").forGetter(task -> task.expiry),
         Codec.INT.fieldOf("duration").forGetter(task -> task.duration),
@@ -55,21 +53,20 @@ public class Task implements EventListener, Satisfiable {
     ).apply(instance, Task::new));
 
     public static final Task EMPTY = new Task(
-        UUID.randomUUID(), UUID.randomUUID(), ResourceLocation.parse("minecraft:empty"), TaskStatus.Unspecified, "", 0L, false, 1.0d, 0, 0, 0,
+        UUID.randomUUID(), UUID.randomUUID(), ResourceLocation.parse("minecraft:empty"), TaskStatus.Unspecified, TaskModifier.Unspecified, "", 0L, 0, 0, 0,
         Collect.EMPTY, Rewards.EMPTY
     );
 
-    private Task(UUID id, UUID villager, ResourceLocation definitionId, TaskStatus status, String titleKey, long seed, boolean epic, double multiplier, int level, int expiry, int duration,
+    private Task(UUID id, UUID villager, ResourceLocation definitionId, TaskStatus status, TaskModifier modifier, String titleKey, long seed, int level, int expiry, int duration,
                  Collect collect, Rewards reward
     ) {
         this.id = id;
         this.status = status;
         this.definitionId = definitionId;
+        this.modifier = modifier;
         this.villager = villager;
-        this.epic = epic;
         this.titleKey = titleKey;
         this.seed = seed;
-        this.multiplier = multiplier;
         this.expiry = expiry;
         this.level = level;
         this.duration = duration;
@@ -87,14 +84,12 @@ public class Task implements EventListener, Satisfiable {
         var level = definition.level;
         var titleKey = definition.title;
 
-        // The modifier and player luck affect the task multiplier.
-        var multiplier = Math.max(definition.multiplier, modifier.getMultiplier(random)) + (player.getLuck() * 1.0d);
-
-        // Finally create the task instance, including building all aspects.
-        var builder = new AspectBuilder(player.level().registryAccess(), definition, multiplier, random);
+        // Initialise the aspect builder that will be passed to each aspect during task creation.
+        var builder = new AspectBuilder(player, definition, modifier, random);
 
         try {
-            task = new Task(id, uuid, definition.id, TaskStatus.NotStarted, titleKey, seed, modifier.isEpic(), multiplier, level, expiry, 0,
+            // Create the task with its aspects.
+            task = new Task(id, uuid, definition.id, TaskStatus.NotStarted, modifier, titleKey, seed, level, expiry, 0,
                 Collect.make(builder),
                 Rewards.make(builder)
             );
@@ -184,8 +179,20 @@ public class Task implements EventListener, Satisfiable {
     }
 
     public boolean isEpic() {
-        return epic;
+        return modifier.isEpic();
     }
 
-    public record AspectBuilder(RegistryAccess registryAccess, Definition definition, double multiplier, RandomSource random) { }
+    public record AspectBuilder(ServerPlayer player, Definition definition, TaskModifier modifier, RandomSource random) {
+        public RegistryAccess registryAccess() {
+            return player.level().registryAccess();
+        }
+
+        public double positiveMultiplier(RandomSource random) {
+            return modifier.getPositiveMultiplier(definition.multiplier, random);
+        }
+
+        public double negativeMultiplier(RandomSource random) {
+            return modifier.getNegativeMultiplier(definition.multiplier, random);
+        }
+    }
 }

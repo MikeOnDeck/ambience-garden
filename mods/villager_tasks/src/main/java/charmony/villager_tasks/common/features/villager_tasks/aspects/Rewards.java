@@ -53,8 +53,8 @@ public final class Rewards extends Aspect {
             return EMPTY;
         }
 
-        var multiplier = builder.multiplier();
         var random = builder.random();
+        var multiplier = builder.positiveMultiplier(random);
 
         // Resolve experience from map.
         var experience = (int) Math.ceil((double) map.getOrDefault("experience", 0.0d));
