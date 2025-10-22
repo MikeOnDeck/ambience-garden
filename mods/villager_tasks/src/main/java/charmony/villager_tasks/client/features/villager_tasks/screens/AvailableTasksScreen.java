@@ -8,10 +8,12 @@ import charmony.villager_tasks.client.features.villager_tasks.VillagerTasks;
 import charmony.villager_tasks.common.features.villager_tasks.Resources;
 import charmony.villager_tasks.common.features.villager_tasks.Tasks;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.ARGB;
+import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nullable;
 
@@ -115,7 +117,6 @@ public class AvailableTasksScreen extends BaseScreen {
                 // rewards label
                 var rewards = Resources.REWARDS_LABEL;
                 var rewardsTextWidth = font.width(rewards);
-                var fillColor = rewardsTextColor;
 
                 top += 20;
                 guiGraphics.drawString(font, rewards, midX - 150,  top + (i * rowHeight), rewardsTextColor);
@@ -123,41 +124,69 @@ public class AvailableTasksScreen extends BaseScreen {
                 var rewardsX = 0; // track how much horizontal space used for rewards
                 for (var j = 0; j < task.rewards.items.size(); j++) {
                     var item = task.rewards.items.get(j);
-                    var stack = item.stack();
-                    var count = "" + item.total();
-                    var countTextWidth = font.width(count);
-
-                    // background box x and y bounds
-                    var x1 = midX - 150 + rewardsTextWidth + 8 + rewardsX;
-                    var x2 = x1 + 16 + countTextWidth + 5;
-                    var y1 = top - 4 + (i * rowHeight);
-                    var y2 = y1 + 16;
-
-                    // ttem x and y
-                    var ix = midX - 150 + rewardsTextWidth + 8 + rewardsX;
-                    var iy = top - 4 + (i * rowHeight);
-
-                    // count x and y
-                    var cx = ix + 18;
-                    var cy = iy + 4;
-
-                    // Draw a background fill for the item icon and count
-                    guiGraphics.fill(x1, y1, x2, y2, ARGB.color(40, fillColor));
-
-                    // Render the item icon and its tooltip
-                    guiGraphics.renderFakeItem(stack, ix, iy);
-
-                    if (mouseX > ix && mouseX < ix + 16 && mouseY > iy && mouseY < iy + 16) {
-                        guiGraphics.setTooltipForNextFrame(font, stack, mouseX, mouseY);
-                    }
-
-                    // Render the count
-                    guiGraphics.drawString(font, count, cx, cy, textColor);
-                    rewardsX += (x2 - x1) + distanceBetweenRewards;
+                    var box = new RewardItemBox(item.stack(), item.total(), font);
+                    var boxX = midX - 150 + rewardsTextWidth + 8 + rewardsX;
+                    var boxY = top - 4 + (i * rowHeight);
+                    box.render(guiGraphics, boxX, boxY, mouseX, mouseY);
+                    rewardsX += box.width() + distanceBetweenRewards;
                 }
             }
         } else {
             TextComponentHelper.drawCenteredString(guiGraphics, font, Resources.NO_AVAILABLE_TASKS, midX, 40, textColor);
+        }
+    }
+
+    public static class RewardItemBox {
+        private final Font font;
+        private final ItemStack stack;
+        private final int count;
+        private final int textColor;
+        private final int fillColor;
+        private final int fillAlpha;
+
+        public RewardItemBox(ItemStack stack, int count, Font font) {
+            this.stack = stack;
+            this.count = count;
+            this.font = font;
+            this.textColor = new Color(0xffffff).getArgbColor();
+            this.fillColor = new Color(0x80e0ff).getArgbColor();
+            this.fillAlpha = 50;
+        }
+
+        public void render(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY) {
+            var countText = "" + count;
+
+            // Background box
+            var x1 = x + width();
+            var y1 = y + height();
+
+            // Item x and y
+            var ix = x + 1;
+            var iy = y + 1;
+
+            // Count text x and y
+            var cx = ix + 18;
+            var cy = iy + 4;
+
+            guiGraphics.fill(x, y, x1, y1, ARGB.color(fillAlpha, fillColor));
+            guiGraphics.renderFakeItem(stack, ix, iy);
+
+            // Tooltip
+            if (mouseX > ix && mouseX < ix + 16 && mouseY > iy && mouseY < iy + 16) {
+                guiGraphics.setTooltipForNextFrame(font, stack, mouseX, mouseY);
+            }
+
+            guiGraphics.drawString(font, countText, cx, cy, textColor);
+        }
+
+        public int width() {
+            var countText = "" + count;
+            var countTextWidth = font.width(countText);
+            return 16 + countTextWidth + 5;
+        }
+
+        public int height() {
+            return 17;
         }
     }
 }
