@@ -57,7 +57,7 @@ public final class Rewards extends Aspect {
         var multiplier = builder.modifier().positiveMultiplier();
 
         // Resolve experience from map.
-        var experience = (int) Math.ceil((double) map.getOrDefault("experience", 0.0d));
+        var experience = (int) Math.round((double) map.getOrDefault("experience", 0.0d) * multiplier);
 
         // Resolve items from map.
         var items = (List<Map<String, Object>>)map.getOrDefault("items", List.of());
