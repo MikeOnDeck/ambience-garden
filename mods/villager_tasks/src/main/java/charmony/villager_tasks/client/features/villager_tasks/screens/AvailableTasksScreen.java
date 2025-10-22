@@ -155,8 +155,10 @@ public class AvailableTasksScreen extends BaseScreen {
 
         public void render(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY) {
             var countText = "" + count;
+            var lineColor = ARGB.color(Math.min(255, fillAlpha * 2), fillColor);
+            var bgColor = ARGB.color(fillAlpha, fillColor);
 
-            // Background box
+            // Dimensions of box
             var x1 = x + width();
             var y1 = y + height();
 
@@ -168,14 +170,20 @@ public class AvailableTasksScreen extends BaseScreen {
             var cx = ix + 18;
             var cy = iy + 4;
 
-            guiGraphics.fill(x, y, x1, y1, ARGB.color(fillAlpha, fillColor));
-            guiGraphics.renderFakeItem(stack, ix, iy);
+            // Draw box outline and background
+            guiGraphics.hLine(x, x1, y, lineColor);
+            guiGraphics.vLine(x1, y, y1, lineColor);
+            guiGraphics.hLine(x, x1, y1, lineColor);
+            guiGraphics.vLine(x, y, y1, lineColor);
+            guiGraphics.fill(x, y, x1, y1, bgColor);
 
-            // Tooltip
+            // Render item and tooltip
+            guiGraphics.renderFakeItem(stack, ix, iy);
             if (mouseX > ix && mouseX < ix + 16 && mouseY > iy && mouseY < iy + 16) {
                 guiGraphics.setTooltipForNextFrame(font, stack, mouseX, mouseY);
             }
 
+            // Show the count
             guiGraphics.drawString(font, countText, cx, cy, textColor);
         }
 
