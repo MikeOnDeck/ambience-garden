@@ -88,6 +88,7 @@ public class AvailableTasksScreen extends BaseScreen {
     }
 
     private void renderTasks(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        if (minecraft == null) return;
         if (availableTasks != null) {
             var top = 46;
 
@@ -115,13 +116,13 @@ public class AvailableTasksScreen extends BaseScreen {
                 if (!hasRenderedTaskButtons) {
                     var detailsButton = new Buttons.DetailsButton(midX + 108, top - 4 + (i * rowHeight),
                         b -> {
-                            //minecraft.setScreen(null);
+                            minecraft.setScreen(null);
                         });
 
                     var acceptButton = new Buttons.AcceptButton(midX + 130, top - 4 + (i * rowHeight),
                         b -> {
-                            //handlers.acceptTask(task);
-                            //minecraft.setScreen(null);
+                            handlers.acceptTask(task);
+                            minecraft.setScreen(null);
                         });
 
                     if (activeTasks != null) {
