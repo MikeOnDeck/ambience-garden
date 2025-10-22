@@ -27,10 +27,10 @@ public final class Helpers {
         var exactly = map.getOrDefault("exactly", null);
 
         if (exactly != null) {
-            count = (int)((double)exactly * multiplier);
+            count = (int) Math.round((double)exactly * multiplier);
         } else {
-            var imin = (int)(min * multiplier);
-            var imax = (int)(max * multiplier);
+            var imin = (int) Math.max(1, Math.round(min * multiplier));
+            var imax = (int) Math.max(1, Math.round(max * multiplier));
             count = random.nextIntBetweenInclusive(imin, imax);
         }
 

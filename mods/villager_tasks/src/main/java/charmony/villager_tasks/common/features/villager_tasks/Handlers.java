@@ -25,7 +25,7 @@ public class Handlers extends Setup<VillagerTasks> {
     public static final String DEFINITIONS_DIR = "villager_tasks";
 
     public static final Map<Player, Tasks> PLAYER_TASKS = new HashMap<>();
-    public static final Map<Player, Map<UUID, Map<Long, Tasks>>> AVAILABLE_TASKS = new HashMap<>();
+    public static final Map<Player, PotentialTasks> AVAILABLE_TASKS = new HashMap<>();
 
     public final Map<ResourceLocation, Definition> definitions = new HashMap<>();
 
@@ -65,26 +65,29 @@ public class Handlers extends Setup<VillagerTasks> {
         Networking.S2CSendAvailableTasks.send(player, tasks);
     }
 
-    public void makeAvailableTasks(ServerPlayer player, AbstractVillager villager) {
+    public void makeAvailableTasks(ServerPlayer player, AbstractVillager merchant) {
         var level = player.level();
-        var uuid = villager.getUUID();
+        var uuid = merchant.getUUID();
+        var gameTime = level.getGameTime();
 
-        if (!AVAILABLE_TASKS.containsKey(player)) {
-            AVAILABLE_TASKS.put(player, new HashMap<>());
+        TaskModifier taskModifier;
+        int reputation;
+
+        if (merchant instanceof Villager villager) {
+            reputation = villager.getPlayerReputation(player);
+            taskModifier = TaskModifier.fromReputation(reputation);
+        } else {
+            reputation = 0;
+            taskModifier = TaskModifier.Normal;
         }
 
-        var seed = getTaskSeed(level, uuid);
-        var cachedTasksForPlayer = AVAILABLE_TASKS.get(player);
+        var seed = getTaskSeed(level, uuid, taskModifier);
+        var potentialTasks = AVAILABLE_TASKS.computeIfAbsent(player, p -> PotentialTasks.EMPTY);
 
-        if (cachedTasksForPlayer.containsKey(uuid)) {
-            var cached = cachedTasksForPlayer.get(uuid);
-            if (cached != null && cached.containsKey(seed)) {
-                syncAvailableTasks(player, cached.get(seed));
-                return;
-            }
-        } else {
-            // Prep cache
-            cachedTasksForPlayer.put(uuid, new HashMap<>());
+        // Fetch from cache if the seed matches and is recent.
+        if (potentialTasks.seed == seed && potentialTasks.gameTime > gameTime - 1200) {
+            syncAvailableTasks(player, potentialTasks.tasks);
+            return;
         }
         
         var random = RandomSource.create(seed);
@@ -93,7 +96,7 @@ public class Handlers extends Setup<VillagerTasks> {
 
         // Get top three valid definitions.
         var valid = defs.stream()
-            .filter(def -> def.appliesTo(level.registryAccess().lookupOrThrow(Registries.ENTITY_TYPE), villager))
+            .filter(def -> def.appliesTo(level.registryAccess().lookupOrThrow(Registries.ENTITY_TYPE), merchant))
             .limit(3)
             .toList();
 
@@ -101,14 +104,14 @@ public class Handlers extends Setup<VillagerTasks> {
         var taskList = new ArrayList<Task>();
         for (var def : valid) {
             try {
-                taskList.add(Task.create(player, def, uuid, TaskModifier.Normal, seed));
+                taskList.add(Task.create(player, def, uuid, taskModifier, seed));
             } catch (Exception e) {
                 log().error("Failed to create task from definition " + def.id + ": " + e.getMessage());
             }
         }
 
-        var tasks = new Tasks(uuid, villager.getDisplayName().getString(), taskList);
-        cachedTasksForPlayer.get(uuid).put(seed, tasks);
+        var tasks = new Tasks(uuid, merchant.getDisplayName().getString(), taskList);
+        AVAILABLE_TASKS.put(player, new PotentialTasks(seed, gameTime, tasks));
         syncAvailableTasks(player, tasks);
     }
 
@@ -193,34 +196,13 @@ public class Handlers extends Setup<VillagerTasks> {
             return;
         }
 
-        var merchant = payload.merchant();
-        var id = payload.definitionId();
+        var id = payload.id();
         var playerName = player.getName().getString();
 
-        if (!AVAILABLE_TASKS.containsKey(player)) {
-            log().warn("No cached tasks for player " + playerName);
-            return;
-        }
-
-        var cachedTasksForPlayer = AVAILABLE_TASKS.get(player);
-
-        if (!cachedTasksForPlayer.containsKey(merchant)) {
-            log().warn("No cached tasks for merchant " + merchant);
-            return;
-        }
-
-        var availableTasks = cachedTasksForPlayer.get(merchant);
-        var seed = getTaskSeed(serverPlayer.level(), merchant);
-
-        if (!availableTasks.containsKey(seed)) {
-            log().warn("No cached tasks for seed " + seed);
-            return;
-        }
-
-        var tasks = availableTasks.get(seed);
+        var potentialTasks = AVAILABLE_TASKS.getOrDefault(player, PotentialTasks.EMPTY);
+        var task = potentialTasks.tasks.getTaskById(id).orElse(null);
 
         // Get the task definition from available tasks that matches the definition ID.
-        var task = tasks.tasks().stream().filter(t -> t.getDefinitionId().equals(id)).findFirst().orElse(null);
         if (task == null) {
             log().warn("Task not found in available tasks: " + id);
             return;
@@ -265,13 +247,17 @@ public class Handlers extends Setup<VillagerTasks> {
     }
 
     @SuppressWarnings("UnnecessaryLocalVariable")
-    private long getTaskSeed(ServerLevel level, UUID merchant) {
+    private long getTaskSeed(ServerLevel level, UUID merchant, TaskModifier modifier) {
         // Get the current minecraft day.
         var day = level.getDayTime() / 24000L;
 
         // Create a unique seed based on the level seed, the day and the villager's UUID.
-        var seed = (level.getSeed() / 2) + day * 31 + merchant.hashCode() * 17L;
+        var seed = (level.getSeed() / 4) + modifier.reputation() + day * 31 + merchant.hashCode() * 17L;
 
         return seed;
+    }
+
+    public record PotentialTasks(long seed, long gameTime, Tasks tasks) {
+        public static PotentialTasks EMPTY = new PotentialTasks(0L, 0L, Tasks.EMPTY);
     }
 }

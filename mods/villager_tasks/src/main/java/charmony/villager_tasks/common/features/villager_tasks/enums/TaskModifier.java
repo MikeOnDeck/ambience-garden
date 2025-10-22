@@ -1,31 +1,32 @@
 package charmony.villager_tasks.common.features.villager_tasks.enums;
 
-import net.minecraft.util.RandomSource;
 import net.minecraft.util.StringRepresentable;
 
 import java.util.Locale;
 
 public enum TaskModifier implements StringRepresentable {
-    Unspecified(0, "unspecified", 1.0, 1.0, false),
-    Angry(1, "angry", 0.5, 2.0, false),
-    Unhapy(2, "unhappy", 0.75, 1.5, false),
-    Normal(3, "normal", 1.0, 1.0, false),
-    Happy(4, "happy", 1.5, 1.0, false),
-    Epic(5, "epic",3.0, 1.0, true);
+    Unspecified("unspecified", -1024, 1.0, 1.0, false),
+    Hated("hated", -100, 0.15, 2.5, false),
+    Angry("angry", -50, 0.4, 2.0, false),
+    Unhappy( "unhappy", -25, 0.75, 1.5, false),
+    Normal( "normal", 0, 1.0, 1.0, false),
+    Happy( "happy", 25, 1.25, 1.0, false),
+    Loved( "loved", 50, 1.5, 0.9, false),
+    Epic( "epic",1024, 3.0, 1.5, true);
 
     public static final EnumCodec<TaskModifier> CODEC = StringRepresentable.fromEnum(TaskModifier::values);
 
-    private final int id;
     private final String name;
-    private final double positiveMultiplier;
-    private final double negativeMultiplier;
+    private final int reputation;
+    private final double positive;
+    private final double negative;
     private final boolean epic;
 
-    TaskModifier(int id, String name, double positive, double negative, boolean epic) {
-        this.id = id;
+    TaskModifier(String name, int reputation, double positive, double negative, boolean epic) {
         this.name = name;
-        this.positiveMultiplier = positive;
-        this.negativeMultiplier = negative;
+        this.reputation = reputation;
+        this.positive = positive;
+        this.negative = negative;
         this.epic = epic;
     }
 
@@ -38,16 +39,29 @@ public enum TaskModifier implements StringRepresentable {
         throw new RuntimeException("Unknown TaskModifier name: " + name);
     }
 
-    public double getPositiveMultiplier(RandomSource random) {
-        return Math.max(0.1, positiveMultiplier + (random.nextDouble() * 0.5d));
+    public double positiveMultiplier() {
+        return Math.max(0.1, positive);
     }
 
-    public double getNegativeMultiplier(RandomSource random) {
-        return Math.max(0.1, negativeMultiplier + (random.nextDouble() * 0.5d));
+    public double negativeMultiplier() {
+        return Math.max(0.1, negative);
     }
 
     public boolean isEpic() {
         return epic;
+    }
+
+    public int reputation() {
+        return reputation;
+    }
+
+    public static TaskModifier fromReputation(int reputation) {
+        for (var value : values()) {
+            if (reputation <= value.reputation) {
+                return value;
+            }
+        }
+        return Normal;
     }
 
     @Override

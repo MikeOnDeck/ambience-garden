@@ -20,6 +20,8 @@ public record Tasks(UUID uuid, String name, List<Task> tasks) {
         Task.CODEC.listOf().fieldOf("tasks").forGetter(Tasks::tasks)
     ).apply(instance, Tasks::new));
 
+    public static final Tasks EMPTY = new Tasks(UUID.randomUUID(), "empty", List.of());
+
     public CompoundTag save() {
         var tag = new CompoundTag();
         tag.store(TASKS_TAG, Tasks.CODEC, this);
@@ -32,6 +34,12 @@ public record Tasks(UUID uuid, String name, List<Task> tasks) {
 
     public boolean isEmpty() {
         return tasks.isEmpty();
+    }
+
+    public Optional<Task> getTaskById(UUID id) {
+        return tasks.stream()
+            .filter(task -> task.id.equals(id))
+            .findFirst();
     }
 
     public Optional<Task> getTaskByDefinition(ResourceLocation id) {

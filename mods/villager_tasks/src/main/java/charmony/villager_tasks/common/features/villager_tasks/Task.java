@@ -186,13 +186,5 @@ public class Task implements EventListener, Satisfiable {
         public RegistryAccess registryAccess() {
             return player.level().registryAccess();
         }
-
-        public double positiveMultiplier(RandomSource random) {
-            return modifier.getPositiveMultiplier(random);
-        }
-
-        public double negativeMultiplier(RandomSource random) {
-            return modifier.getNegativeMultiplier(random);
-        }
     }
 }

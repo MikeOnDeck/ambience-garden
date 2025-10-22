@@ -7,7 +7,6 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.util.UUID;
@@ -98,13 +97,13 @@ public class Networking extends Setup<VillagerTasks> {
         }
     }
 
-    public record C2SAcceptTask(ResourceLocation definitionId, UUID merchant) implements CustomPacketPayload {
+    public record C2SAcceptTask(UUID id) implements CustomPacketPayload {
         public static Type<C2SAcceptTask> TYPE = new Type<>(VillagerTasksMod.id("accept_task"));
         public static StreamCodec<FriendlyByteBuf, C2SAcceptTask> CODEC =
             StreamCodec.of(C2SAcceptTask::encode, C2SAcceptTask::decode);
 
-        public static void send(ResourceLocation definitionId, UUID merchant) {
-            ClientPlayNetworking.send(new C2SAcceptTask(definitionId, merchant));
+        public static void send(UUID id) {
+            ClientPlayNetworking.send(new C2SAcceptTask(id));
         }
 
         @Override
@@ -113,14 +112,12 @@ public class Networking extends Setup<VillagerTasks> {
         }
 
         private static void encode(FriendlyByteBuf buf, C2SAcceptTask self) {
-            buf.writeResourceLocation(self.definitionId);
-            buf.writeUUID(self.merchant);
+            buf.writeUUID(self.id);
         }
 
         private static C2SAcceptTask decode(FriendlyByteBuf buf) {
-            var definitionId = buf.readResourceLocation();
-            var merchant = buf.readUUID();
-            return new C2SAcceptTask(definitionId, merchant);
+            var id = buf.readUUID();
+            return new C2SAcceptTask(id);
         }
     }
 }

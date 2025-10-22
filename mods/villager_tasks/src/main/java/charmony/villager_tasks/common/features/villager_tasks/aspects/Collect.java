@@ -54,7 +54,7 @@ public final class Collect extends Aspect implements Satisfiable {
         }
 
         var random = builder.random();
-        var multiplier = builder.negativeMultiplier(random);
+        var multiplier = builder.modifier().negativeMultiplier();
 
         // Resolve items from map.
         var items = (List<Map<String, Object>>)map.getOrDefault("items", List.of());

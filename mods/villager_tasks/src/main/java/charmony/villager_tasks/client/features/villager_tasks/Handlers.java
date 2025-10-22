@@ -75,6 +75,6 @@ public class Handlers extends Setup<VillagerTasks> {
     }
 
     public void acceptTask(Task task) {
-        Networking.C2SAcceptTask.send(task.getDefinitionId(), task.villager);
+        Networking.C2SAcceptTask.send(task.id);
     }
 }
