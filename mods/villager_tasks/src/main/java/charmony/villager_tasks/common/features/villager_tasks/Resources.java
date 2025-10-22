@@ -9,17 +9,21 @@ import java.util.HashMap;
 import java.util.Map;
 
 public final class Resources {
+    public static final Component ABANDON = Component.translatable("gui.charmony.villager_tasks.abandon");
     public static final Component ACCEPT = Component.translatable("gui.charmony.villager_tasks.accept");
-    public static final Component AVAILABLE_TASKS = Component.translatable("gui.charmony.villager_tasks.available_tasks");
+    public static final Component ACTIVE_TASKS_TITLE = Component.translatable("gui.charmony.villager_tasks.active_tasks.title");
+    public static final Component ACTIVE_TASKS_BUTTON = Component.translatable("gui.charmony.villager_tasks.active_tasks.button");
+    public static final Component AVAILABLE_TASKS_TITLE = Component.translatable("gui.charmony.villager_tasks.available_tasks.title");
+    public static final Component AVAILABLE_TASKS_BUTTON = Component.translatable("gui.charmony.villager_tasks.available_tasks.button");
     public static final Component COLLECT_ASPECT = Component.translatable("gui.charmony.villager_tasks.aspect.collect");
     public static final Component DETAILS = Component.translatable("gui.charmony.villager_tasks.details");
     public static final Component MISSINGNO = Component.translatable("gui.charmony.villager_tasks.missingno");
+    public static final Component NO_ACTIVE_TASKS = Component.translatable("gui.charmony.villager_tasks.no_active_tasks");
     public static final Component NO_AVAILABLE_TASKS = Component.translatable("gui.charmony.villager_tasks.no_available_tasks");
     public static final Component REQUIRES_LABEL = Component.translatable("gui.charmony.villager_tasks.label.requires");
     public static final Component REWARD_ASPECT = Component.translatable("gui.charmony.villager_tasks.aspect.reward");
     public static final Component REWARDS_LABEL = Component.translatable("gui.charmony.villager_tasks.label.rewards");
     public static final Component TASKS = Component.translatable("gui.charmony.villager_tasks.tasks");
-    public static final Component VIEW_TASKS = Component.translatable("gui.charmony.villager_tasks.view_tasks");
 
     public static final Component YOU_COLLECT = MutableComponent.create(
         Component.translatable("gui.charmony.villager_tasks.you_collect").getContents()).withStyle(ChatFormatting.RED, ChatFormatting.BOLD);

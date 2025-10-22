@@ -5,24 +5,20 @@ import charmony.core.helpers.TextComponentHelper;
 import charmony.villager_tasks.client.features.villager_tasks.Buttons;
 import charmony.villager_tasks.client.features.villager_tasks.Handlers;
 import charmony.villager_tasks.client.features.villager_tasks.VillagerTasks;
+import charmony.villager_tasks.client.features.villager_tasks.components.CollectItemBox;
+import charmony.villager_tasks.client.features.villager_tasks.components.LevelScroll;
+import charmony.villager_tasks.client.features.villager_tasks.components.RewardItemBox;
+import charmony.villager_tasks.client.features.villager_tasks.components.RewardXpBox;
 import charmony.villager_tasks.common.features.villager_tasks.Resources;
 import charmony.villager_tasks.common.features.villager_tasks.Tasks;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ARGB;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
 
 public class AvailableTasksScreen extends BaseScreen {
     private final Handlers handlers; // Reference for easy access to handler functions.
@@ -31,14 +27,13 @@ public class AvailableTasksScreen extends BaseScreen {
     private int textColor;
     private int epicTextColor;
     private int rewardsTextColor;
-    private int rowHeight;
     private boolean hasRenderedTaskButtons = false;
 
     @Nullable private Tasks availableTasks = null;
     @Nullable private Tasks activeTasks = null;
 
     public AvailableTasksScreen() {
-        super(Resources.AVAILABLE_TASKS);
+        super(Resources.AVAILABLE_TASKS_TITLE);
         this.handlers = VillagerTasks.feature().handlers;
     }
 
@@ -52,7 +47,6 @@ public class AvailableTasksScreen extends BaseScreen {
         this.activeTasks = handlers.getActiveTasks().orElse(null);
 
         midX = width / 2;
-        rowHeight = 45;
         textColor = new Color(0xffffff).getArgbColor();
         epicTextColor = new Color(0xffff00).getArgbColor();
         rewardsTextColor = new Color(0x80e0ff).getArgbColor();
@@ -89,7 +83,9 @@ public class AvailableTasksScreen extends BaseScreen {
 
     private void renderTasks(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         if (minecraft == null) return;
+
         if (availableTasks != null) {
+            var rowHeight = 45;
             var top = 46;
 
             for (var i = 0; i < availableTasks.tasks().size(); i++) {
@@ -98,7 +94,7 @@ public class AvailableTasksScreen extends BaseScreen {
                 var distanceBetweenRewards = 3;
                 var distanceBetweenReqs = 3;
 
-                var bx0 = midX - 160;
+                var bx0 = midX - 158;
                 var bx1 = midX + 156;
                 var by0 = top - 10 + (i * rowHeight);
                 var by1 = by0 + 75;
@@ -112,7 +108,7 @@ public class AvailableTasksScreen extends BaseScreen {
                 var title = MutableComponent.create(task.getTitle().getContents());
                 guiGraphics.drawString(font, title.withStyle(ChatFormatting.UNDERLINE), midX - 130,  top + (i * rowHeight), titleColor);
 
-                // Accept and details buttons
+                // Task buttons
                 if (!hasRenderedTaskButtons) {
                     var detailsButton = new Buttons.DetailsButton(midX + 108, top - 4 + (i * rowHeight),
                         b -> {
@@ -180,176 +176,5 @@ public class AvailableTasksScreen extends BaseScreen {
         }
 
         hasRenderedTaskButtons = true;
-    }
-
-    public static class ItemBox {
-        protected final Minecraft minecraft;
-        protected final Font font;
-        protected final ItemStack stack;
-        protected final String text;
-        protected final int textColor;
-        protected final int fillColor;
-
-        protected boolean drawOutline = true;
-
-        public ItemBox(Font font, ItemStack stack, String text, int textColor, int fillColor) {
-            this.minecraft = Minecraft.getInstance();
-            this.stack = stack;
-            this.text = text;
-            this.font = font;
-            this.textColor = textColor;
-            this.fillColor = fillColor;
-        }
-
-        public void render(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY) {
-            var lineColor = ARGB.color(Math.min(255, alpha() * 3), fillColor);
-            var bgColor = ARGB.color(alpha(), fillColor);
-
-            // Dimensions of box
-            var x1 = x + width();
-            var y1 = y + height();
-
-            // Item x and y
-            var ix = x + 2;
-            var iy = y + 1;
-
-            // Text x and y
-            var tx = ix + 18;
-            var ty = iy + 5;
-
-            // Draw box outline and background
-            if (drawOutline) {
-                guiGraphics.hLine(x, x1, y, lineColor);
-                guiGraphics.vLine(x1, y, y1, lineColor);
-                guiGraphics.hLine(x, x1, y1, lineColor);
-                guiGraphics.vLine(x, y, y1, lineColor);
-                guiGraphics.fill(x + 1, y + 1, x1, y1, bgColor);
-            } else {
-                guiGraphics.fill(x, y, x1 + 1, y1 + 1, bgColor);
-            }
-
-            // Render item and tooltip
-            guiGraphics.renderFakeItem(stack, ix, iy);
-            if (mouseX > ix && mouseX < ix + width() - 1 && mouseY > iy && mouseY < iy + height() - 1) {
-                renderTooltip(guiGraphics, mouseX, mouseY);
-            }
-
-            // Show the text
-            guiGraphics.drawString(font, text, tx, ty, textColor);
-        }
-
-        public int width() {
-            var textWidth = font.width(text);
-            return 16 + textWidth + 7;
-        }
-
-        public int height() {
-            return 18;
-        }
-
-        public int alpha() {
-            return 50;
-        }
-
-        protected void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-            var stackTooltip = new ArrayList<>(Screen.getTooltipFromItem(minecraft, stack));
-            modifyStackTooltip(stackTooltip);
-            var tooltips = stackTooltip.stream().map(Component::getVisualOrderText).toList();
-            guiGraphics.setTooltipForNextFrame(font, tooltips, mouseX, mouseY);
-        }
-
-        protected void modifyStackTooltip(List<Component> tooltips) {
-            // Override to modify the tooltip shown for the item stack.
-        }
-    }
-
-    public static class CollectItemBox extends ItemBox {
-        private final int count;
-
-        public CollectItemBox(ItemStack stack, int count, Font font) {
-            super(font, stack, "" + count, new Color(0xffffff).getArgbColor(), new Color(0xff8080).getArgbColor());
-            this.count = count;
-        }
-
-        @Override
-        protected void modifyStackTooltip(List<Component> tooltips) {
-            var itemName = tooltips.getFirst().getString();
-            tooltips.clear();
-            tooltips.add(Resources.YOU_COLLECT);
-            tooltips.add(Component.literal(itemName + ": " + count));
-        }
-    }
-
-    public static class RewardItemBox extends ItemBox {
-        private final int count;
-
-        public RewardItemBox(ItemStack stack, int count, Font font) {
-            super(font, stack, "" + count, new Color(0xffffff).getArgbColor(), new Color(0x80e0ff).getArgbColor());
-            this.count = count;
-        }
-
-        @Override
-        protected void modifyStackTooltip(List<Component> tooltips) {
-            var itemName = tooltips.getFirst().getString();
-            tooltips.clear();
-            tooltips.addFirst(Resources.YOU_RECEIVE);
-            tooltips.add(Component.literal(itemName + ": " + count));
-        }
-    }
-
-    public static class RewardXpBox extends ItemBox {
-        public RewardXpBox(String text, Font font) {
-            super(font, new ItemStack(Items.EXPERIENCE_BOTTLE), text, new Color(0xffffff).getArgbColor(), new Color(0x80ffc0).getArgbColor());
-        }
-
-        @Override
-        protected void modifyStackTooltip(List<Component> tooltips) {
-            tooltips.clear();
-            tooltips.add(Resources.YOU_RECEIVE);
-            tooltips.add(Component.translatable("gui.charmony.villager_tasks.experience_levels", text));
-        }
-    }
-
-    public static class LevelScroll {
-        private final Font font;
-        public final int level;
-        public final boolean isActive;
-
-        public LevelScroll(Font font, int level, boolean isActive) {
-            this.font = font;
-            this.level = level;
-            this.isActive = isActive;
-        }
-
-        public void render(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY) {
-            ResourceLocation texture;
-
-            if (isActive) {
-                texture = Resources.ACTIVE_LEVELS.getOrDefault(level, Resources.ACTIVE_LEVELS.get(1));
-            } else {
-                texture = Resources.AVAILABLE_LEVELS.getOrDefault(level, Resources.AVAILABLE_LEVELS.get(1));
-            }
-
-            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, texture, x, y, width(), height());
-            if (mouseX > x && mouseX < x + width() && mouseY > y && mouseY < y + height()) {
-                renderTooltip(guiGraphics, mouseX, mouseY);
-            }
-        }
-
-        public void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-            var components = List.of(
-                Component.translatable("gui.charmony.villager_tasks.level_info", level).getVisualOrderText(),
-                Component.translatable("gui.charmony.villager_tasks.level_info.level" + level).getVisualOrderText()
-            );
-            guiGraphics.setTooltipForNextFrame(font, components, mouseX, mouseY);
-        }
-
-        public int width() {
-            return 16;
-        }
-
-        public int height() {
-            return 16;
-        }
     }
 }

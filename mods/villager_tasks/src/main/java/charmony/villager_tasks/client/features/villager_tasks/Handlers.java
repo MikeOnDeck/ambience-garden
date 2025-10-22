@@ -1,12 +1,14 @@
 package charmony.villager_tasks.client.features.villager_tasks;
 
 import charmony.core.base.Setup;
+import charmony.villager_tasks.client.features.villager_tasks.screens.ActiveTasksScreen;
 import charmony.villager_tasks.client.features.villager_tasks.screens.AvailableTasksScreen;
 import charmony.villager_tasks.common.features.villager_tasks.Networking;
 import charmony.villager_tasks.common.features.villager_tasks.Task;
 import charmony.villager_tasks.common.features.villager_tasks.Tasks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.gui.screens.inventory.MerchantScreen;
 import net.minecraft.world.entity.player.Player;
 
@@ -24,21 +26,33 @@ public class Handlers extends Setup<VillagerTasks> {
     }
 
     public void setupScreen(Screen screen) {
-        if (!(screen instanceof MerchantScreen merchantScreen)) {
-            return;
+        if (screen instanceof MerchantScreen merchantScreen) {
+            var midX = merchantScreen.width / 2;
+            var baseY = merchantScreen.topPos + 174;
+            var minecraft = Minecraft.getInstance();
+
+            screen.addRenderableWidget(new Buttons.AvailableTasksButton(
+                midX - (Buttons.AvailableTasksButton.WIDTH / 2),
+                baseY,
+                b -> {
+                    merchantScreen.onClose();
+                    minecraft.setScreen(new AvailableTasksScreen());
+                }));
         }
 
-        var midX = merchantScreen.width / 2;
-        var baseY = merchantScreen.topPos + 174;
-        var minecraft = Minecraft.getInstance();
+        if (screen instanceof InventoryScreen inventoryScreen) {
+            var midX = inventoryScreen.width / 2;
+            var baseY = inventoryScreen.topPos + 174;
+            var minecraft = Minecraft.getInstance();
 
-        screen.addRenderableWidget(new Buttons.ViewTasksButton(
-            midX - (Buttons.ViewTasksButton.WIDTH / 2),
-            baseY,
-            b -> {
-                merchantScreen.onClose();
-                minecraft.setScreen(new AvailableTasksScreen());
-            }));
+            screen.addRenderableWidget(new Buttons.ActiveTasksButton(
+                midX - (Buttons.ActiveTasksButton.WIDTH / 2),
+                baseY,
+                b -> {
+                    inventoryScreen.onClose();
+                    minecraft.setScreen(new ActiveTasksScreen());
+                }));
+        }
     }
 
     public void handleReceiveActiveTasks(Player player, Networking.S2CSendActiveTasks payload) {

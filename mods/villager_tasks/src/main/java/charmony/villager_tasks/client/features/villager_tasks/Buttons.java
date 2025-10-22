@@ -10,14 +10,25 @@ import net.minecraft.network.chat.Component;
 
 public final class Buttons {
     public static final WidgetSprites ACCEPT_BUTTON = makeButtonWithDisabled("accept");
+    public static final WidgetSprites ABANDON_BUTTON = makeButton("abandon");
     public static final WidgetSprites DETAILS_BUTTON = makeButton("details");
 
-    public static class ViewTasksButton extends Button {
+    public static class ActiveTasksButton extends Button {
         public static final int WIDTH = 120;
         public static final int HEIGHT = 20;
-        static Component TEXT = Resources.VIEW_TASKS;
+        static Component TEXT = Resources.ACTIVE_TASKS_BUTTON;
 
-        public ViewTasksButton(int x, int y, OnPress onPress) {
+        public ActiveTasksButton(int x, int y, OnPress onPress) {
+            super(x, y, WIDTH, HEIGHT, TEXT, onPress, DEFAULT_NARRATION);
+        }
+    }
+
+    public static class AvailableTasksButton extends Button {
+        public static final int WIDTH = 120;
+        public static final int HEIGHT = 20;
+        static Component TEXT = Resources.AVAILABLE_TASKS_BUTTON;
+
+        public AvailableTasksButton(int x, int y, OnPress onPress) {
             super(x, y, WIDTH, HEIGHT, TEXT, onPress, DEFAULT_NARRATION);
         }
     }
@@ -29,6 +40,18 @@ public final class Buttons {
         static Component TEXT = Resources.ACCEPT;
 
         public AcceptButton(int x, int y, OnPress onPress) {
+            super(x, y, WIDTH, HEIGHT, SPRITES, onPress);
+            setTooltip(Tooltip.create(TEXT));
+        }
+    }
+
+    public static class AbandonButton extends ImageButton {
+        public static int WIDTH = 20;
+        public static int HEIGHT = 18;
+        static WidgetSprites SPRITES = ABANDON_BUTTON;
+        static Component TEXT = Resources.ABANDON;
+
+        public AbandonButton(int x, int y, OnPress onPress) {
             super(x, y, WIDTH, HEIGHT, SPRITES, onPress);
             setTooltip(Tooltip.create(TEXT));
         }
