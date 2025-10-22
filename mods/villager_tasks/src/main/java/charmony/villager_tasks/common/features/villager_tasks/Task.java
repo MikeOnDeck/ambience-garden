@@ -188,11 +188,11 @@ public class Task implements EventListener, Satisfiable {
         }
 
         public double positiveMultiplier(RandomSource random) {
-            return modifier.getPositiveMultiplier(definition.multiplier, random);
+            return modifier.getPositiveMultiplier(random);
         }
 
         public double negativeMultiplier(RandomSource random) {
-            return modifier.getNegativeMultiplier(definition.multiplier, random);
+            return modifier.getNegativeMultiplier(random);
         }
     }
 }

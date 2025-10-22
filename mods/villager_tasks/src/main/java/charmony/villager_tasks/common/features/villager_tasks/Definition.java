@@ -29,7 +29,6 @@ public class Definition {
     public String title = "";
     public int level = 0;
     public int expiry = 0;
-    public double multiplier = 1.0d;
     public String villager = ""; // Don't reference this directly; use appliesTo().
     public Map<String, Object> collect = new HashMap<>();
     public Map<String, Object> deliver = new HashMap<>();
