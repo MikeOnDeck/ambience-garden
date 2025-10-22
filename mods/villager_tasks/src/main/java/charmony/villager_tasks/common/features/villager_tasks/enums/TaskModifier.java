@@ -9,9 +9,8 @@ public enum TaskModifier implements StringRepresentable {
     Hated("hated", -100, 0.15, 2.5, false),
     Angry("angry", -50, 0.4, 2.0, false),
     Unhappy( "unhappy", -25, 0.75, 1.5, false),
-    Normal( "normal", 0, 1.0, 1.0, false),
-    Happy( "happy", 25, 1.25, 1.0, false),
-    Loved( "loved", 50, 1.5, 0.9, false),
+    Normal( "normal", 18, 1.0, 1.0, false),
+    Happy( "happy", 25, 1.2, 0.9, false),
     Epic( "epic",1024, 3.0, 1.5, true);
 
     public static final EnumCodec<TaskModifier> CODEC = StringRepresentable.fromEnum(TaskModifier::values);
