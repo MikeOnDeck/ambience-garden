@@ -14,6 +14,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 import javax.annotation.Nullable;
 
@@ -110,21 +111,31 @@ public class AvailableTasksScreen extends BaseScreen {
                 var titleColor = task.isEpic() ? epicTextColor : textColor;
                 var distanceBetweenRewards = 5;
 
-                // title of the task
+                // Task title label
                 var title = MutableComponent.create(task.getTitle().getContents());
                 guiGraphics.drawString(font, title.withStyle(ChatFormatting.UNDERLINE), midX - 150,  top + (i * rowHeight), titleColor);
 
-                // rewards label
+                // Rewards label
+                top += 20;
                 var rewards = Resources.REWARDS_LABEL;
                 var rewardsTextWidth = font.width(rewards);
 
-                top += 20;
-                guiGraphics.drawString(font, rewards, midX - 150,  top + (i * rowHeight), rewardsTextColor);
-
                 var rewardsX = 0; // track how much horizontal space used for rewards
+                guiGraphics.drawString(font, rewards, midX - 150,  top + (i * rowHeight) + 1, rewardsTextColor);
+
+                // Reward XP
+                if (task.rewards.experience > 0) {
+                    var box = new RewardXpBox("" + task.rewards.experience, font);
+                    var boxX = midX - 150 + rewardsTextWidth + 8 + rewardsX;
+                    var boxY = top - 4 + (i * rowHeight);
+                    box.render(guiGraphics, boxX, boxY, mouseX, mouseY);
+                    rewardsX += box.width() + distanceBetweenRewards;
+                }
+
+                // Reward items
                 for (var j = 0; j < task.rewards.items.size(); j++) {
                     var item = task.rewards.items.get(j);
-                    var box = new RewardItemBox(item.stack(), item.total(), font);
+                    var box = new RewardItemBox(item.stack(), "" + item.total(), font);
                     var boxX = midX - 150 + rewardsTextWidth + 8 + rewardsX;
                     var boxY = top - 4 + (i * rowHeight);
                     box.render(guiGraphics, boxX, boxY, mouseX, mouseY);
@@ -136,27 +147,26 @@ public class AvailableTasksScreen extends BaseScreen {
         }
     }
 
-    public static class RewardItemBox {
-        private final Font font;
-        private final ItemStack stack;
-        private final int count;
-        private final int textColor;
-        private final int fillColor;
-        private final int fillAlpha;
+    public static class ItemBox {
+        protected final Font font;
+        protected final ItemStack stack;
+        protected final String text;
+        protected final int textColor;
+        protected final int fillColor;
 
-        public RewardItemBox(ItemStack stack, int count, Font font) {
+        protected boolean drawOutline = true;
+
+        public ItemBox(Font font, ItemStack stack, String text, int textColor, int fillColor) {
             this.stack = stack;
-            this.count = count;
+            this.text = text;
             this.font = font;
-            this.textColor = new Color(0xffffff).getArgbColor();
-            this.fillColor = new Color(0x80e0ff).getArgbColor();
-            this.fillAlpha = 50;
+            this.textColor = textColor;
+            this.fillColor = fillColor;
         }
 
         public void render(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY) {
-            var countText = "" + count;
-            var lineColor = ARGB.color(Math.min(255, fillAlpha * 2), fillColor);
-            var bgColor = ARGB.color(fillAlpha, fillColor);
+            var lineColor = ARGB.color(Math.min(255, alpha() * 3), fillColor);
+            var bgColor = ARGB.color(alpha(), fillColor);
 
             // Dimensions of box
             var x1 = x + width();
@@ -166,35 +176,63 @@ public class AvailableTasksScreen extends BaseScreen {
             var ix = x + 1;
             var iy = y + 1;
 
-            // Count text x and y
-            var cx = ix + 18;
-            var cy = iy + 4;
+            // Text x and y
+            var tx = ix + 18;
+            var ty = iy + 5;
 
             // Draw box outline and background
-            guiGraphics.hLine(x, x1, y, lineColor);
-            guiGraphics.vLine(x1, y, y1, lineColor);
-            guiGraphics.hLine(x, x1, y1, lineColor);
-            guiGraphics.vLine(x, y, y1, lineColor);
-            guiGraphics.fill(x, y, x1, y1, bgColor);
+            if (drawOutline) {
+                guiGraphics.hLine(x, x1, y, lineColor);
+                guiGraphics.vLine(x1, y, y1, lineColor);
+                guiGraphics.hLine(x, x1, y1, lineColor);
+                guiGraphics.vLine(x, y, y1, lineColor);
+                guiGraphics.fill(x + 1, y + 1, x1, y1, bgColor);
+            } else {
+                guiGraphics.fill(x, y, x1 + 1, y1 + 1, bgColor);
+            }
 
             // Render item and tooltip
             guiGraphics.renderFakeItem(stack, ix, iy);
             if (mouseX > ix && mouseX < ix + 16 && mouseY > iy && mouseY < iy + 16) {
-                guiGraphics.setTooltipForNextFrame(font, stack, mouseX, mouseY);
+                renderTooltip(guiGraphics, mouseX, mouseY);
             }
 
-            // Show the count
-            guiGraphics.drawString(font, countText, cx, cy, textColor);
+            // Show the text
+            guiGraphics.drawString(font, text, tx, ty, textColor);
         }
 
         public int width() {
-            var countText = "" + count;
-            var countTextWidth = font.width(countText);
-            return 16 + countTextWidth + 5;
+            var textWidth = font.width(text);
+            return 16 + textWidth + 6;
         }
 
         public int height() {
-            return 17;
+            return 18;
+        }
+
+        public int alpha() {
+            return 50;
+        }
+
+        public void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+            guiGraphics.setTooltipForNextFrame(font, stack, mouseX, mouseY);
+        }
+    }
+
+    public static class RewardItemBox extends ItemBox {
+        public RewardItemBox(ItemStack stack, String text, Font font) {
+            super(font, stack, text, new Color(0xffffff).getArgbColor(), new Color(0x80e0ff).getArgbColor());
+        }
+    }
+
+    public static class RewardXpBox extends ItemBox {
+        public RewardXpBox(String text, Font font) {
+            super(font, new ItemStack(Items.EXPERIENCE_BOTTLE), text, new Color(0xffffff).getArgbColor(), new Color(0x80ffc0).getArgbColor());
+        }
+
+        @Override
+        public void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+            guiGraphics.setTooltipForNextFrame(Component.literal("Experience levels"), mouseX, mouseY);
         }
     }
 }
