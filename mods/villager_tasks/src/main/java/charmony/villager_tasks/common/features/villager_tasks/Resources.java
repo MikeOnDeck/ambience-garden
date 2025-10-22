@@ -8,5 +8,6 @@ public final class Resources {
     public static final Component MISSINGNO = Component.translatable("gui.charmony.villager_tasks.missingno");
     public static final Component NO_AVAILABLE_TASKS = Component.translatable("gui.charmony.villager_tasks.no_available_tasks");
     public static final Component REWARD_ASPECT = Component.translatable("gui.charmony.villager_tasks.aspect.reward");
+    public static final Component REWARDS_LABEL = Component.translatable("gui.charmony.villager_tasks.label.rewards");
     public static final Component TASKS = Component.translatable("gui.charmony.villager_tasks.tasks");
 }
