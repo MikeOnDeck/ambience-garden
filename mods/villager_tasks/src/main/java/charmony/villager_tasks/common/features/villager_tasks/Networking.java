@@ -2,6 +2,7 @@ package charmony.villager_tasks.common.features.villager_tasks;
 
 import charmony.core.base.Setup;
 import charmony.villager_tasks.VillagerTasksMod;
+import charmony.villager_tasks.common.features.villager_tasks.enums.TaskQuery;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.FriendlyByteBuf;
@@ -97,13 +98,13 @@ public class Networking extends Setup<VillagerTasks> {
         }
     }
 
-    public record C2SAcceptTask(UUID id) implements CustomPacketPayload {
-        public static Type<C2SAcceptTask> TYPE = new Type<>(VillagerTasksMod.id("accept_task"));
-        public static StreamCodec<FriendlyByteBuf, C2SAcceptTask> CODEC =
-            StreamCodec.of(C2SAcceptTask::encode, C2SAcceptTask::decode);
+    public record C2SQueryTask(TaskQuery query, UUID id) implements CustomPacketPayload {
+        public static Type<C2SQueryTask> TYPE = new Type<>(VillagerTasksMod.id("query_task"));
+        public static StreamCodec<FriendlyByteBuf, C2SQueryTask> CODEC =
+            StreamCodec.of(C2SQueryTask::encode, C2SQueryTask::decode);
 
-        public static void send(UUID id) {
-            ClientPlayNetworking.send(new C2SAcceptTask(id));
+        public static void send(TaskQuery query, UUID id) {
+            ClientPlayNetworking.send(new C2SQueryTask(query, id));
         }
 
         @Override
@@ -111,13 +112,15 @@ public class Networking extends Setup<VillagerTasks> {
             return TYPE;
         }
 
-        private static void encode(FriendlyByteBuf buf, C2SAcceptTask self) {
+        private static void encode(FriendlyByteBuf buf, C2SQueryTask self) {
+            buf.writeEnum(self.query);
             buf.writeUUID(self.id);
         }
 
-        private static C2SAcceptTask decode(FriendlyByteBuf buf) {
+        private static C2SQueryTask decode(FriendlyByteBuf buf) {
+            var query = buf.readEnum(TaskQuery.class);
             var id = buf.readUUID();
-            return new C2SAcceptTask(id);
+            return new C2SQueryTask(query, id);
         }
     }
 }

@@ -2,12 +2,14 @@ package charmony.villager_tasks.common.features.villager_tasks;
 
 import charmony.core.base.Setup;
 import charmony.villager_tasks.common.features.villager_tasks.enums.TaskModifier;
+import charmony.villager_tasks.common.features.villager_tasks.enums.TaskQuery;
 import net.minecraft.Util;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -19,7 +21,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+import java.util.function.Supplier;
 
 public class Handlers extends Setup<VillagerTasks> {
     public static final String DEFINITIONS_DIR = "villager_tasks";
@@ -77,7 +83,6 @@ public class Handlers extends Setup<VillagerTasks> {
             reputation = villager.getPlayerReputation(player);
             taskModifier = TaskModifier.fromReputation(reputation);
         } else {
-            reputation = 0;
             taskModifier = TaskModifier.Normal;
         }
 
@@ -113,41 +118,6 @@ public class Handlers extends Setup<VillagerTasks> {
         var tasks = new Tasks(uuid, merchant.getDisplayName().getString(), taskList);
         AVAILABLE_TASKS.put(player, new PotentialTasks(seed, gameTime, tasks));
         syncAvailableTasks(player, tasks);
-    }
-
-    /**
-     * Get a random definition that applies to the given villager.
-     */
-    public Optional<Definition> definition(ServerLevel level, Villager villager, RandomSource random) {
-        var entityRegistry = level.registryAccess().lookupOrThrow(Registries.ENTITY_TYPE);
-
-        var valid = new ArrayList<Definition>();
-
-        for (var def : definitions.values()) {
-            if (def.appliesTo(entityRegistry, villager)) {
-                valid.add(def);
-            }
-        }
-
-        if (valid.isEmpty()) {
-            return Optional.empty();
-        }
-
-        Util.shuffle(valid, random);
-        return Optional.of(valid.getFirst());
-    }
-
-    /**
-     * Get a specific definition by its ID.
-     */
-    public Definition definition(ResourceLocation id) {
-        var definition = definitions.get(id);
-
-        if (definition == null) {
-            throw new RuntimeException("Definition not found: " + id);
-        }
-
-        return definition;
     }
 
     /**
@@ -191,44 +161,55 @@ public class Handlers extends Setup<VillagerTasks> {
         return InteractionResult.PASS;
     }
 
-    public void handleReceiveAcceptTask(Player player, Networking.C2SAcceptTask payload) {
+    public void handleReceiveQueryTask(Player player, Networking.C2SQueryTask payload) {
         if (!(player instanceof ServerPlayer serverPlayer)) {
             return;
         }
 
+        var query = payload.query();
         var id = payload.id();
         var playerName = player.getName().getString();
 
-        var potentialTasks = AVAILABLE_TASKS.getOrDefault(player, PotentialTasks.EMPTY);
-        var task = potentialTasks.tasks.getTaskById(id).orElse(null);
+        switch (query) {
+            case TaskQuery.Accept -> {
+                var potentialTasks = AVAILABLE_TASKS.getOrDefault(player, PotentialTasks.EMPTY);
+                var task = potentialTasks.tasks.getTaskById(id).orElse(null);
+                if (task == null) {
+                    log().warn("Task not found in available tasks: " + id);
+                    return;
+                }
 
-        // Get the task definition from available tasks that matches the definition ID.
-        if (task == null) {
-            log().warn("Task not found in available tasks: " + id);
-            return;
+                log().info("Player " + playerName + " accepted task: " + id);
+                startTask(serverPlayer, task);
+            }
+
+            case TaskQuery.Abandon -> {
+                var tasks = PLAYER_TASKS.getOrDefault(player, Tasks.EMPTY);
+                var task = tasks.getTaskById(id).orElse(null);
+                if (task == null) {
+                    log().warn("Task not found in available tasks: " + id);
+                    return;
+                }
+
+                log().info("Player " + playerName + " abandoned task: " + id);
+                abandonTask(serverPlayer, task);
+            }
         }
-
-        log().info("Player " + playerName + " accepted task: " + id);
-        startTask(serverPlayer, task);
     }
 
     public void startTask(ServerPlayer player, Task task) {
-        var tasks = PLAYER_TASKS.get(player);
+        var tasks = PLAYER_TASKS.getOrDefault(player, Tasks.EMPTY);
         var serverLevel = player.level();
         var state = TasksSavedData.getServerState(serverLevel.getServer());
-
         var playerName = player.getName().getString();
 
-        if (tasks == null) {
-            tasks = state.getTasks(player);
-        }
-
         if (tasks.getTaskByDefinition(task.getDefinitionId()).isPresent()) {
-            log().error("Player " + playerName + " already has task: " + task.getDefinitionId());
+            // Don't start the same task twice.
             return;
         }
 
         if (tasks.tasks().size() >= 3) {
+            // TODO: probably need to notify the player that they can't accept more tasks?
             log().error("Player " + playerName + " has reached the maximum number of active tasks.");
             return;
         }
@@ -236,13 +217,28 @@ public class Handlers extends Setup<VillagerTasks> {
         log().info("Starting task for player " + playerName + ": " + task.getDefinitionId());
         tasks = tasks.addTask(task);
 
-        // Update world save state.
         state.updateTasks(tasks);
-
-        // Update server memory state.
         PLAYER_TASKS.put(player, tasks);
+        playSound(player, feature().registers.taskAccept);
+        syncActiveTasks(player);
+    }
 
-        // Sync to client.
+    public void abandonTask(ServerPlayer player, Task task) {
+        var tasks = PLAYER_TASKS.getOrDefault(player, Tasks.EMPTY);
+        var serverLevel = player.level();
+        var state = TasksSavedData.getServerState(serverLevel.getServer());
+        var playerName = player.getName().getString();
+
+        if (tasks.getTaskById(task.id).isEmpty()) {
+            return;
+        }
+
+        log().info("Abandoning task for player " + playerName + ": " + task.id);
+        tasks = tasks.removeTask(task);
+
+        state.updateTasks(tasks);
+        PLAYER_TASKS.put(player, tasks);
+        playSound(player, feature().registers.taskAbandon);
         syncActiveTasks(player);
     }
 
@@ -255,6 +251,10 @@ public class Handlers extends Setup<VillagerTasks> {
         var seed = (level.getSeed() / 4) + modifier.reputation() + day * 31 + merchant.hashCode() * 17L;
 
         return seed;
+    }
+
+    private void playSound(ServerPlayer player, Supplier<SoundEvent> soundEvent) {
+        player.level().playSound(null, player.blockPosition(), soundEvent.get(), player.getSoundSource(), 1.0f, 1.0f);
     }
 
     public record PotentialTasks(long seed, long gameTime, Tasks tasks) {

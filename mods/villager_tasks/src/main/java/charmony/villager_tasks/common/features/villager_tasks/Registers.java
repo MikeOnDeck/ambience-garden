@@ -6,8 +6,16 @@ import charmony.core.common.CommonRegistry;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
+import net.minecraft.sounds.SoundEvent;
+
+import java.util.function.Supplier;
 
 public class Registers extends Setup<VillagerTasks> {
+    public final Supplier<SoundEvent> taskAbandon;
+    public final Supplier<SoundEvent> taskAccept;
+    public final Supplier<SoundEvent> taskComplete;
+    public final Supplier<SoundEvent> taskEpicComplete;
+
     public Registers(VillagerTasks feature) {
         super(feature);
         var registry = CommonRegistry.forFeature(feature);
@@ -16,10 +24,16 @@ public class Registers extends Setup<VillagerTasks> {
         registry.packetSender(Side.Common, Networking.S2CSendActiveTasks.TYPE, Networking.S2CSendActiveTasks.CODEC);
         registry.packetSender(Side.Common, Networking.S2CSendAvailableTasks.TYPE, Networking.S2CSendAvailableTasks.CODEC);
         registry.packetSender(Side.Common, Networking.S2CSendVillagerInteraction.TYPE, Networking.S2CSendVillagerInteraction.CODEC);
-        registry.packetSender(Side.Client, Networking.C2SAcceptTask.TYPE, Networking.C2SAcceptTask.CODEC);
+        registry.packetSender(Side.Client, Networking.C2SQueryTask.TYPE, Networking.C2SQueryTask.CODEC);
 
         // Packet handling from client.
-        registry.packetReceiver(Networking.C2SAcceptTask.TYPE, feature.handlers::handleReceiveAcceptTask);
+        registry.packetReceiver(Networking.C2SQueryTask.TYPE, feature.handlers::handleReceiveQueryTask);
+
+        // Sound effects.
+        taskAbandon = registry.sound("task_abandon");
+        taskAccept = registry.sound("task_accept");
+        taskComplete = registry.sound("task_complete");
+        taskEpicComplete = registry.sound("task_epic_complete");
     }
 
     @Override

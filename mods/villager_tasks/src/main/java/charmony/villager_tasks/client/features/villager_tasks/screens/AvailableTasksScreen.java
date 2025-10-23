@@ -5,20 +5,13 @@ import charmony.core.helpers.TextComponentHelper;
 import charmony.villager_tasks.client.features.villager_tasks.Buttons;
 import charmony.villager_tasks.client.features.villager_tasks.Handlers;
 import charmony.villager_tasks.client.features.villager_tasks.VillagerTasks;
-import charmony.villager_tasks.client.features.villager_tasks.components.CollectItemBox;
-import charmony.villager_tasks.client.features.villager_tasks.components.LevelScroll;
-import charmony.villager_tasks.client.features.villager_tasks.components.RewardItemBox;
-import charmony.villager_tasks.client.features.villager_tasks.components.RewardXpBox;
+import charmony.villager_tasks.client.features.villager_tasks.components.*;
 import charmony.villager_tasks.common.features.villager_tasks.Resources;
 import charmony.villager_tasks.common.features.villager_tasks.Tasks;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.util.ARGB;
-
-import javax.annotation.Nullable;
 
 public class AvailableTasksScreen extends BaseScreen {
     private final Handlers handlers; // Reference for easy access to handler functions.
@@ -29,8 +22,8 @@ public class AvailableTasksScreen extends BaseScreen {
     private int rewardsTextColor;
     private boolean hasRenderedTaskButtons = false;
 
-    @Nullable private Tasks availableTasks = null;
-    @Nullable private Tasks activeTasks = null;
+    private Tasks availableTasks = Tasks.EMPTY;
+    private Tasks activeTasks = Tasks.EMPTY;
 
     public AvailableTasksScreen() {
         super(Resources.AVAILABLE_TASKS_TITLE);
@@ -42,9 +35,9 @@ public class AvailableTasksScreen extends BaseScreen {
         super.init();
         if (minecraft == null) return;
 
-        var merchant = handlers.getLastVillagerInteraction().orElse(null);
-        var availableTasks = handlers.getAvailableTasks().orElse(null);
-        this.activeTasks = handlers.getActiveTasks().orElse(null);
+        var villager = handlers.getLastVillagerInteraction();
+        var availableTasks = handlers.getAvailableTasks();
+        this.activeTasks = handlers.getActiveTasks();
 
         midX = width / 2;
         textColor = new Color(0xffffff).getArgbColor();
@@ -52,8 +45,9 @@ public class AvailableTasksScreen extends BaseScreen {
         rewardsTextColor = new Color(0x80e0ff).getArgbColor();
         hasRenderedTaskButtons = false;
 
-        if (availableTasks != null && availableTasks.uuid().equals(merchant)) {
-            this.availableTasks = availableTasks; // This allows the renderer to use the tasks.
+        // We check that the available tasks are for the last interacted villager.
+        if (availableTasks != null && availableTasks.uuid().equals(villager)) {
+            this.availableTasks = availableTasks;
         }
     }
 
@@ -71,7 +65,7 @@ public class AvailableTasksScreen extends BaseScreen {
 
     @Override
     public Component getTitle() {
-        if (availableTasks != null) {
+        if (!availableTasks.isEmpty()) {
             return Component.translatable("gui.charmony.villager_tasks.available_tasks_for_villager", availableTasks.name());
         }
         return super.getTitle();
@@ -84,24 +78,23 @@ public class AvailableTasksScreen extends BaseScreen {
     private void renderTasks(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         if (minecraft == null) return;
 
-        if (availableTasks != null) {
+        if (!availableTasks.isEmpty()) {
             var rowHeight = 45;
             var top = 46;
 
             for (var i = 0; i < availableTasks.tasks().size(); i++) {
                 var task = availableTasks.tasks().get(i);
+                var playerIsDoingTask = activeTasks != null && activeTasks.getTaskByDefinition(task.getDefinitionId()).isPresent();
                 var titleColor = task.isEpic() ? epicTextColor : textColor;
                 var distanceBetweenRewards = 3;
                 var distanceBetweenReqs = 3;
 
-                var bx0 = midX - 158;
-                var bx1 = midX + 156;
-                var by0 = top - 10 + (i * rowHeight);
-                var by1 = by0 + 75;
-                guiGraphics.fill(RenderPipelines.GUI, bx0, by0, bx1, by1, ARGB.color(150, 0, 0, 0));
+                // Background behind the task
+                var taskBg = new BorderedBox(130);
+                taskBg.render(guiGraphics, midX - 158, midX + 156, top - 9 + (i * rowHeight), top + 65 + (i * rowHeight), new Color(0x000000).getArgbColor());
 
-                // Level scroll icon.
-                var scroll = new LevelScroll(font, task.level, false);
+                // Level scroll icon
+                var scroll = new LevelScroll(font, task.level, playerIsDoingTask);
                 scroll.render(guiGraphics, midX - 152, top + (i * rowHeight) - 4, mouseX, mouseY);
 
                 // Task title label
@@ -116,15 +109,15 @@ public class AvailableTasksScreen extends BaseScreen {
                         });
 
                     var acceptButton = new Buttons.AcceptButton(midX + 130, top - 4 + (i * rowHeight),
+                        playerIsDoingTask ? Resources.ALREADY_DOING_TASK : Buttons.AcceptButton.DEFAULT_TOOLTIP,
                         b -> {
                             handlers.acceptTask(task);
                             minecraft.setScreen(null);
                         });
 
-                    if (activeTasks != null) {
+                    if (playerIsDoingTask) {
                         // Set accept button disabled if the player already has this task.
-                        activeTasks.getTaskByDefinition(task.getDefinitionId()).ifPresent(
-                            activeTask -> acceptButton.active = false);
+                        acceptButton.active = false;
                     }
 
                     addRenderableWidget(detailsButton);

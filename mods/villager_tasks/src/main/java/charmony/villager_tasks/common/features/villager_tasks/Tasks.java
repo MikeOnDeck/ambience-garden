@@ -53,4 +53,10 @@ public record Tasks(UUID uuid, String name, List<Task> tasks) {
         updated.add(task);
         return new Tasks(uuid(), name(), updated);
     }
+
+    public Tasks removeTask(Task task) {
+        var updated = new ArrayList<>(tasks());
+        updated.remove(task);
+        return new Tasks(uuid(), name(), updated);
+    }
 }

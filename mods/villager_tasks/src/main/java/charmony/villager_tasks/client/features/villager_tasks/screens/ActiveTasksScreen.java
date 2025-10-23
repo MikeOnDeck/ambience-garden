@@ -5,15 +5,14 @@ import charmony.core.helpers.TextComponentHelper;
 import charmony.villager_tasks.client.features.villager_tasks.Buttons;
 import charmony.villager_tasks.client.features.villager_tasks.Handlers;
 import charmony.villager_tasks.client.features.villager_tasks.VillagerTasks;
+import charmony.villager_tasks.client.features.villager_tasks.components.BorderedBox;
 import charmony.villager_tasks.client.features.villager_tasks.components.CollectItemBox;
 import charmony.villager_tasks.client.features.villager_tasks.components.LevelScroll;
 import charmony.villager_tasks.common.features.villager_tasks.Resources;
 import charmony.villager_tasks.common.features.villager_tasks.Tasks;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.util.ARGB;
 
 public class ActiveTasksScreen extends BaseScreen {
     private final Handlers handlers; // Reference for easy access to handler functions.
@@ -22,7 +21,7 @@ public class ActiveTasksScreen extends BaseScreen {
     private int textColor;
     private int epicTextColor;
     private boolean hasRenderedTaskButtons = false;
-    private Tasks activeTasks = null;
+    private Tasks activeTasks;
 
     public ActiveTasksScreen() {
         super(Resources.ACTIVE_TASKS_TITLE);
@@ -34,16 +33,11 @@ public class ActiveTasksScreen extends BaseScreen {
         super.init();
         if (minecraft == null) return;
 
-        var activeTasks = handlers.getActiveTasks().orElse(null);
-
+        activeTasks = handlers.getActiveTasks();
         midX = width / 2;
         textColor = new Color(0xffffff).getArgbColor();
         epicTextColor = new Color(0xffff00).getArgbColor();
         hasRenderedTaskButtons = false;
-
-        if (activeTasks != null ) {
-            this.activeTasks = activeTasks; // This allows the renderer to use the tasks.
-        }
     }
 
     @Override
@@ -65,7 +59,7 @@ public class ActiveTasksScreen extends BaseScreen {
     private void renderTasks(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         if (minecraft == null) return;
 
-        if (activeTasks != null) {
+        if (!activeTasks.isEmpty()) {
             var rowHeight = 40;
             var top = 46;
 
@@ -74,13 +68,11 @@ public class ActiveTasksScreen extends BaseScreen {
                 var titleColor = task.isEpic() ? epicTextColor : textColor;
                 var distanceBetweenReqs = 3;
 
-                var bx0 = midX - 158;
-                var bx1 = midX + 156;
-                var by0 = top - 9 + (i * rowHeight);
-                var by1 = by0 + 52;
-                guiGraphics.fill(RenderPipelines.GUI, bx0, by0, bx1, by1, ARGB.color(150, 0, 0, 0));
+                // Background behind the task
+                var taskBg = new BorderedBox(130);
+                taskBg.render(guiGraphics, midX - 158, midX + 156, top - 9 + (i * rowHeight), top + 43 + (i * rowHeight), new Color(0x000000).getArgbColor());
 
-                // Level scroll icon.
+                // Level scroll icon
                 var scroll = new LevelScroll(font, task.level, true);
                 scroll.render(guiGraphics, midX - 152, top + (i * rowHeight) - 4, mouseX, mouseY);
 
@@ -97,6 +89,7 @@ public class ActiveTasksScreen extends BaseScreen {
 
                     var abandonButton = new Buttons.AbandonButton(midX + 130, top - 4 + (i * rowHeight),
                         b -> {
+                            handlers.abandonTask(task);
                             minecraft.setScreen(null);
                         });
 

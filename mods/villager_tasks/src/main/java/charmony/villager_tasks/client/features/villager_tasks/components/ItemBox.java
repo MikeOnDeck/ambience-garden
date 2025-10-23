@@ -5,7 +5,6 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.ARGB;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
@@ -19,8 +18,6 @@ public class ItemBox {
     protected final int textColor;
     protected final int fillColor;
 
-    protected boolean drawOutline = true;
-
     public ItemBox(Font font, ItemStack stack, String text, int textColor, int fillColor) {
         this.minecraft = Minecraft.getInstance();
         this.stack = stack;
@@ -31,9 +28,6 @@ public class ItemBox {
     }
 
     public void render(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY) {
-        var lineColor = ARGB.color(Math.min(255, alpha() * 3), fillColor);
-        var bgColor = ARGB.color(alpha(), fillColor);
-
         // Dimensions of box
         var x1 = x + width();
         var y1 = y + height();
@@ -47,15 +41,8 @@ public class ItemBox {
         var ty = iy + 5;
 
         // Draw box outline and background
-        if (drawOutline) {
-            guiGraphics.hLine(x, x1, y, lineColor);
-            guiGraphics.vLine(x1, y, y1, lineColor);
-            guiGraphics.hLine(x, x1, y1, lineColor);
-            guiGraphics.vLine(x, y, y1, lineColor);
-            guiGraphics.fill(x + 1, y + 1, x1, y1, bgColor);
-        } else {
-            guiGraphics.fill(x, y, x1 + 1, y1 + 1, bgColor);
-        }
+        var box = new BorderedBox(alpha());
+        box.render(guiGraphics, x, x1, y, y1, fillColor);
 
         // Render item and tooltip
         guiGraphics.renderFakeItem(stack, ix, iy);

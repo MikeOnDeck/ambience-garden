@@ -4,10 +4,13 @@ import charmony.villager_tasks.common.features.villager_tasks.Resources;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public record LevelScroll(Font font, int level, boolean isActive) {
     public void render(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY) {
@@ -26,11 +29,17 @@ public record LevelScroll(Font font, int level, boolean isActive) {
     }
 
     public void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        var components = List.of(
-            Component.translatable("gui.charmony.villager_tasks.level_info", level).getVisualOrderText(),
-            Component.translatable("gui.charmony.villager_tasks.level_info.level" + level).getVisualOrderText()
-        );
-        guiGraphics.setTooltipForNextFrame(font, components, mouseX, mouseY);
+        List<Component> components = new ArrayList<>(List.of(
+            Component.translatable("gui.charmony.villager_tasks.level_info", level),
+            Component.translatable("gui.charmony.villager_tasks.level_info.level" + level)
+        ));
+
+        if (isActive) {
+            components.add(CommonComponents.EMPTY);
+            components.add(Resources.DOING_TASK);
+        }
+
+        guiGraphics.setTooltipForNextFrame(font, components, Optional.empty(), mouseX, mouseY);
     }
 
     public int width() {

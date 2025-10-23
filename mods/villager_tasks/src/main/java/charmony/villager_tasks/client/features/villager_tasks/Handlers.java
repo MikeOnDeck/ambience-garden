@@ -6,20 +6,19 @@ import charmony.villager_tasks.client.features.villager_tasks.screens.AvailableT
 import charmony.villager_tasks.common.features.villager_tasks.Networking;
 import charmony.villager_tasks.common.features.villager_tasks.Task;
 import charmony.villager_tasks.common.features.villager_tasks.Tasks;
+import charmony.villager_tasks.common.features.villager_tasks.enums.TaskQuery;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.gui.screens.inventory.MerchantScreen;
 import net.minecraft.world.entity.player.Player;
 
-import javax.annotation.Nullable;
-import java.util.Optional;
 import java.util.UUID;
 
 public class Handlers extends Setup<VillagerTasks> {
-    @Nullable private Tasks activeTasks = null;
-    @Nullable private Tasks availableTasks = null;
-    @Nullable private UUID lastVillagerInteraction = null;
+    private Tasks activeTasks = Tasks.EMPTY;
+    private Tasks availableTasks = Tasks.EMPTY;
+    private UUID lastVillagerInteraction = UUID.randomUUID();
 
     public Handlers(VillagerTasks feature) {
         super(feature);
@@ -40,7 +39,7 @@ public class Handlers extends Setup<VillagerTasks> {
                 }));
         }
 
-        if (screen instanceof InventoryScreen inventoryScreen) {
+        if (screen instanceof InventoryScreen inventoryScreen && !activeTasks.isEmpty()) {
             var midX = inventoryScreen.width / 2;
             var baseY = inventoryScreen.topPos + 174;
             var minecraft = Minecraft.getInstance();
@@ -76,19 +75,23 @@ public class Handlers extends Setup<VillagerTasks> {
         log().info("Client received villager interaction with UUID: " + uuid);
     }
 
-    public Optional<Tasks> getActiveTasks() {
-        return Optional.ofNullable(activeTasks);
+    public Tasks getActiveTasks() {
+        return activeTasks;
     }
 
-    public Optional<Tasks> getAvailableTasks() {
-        return Optional.ofNullable(availableTasks);
+    public Tasks getAvailableTasks() {
+        return availableTasks;
     }
 
-    public Optional<UUID> getLastVillagerInteraction() {
-        return Optional.ofNullable(lastVillagerInteraction);
+    public UUID getLastVillagerInteraction() {
+        return lastVillagerInteraction;
     }
 
     public void acceptTask(Task task) {
-        Networking.C2SAcceptTask.send(task.id);
+        Networking.C2SQueryTask.send(TaskQuery.Accept, task.id);
+    }
+
+    public void abandonTask(Task task) {
+        Networking.C2SQueryTask.send(TaskQuery.Abandon, task.id);
     }
 }

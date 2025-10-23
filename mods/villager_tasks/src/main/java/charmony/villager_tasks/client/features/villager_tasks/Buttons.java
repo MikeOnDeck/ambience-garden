@@ -36,12 +36,16 @@ public final class Buttons {
     public static class AcceptButton extends ImageButton {
         public static int WIDTH = 20;
         public static int HEIGHT = 18;
+        public static Component DEFAULT_TOOLTIP = Resources.ACCEPT;
         static WidgetSprites SPRITES = ACCEPT_BUTTON;
-        static Component TEXT = Resources.ACCEPT;
 
         public AcceptButton(int x, int y, OnPress onPress) {
+            this(x, y, DEFAULT_TOOLTIP, onPress);
+        }
+
+        public AcceptButton(int x, int y, Component tooltip, OnPress onPress) {
             super(x, y, WIDTH, HEIGHT, SPRITES, onPress);
-            setTooltip(Tooltip.create(TEXT));
+            setTooltip(Tooltip.create(tooltip));
         }
     }
 
