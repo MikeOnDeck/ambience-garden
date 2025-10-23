@@ -6,7 +6,6 @@ import java.util.Locale;
 
 public enum TaskQuery implements StringRepresentable {
     Unspecified("unspecified"),
-    Update("update"),
     Abandon("abandon"),
     Accept("accept"),
     Complete("complete");
