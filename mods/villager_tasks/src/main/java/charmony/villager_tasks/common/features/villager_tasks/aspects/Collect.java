@@ -10,6 +10,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
@@ -35,16 +36,6 @@ public final class Collect extends Aspect implements Satisfiable {
 
     public Collect(List<CollectItem> items) {
         this.items = items;
-    }
-
-    @Override
-    public String getId() {
-        return ID;
-    }
-
-    @Override
-    public Component getName() {
-        return Resources.COLLECT_ASPECT;
     }
 
     public static Collect make(Task.AspectBuilder builder) {
@@ -83,13 +74,28 @@ public final class Collect extends Aspect implements Satisfiable {
         return new Collect(collectItems);
     }
 
-    public List<CollectItem> items() {
-        return items;
+    @Override
+    public String getId() {
+        return ID;
     }
 
-    public int total() {
-        // Get the cumulative total of all items.
-        return items().stream().mapToInt(CollectItem::total).sum();
+    @Override
+    public Component getName() {
+        return Resources.COLLECT_ASPECT;
+    }
+
+    @Override
+    public void onTick(Player player) {
+        super.onTick(player);
+
+        // Pass player down to each item requirement on tick.
+        for (var item : items()) {
+            item.setPlayer(player);
+        }
+    }
+
+    public List<CollectItem> items() {
+        return items;
     }
 
     @Override
@@ -99,32 +105,7 @@ public final class Collect extends Aspect implements Satisfiable {
 
     @Override
     public int remaining() {
-        var player = getPlayer().orElse(null);
-        if (player == null) return total();
-        var fullRemainder = total();
-
-        // Iterate over the player's inventory and decrement the remainder for each matching item found.
-        for (var req : items()) {
-            var remainder = req.total();
-
-            if (remainder > 0) {
-                // Make safe copy of the player's inventory.
-                List<ItemStack> inventory = new ArrayList<>();
-                for (var stack : player.getInventory().getNonEquipmentItems()) {
-                    inventory.add(stack.copy());
-                }
-
-                for (var invItem : inventory) {
-                    if (invItem.is(req.stack().getItem()) && !invItem.isDamaged()) {
-                        var decrement = Math.min(remainder, invItem.getCount());
-                        fullRemainder -= decrement;
-                        invItem.shrink(decrement);
-                    }
-                }
-            }
-        }
-
-        return Math.max(0, fullRemainder);
+        return items().stream().mapToInt(CollectItem::remaining).sum();
     }
 
     @Override
@@ -136,6 +117,7 @@ public final class Collect extends Aspect implements Satisfiable {
                 for (var invItem : player.getInventory().getNonEquipmentItems()) {
                     if (remainder <= 0) break;
 
+                    // TODO: check enchantments.
                     if (invItem.is(req.stack().getItem()) && !invItem.isDamaged()) {
                         var decrement = Math.min(remainder, invItem.getCount());
                         remainder -= decrement;
