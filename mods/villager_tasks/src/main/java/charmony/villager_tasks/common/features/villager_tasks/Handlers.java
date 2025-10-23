@@ -32,6 +32,7 @@ public class Handlers extends Setup<VillagerTasks> {
 
     public static final Map<Player, Tasks> PLAYER_TASKS = new HashMap<>();
     public static final Map<Player, PotentialTasks> AVAILABLE_TASKS = new HashMap<>();
+    public static final Map<Player, Long> LAST_REQUESTED_TASK_SYNC = new HashMap<>();
 
     public final Map<ResourceLocation, Definition> definitions = new HashMap<>();
 
@@ -162,9 +163,7 @@ public class Handlers extends Setup<VillagerTasks> {
     }
 
     public void handleReceiveQueryTask(Player player, Networking.C2SQueryTask payload) {
-        if (!(player instanceof ServerPlayer serverPlayer)) {
-            return;
-        }
+        if (!(player instanceof ServerPlayer serverPlayer)) return;
 
         var query = payload.query();
         var id = payload.id();
@@ -195,6 +194,20 @@ public class Handlers extends Setup<VillagerTasks> {
                 abandonTask(serverPlayer, task);
             }
         }
+    }
+
+    public void handleReceiveRequestActiveTasks(Player player, Networking.C2SRequestActiveTasks payload) {
+        if (!(player instanceof ServerPlayer serverPlayer)) return;
+        var gameTime = serverPlayer.level().getGameTime();
+        var lastRequested = LAST_REQUESTED_TASK_SYNC.getOrDefault(player, 0L);
+
+        if (gameTime - lastRequested < 20) {
+            // Throttle requests to once per second.
+            return;
+        }
+
+        LAST_REQUESTED_TASK_SYNC.put(player, gameTime);
+        syncActiveTasks(serverPlayer);
     }
 
     public void startTask(ServerPlayer player, Task task) {
@@ -255,6 +268,14 @@ public class Handlers extends Setup<VillagerTasks> {
 
     private void playSound(ServerPlayer player, Supplier<SoundEvent> soundEvent) {
         player.level().playSound(null, player.blockPosition(), soundEvent.get(), player.getSoundSource(), 1.0f, 1.0f);
+    }
+
+    public void playerTick(Player player) {
+        if (!(player instanceof ServerPlayer serverPlayer)) return;
+
+        // Tick all tasks for the player.
+        var tasks = PLAYER_TASKS.getOrDefault(player, Tasks.EMPTY);
+        tasks.tasks().forEach(task -> task.onTick(serverPlayer));
     }
 
     public record PotentialTasks(long seed, long gameTime, Tasks tasks) {

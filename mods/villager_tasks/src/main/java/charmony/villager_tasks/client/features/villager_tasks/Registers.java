@@ -6,6 +6,7 @@ import charmony.core.client.ClientRegistry;
 import charmony.villager_tasks.common.features.villager_tasks.Networking.S2CSendActiveTasks;
 import charmony.villager_tasks.common.features.villager_tasks.Networking.S2CSendAvailableTasks;
 import charmony.villager_tasks.common.features.villager_tasks.Networking.S2CSendVillagerInteraction;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 
 public class Registers extends Setup<VillagerTasks> {
     public Registers(VillagerTasks feature) {
@@ -21,6 +22,7 @@ public class Registers extends Setup<VillagerTasks> {
     @Override
     public Runnable boot() {
         return () -> {
+            ClientTickEvents.END_CLIENT_TICK.register(feature().handlers::clientTick);
             SetupScreenCallback.EVENT.register(feature().handlers::setupScreen);
         };
     }

@@ -24,11 +24,18 @@ public class Handlers extends Setup<VillagerTasks> {
         super(feature);
     }
 
+    public void clientTick(Minecraft minecraft) {
+        if (minecraft != null && minecraft.player instanceof Player player) {
+            activeTasks.tasks().forEach(task -> task.onTick(player));
+        }
+    }
+
     public void setupScreen(Screen screen) {
         if (screen instanceof MerchantScreen merchantScreen) {
             var midX = merchantScreen.width / 2;
             var baseY = merchantScreen.topPos + 174;
             var minecraft = Minecraft.getInstance();
+            updateActiveTasks();
 
             screen.addRenderableWidget(new Buttons.AvailableTasksButton(
                 midX - (Buttons.AvailableTasksButton.WIDTH / 2),
@@ -43,6 +50,7 @@ public class Handlers extends Setup<VillagerTasks> {
             var midX = inventoryScreen.width / 2;
             var baseY = inventoryScreen.topPos + 174;
             var minecraft = Minecraft.getInstance();
+            updateActiveTasks();
 
             screen.addRenderableWidget(new Buttons.ActiveTasksButton(
                 midX - (Buttons.ActiveTasksButton.WIDTH / 2),
@@ -94,4 +102,9 @@ public class Handlers extends Setup<VillagerTasks> {
     public void abandonTask(Task task) {
         Networking.C2SQueryTask.send(TaskQuery.Abandon, task.id);
     }
+
+    public void updateActiveTasks() {
+        Networking.C2SRequestActiveTasks.send();
+    }
+
 }

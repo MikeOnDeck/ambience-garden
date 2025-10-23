@@ -1,6 +1,7 @@
 package charmony.villager_tasks.common.features.villager_tasks;
 
 import charmony.api.core.Side;
+import charmony.api.events.PlayerTickCallback;
 import charmony.core.base.Setup;
 import charmony.core.common.CommonRegistry;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
@@ -25,9 +26,11 @@ public class Registers extends Setup<VillagerTasks> {
         registry.packetSender(Side.Common, Networking.S2CSendAvailableTasks.TYPE, Networking.S2CSendAvailableTasks.CODEC);
         registry.packetSender(Side.Common, Networking.S2CSendVillagerInteraction.TYPE, Networking.S2CSendVillagerInteraction.CODEC);
         registry.packetSender(Side.Client, Networking.C2SQueryTask.TYPE, Networking.C2SQueryTask.CODEC);
+        registry.packetSender(Side.Client, Networking.C2SRequestActiveTasks.TYPE, Networking.C2SRequestActiveTasks.CODEC);
 
         // Packet handling from client.
         registry.packetReceiver(Networking.C2SQueryTask.TYPE, feature.handlers::handleReceiveQueryTask);
+        registry.packetReceiver(Networking.C2SRequestActiveTasks.TYPE, feature.handlers::handleReceiveRequestActiveTasks);
 
         // Sound effects.
         taskAbandon = registry.sound("task_abandon");
@@ -44,6 +47,7 @@ public class Registers extends Setup<VillagerTasks> {
                 feature().handlers.loadDefinitions(server);
             }));
 
+            PlayerTickCallback.EVENT.register(feature().handlers::playerTick);
             ServerEntityEvents.ENTITY_LOAD.register(feature().handlers::entityJoin);
             UseEntityCallback.EVENT.register(feature().handlers::handleUseEntity);
         };

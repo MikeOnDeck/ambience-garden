@@ -8,6 +8,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.storage.loot.LootTable;
 
 public interface EventListener {
@@ -19,7 +20,7 @@ public interface EventListener {
         // hook
     }
 
-    default void onTick(ServerPlayer player) {
+    default void onTick(Player player) {
         // hook
     }
 

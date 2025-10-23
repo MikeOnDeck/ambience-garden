@@ -123,4 +123,27 @@ public class Networking extends Setup<VillagerTasks> {
             return new C2SQueryTask(query, id);
         }
     }
+
+    public record C2SRequestActiveTasks() implements CustomPacketPayload {
+        public static Type<C2SRequestActiveTasks> TYPE = new Type<>(VillagerTasksMod.id("request_active_tasks"));
+        public static StreamCodec<FriendlyByteBuf, C2SRequestActiveTasks> CODEC =
+            StreamCodec.of(C2SRequestActiveTasks::encode, C2SRequestActiveTasks::decode);
+
+        public static void send() {
+            ClientPlayNetworking.send(new C2SRequestActiveTasks());
+        }
+
+        @Override
+        public Type<? extends CustomPacketPayload> type() {
+            return TYPE;
+        }
+
+        private static void encode(FriendlyByteBuf buf, C2SRequestActiveTasks self) {
+            // no op
+        }
+
+        private static C2SRequestActiveTasks decode(FriendlyByteBuf buf) {
+            return new C2SRequestActiveTasks();
+        }
+    }
 }

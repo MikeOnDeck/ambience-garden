@@ -14,14 +14,12 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.player.Player;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 public class Task implements EventListener, Satisfiable {
-    public final List<Aspect> aspects = new ArrayList<>();
-
     public final UUID id;
     public final UUID villager;
     public final ResourceLocation definitionId;
@@ -101,6 +99,16 @@ public class Task implements EventListener, Satisfiable {
         return task;
     }
 
+    // Define all aspects here or they won't be ticked.
+    public List<? extends Aspect> aspects() {
+        return List.of(collect, rewards);
+    }
+
+    // Define the aspects that are also requirements for completing the task or they won't be calculated when checking completion.
+    public List<? extends Satisfiable> requirements() {
+        return List.of(collect);
+    }
+
     @Override
     public boolean isSatisfied() {
         return remaining() == 0;
@@ -109,33 +117,37 @@ public class Task implements EventListener, Satisfiable {
     @Override
     public int remaining() {
         var remaining = 0;
-        remaining += getRequirements().stream().anyMatch(req -> !req.isSatisfied()) ? 1 : 0;
+        remaining += requirements().stream().anyMatch(req -> !req.isSatisfied()) ? 1 : 0;
         return remaining;
     }
 
     @Override
     public void onStart(ServerPlayer player) {
-        this.aspects.forEach(b -> b.onStart(player));
+        aspects().forEach(b -> b.onStart(player));
     }
 
     @Override
     public void onStarted(ServerPlayer player) {
-        this.aspects.forEach(b -> b.onStarted(player));
+        aspects().forEach(b -> b.onStarted(player));
     }
 
     @Override
-    public void onTick(ServerPlayer player) {
-        this.aspects.forEach(b -> b.onTick(player));
+    public void onTick(Player player) {
+        var aspects = aspects();
+
+        for (var aspect : aspects) {
+            aspect.onTick(player);
+        }
     }
 
     @Override
     public void onAbandon(ServerPlayer player) {
-        this.aspects.forEach(b -> b.onAbandon(player));
+        aspects().forEach(b -> b.onAbandon(player));
     }
 
     @Override
     public void onComplete(ServerPlayer player) {
-        this.aspects.forEach(b -> b.onComplete(player));
+        aspects().forEach(b -> b.onComplete(player));
     }
 
     public boolean isStarting() {
@@ -172,10 +184,6 @@ public class Task implements EventListener, Satisfiable {
         } else {
             return Resources.MISSINGNO;
         }
-    }
-
-    public List<? extends Satisfiable> getRequirements() {
-        return List.of(collect);
     }
 
     public boolean isEpic() {

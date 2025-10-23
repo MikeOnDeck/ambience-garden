@@ -70,7 +70,8 @@ public class ActiveTasksScreen extends BaseScreen {
 
                 // Background behind the task
                 var taskBg = new BorderedBox(130);
-                taskBg.render(guiGraphics, midX - 158, midX + 156, top - 9 + (i * rowHeight), top + 43 + (i * rowHeight), new Color(0x000000).getArgbColor());
+                var taskBgColor = new Color(task.isSatisfied() ? 0x008800 : 0x000000).getArgbColor();
+                taskBg.render(guiGraphics, midX - 158, midX + 156, top - 9 + (i * rowHeight), top + 43 + (i * rowHeight), taskBgColor);
 
                 // Level scroll icon
                 var scroll = new LevelScroll(font, task.level, true);

@@ -117,13 +117,11 @@ public final class Collect extends Aspect implements Satisfiable {
                 for (var invItem : inventory) {
                     if (invItem.is(req.stack().getItem()) && !invItem.isDamaged()) {
                         var decrement = Math.min(remainder, invItem.getCount());
-                        remainder -= decrement;
+                        fullRemainder -= decrement;
                         invItem.shrink(decrement);
                     }
                 }
             }
-
-            fullRemainder -= remainder;
         }
 
         return Math.max(0, fullRemainder);
