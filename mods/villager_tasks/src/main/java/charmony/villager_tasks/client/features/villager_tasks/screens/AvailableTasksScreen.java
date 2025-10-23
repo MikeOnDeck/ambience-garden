@@ -91,7 +91,7 @@ public class AvailableTasksScreen extends BaseScreen {
 
                 // Background behind the task
                 var taskBg = new BorderedBox(130);
-                taskBg.render(guiGraphics, midX - 158, midX + 156, top - 9 + (i * rowHeight), top + 65 + (i * rowHeight), new Color(0x000000).getArgbColor());
+                taskBg.render(guiGraphics, midX - 158, midX + 156, top - 9 + (i * rowHeight), top + 65 + (i * rowHeight), new Color(0x000000));
 
                 // Level scroll icon
                 var scroll = new LevelScroll(font, task.level, playerIsDoingTask);
@@ -132,7 +132,7 @@ public class AvailableTasksScreen extends BaseScreen {
 
                 for (var j = 0; j < task.collect.items().size(); j++) {
                     var item = task.collect.items().get(j);
-                    var box = new CollectItemBox(item.stack(), item.total(), font);
+                    var box = new CollectBox(item.stack(), item.total());
                     var boxX = midX - 95 + reqsX;
                     var boxY = top - 4 + (i * rowHeight);
                     box.render(guiGraphics, boxX, boxY, mouseX, mouseY);
@@ -147,7 +147,7 @@ public class AvailableTasksScreen extends BaseScreen {
 
                 // Reward XP
                 if (task.rewards.experience > 0) {
-                    var box = new RewardXpBox("" + task.rewards.experience, font);
+                    var box = new RewardXpBox(task.rewards.experience);
                     var boxX = midX - 95 + rewardsX;
                     var boxY = top - 4 + (i * rowHeight);
                     box.render(guiGraphics, boxX, boxY, mouseX, mouseY);
@@ -157,7 +157,7 @@ public class AvailableTasksScreen extends BaseScreen {
                 // Reward items
                 for (var j = 0; j < task.rewards.items.size(); j++) {
                     var item = task.rewards.items.get(j);
-                    var box = new RewardItemBox(item.stack(), item.total(), font);
+                    var box = new RewardItemBox(item);
                     var boxX = midX - 95 + rewardsX;
                     var boxY = top - 4 + (i * rowHeight);
                     box.render(guiGraphics, boxX, boxY, mouseX, mouseY);

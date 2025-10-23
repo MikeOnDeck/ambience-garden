@@ -70,7 +70,7 @@ public class ActiveTasksScreen extends BaseScreen {
 
                 // Background behind the task
                 var taskBg = new BorderedBox(130);
-                var taskBgColor = new Color(task.isSatisfied() ? 0x008800 : 0x000000).getArgbColor();
+                var taskBgColor = new Color(task.isSatisfied() ? 0x004010 : 0x000000);
                 taskBg.render(guiGraphics, midX - 158, midX + 156, top - 9 + (i * rowHeight), top + 43 + (i * rowHeight), taskBgColor);
 
                 // Level scroll icon
@@ -100,14 +100,11 @@ public class ActiveTasksScreen extends BaseScreen {
 
                 // Requirements
                 top += 21;
-                var reqsText = Resources.REQUIRES_LABEL;
                 var reqsX = 0;
-                guiGraphics.drawString(font, reqsText, midX - 150,  top + (i * rowHeight) + 1, textColor);
-
                 for (var j = 0; j < task.collect.items().size(); j++) {
                     var item = task.collect.items().get(j);
-                    var box = new CollectItemBox(item.stack(), item.total(), font);
-                    var boxX = midX - 95 + reqsX;
+                    var box = new CollectItemBox(item);
+                    var boxX = midX - 150 + reqsX;
                     var boxY = top - 4 + (i * rowHeight);
                     box.render(guiGraphics, boxX, boxY, mouseX, mouseY);
                     reqsX += box.width() + distanceBetweenReqs;

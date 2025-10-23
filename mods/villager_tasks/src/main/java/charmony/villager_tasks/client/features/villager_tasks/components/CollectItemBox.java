@@ -2,25 +2,65 @@ package charmony.villager_tasks.client.features.villager_tasks.components;
 
 import charmony.api.core.Color;
 import charmony.villager_tasks.common.features.villager_tasks.Resources;
-import net.minecraft.client.gui.Font;
+import charmony.villager_tasks.common.features.villager_tasks.requirements.CollectItem;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
+import java.util.Optional;
 
-public class CollectItemBox extends ItemBox {
-    private final int count;
+public class CollectItemBox extends AspectBox {
+    private final CollectItem collectItem;
 
-    public CollectItemBox(ItemStack stack, int count, Font font) {
-        super(font, stack, "" + count, new Color(0xffffff).getArgbColor(), new Color(0xff8080).getArgbColor());
-        this.count = count;
+    public CollectItemBox(CollectItem collectItem) {
+        this.collectItem = collectItem;
     }
 
     @Override
-    protected void modifyStackTooltip(List<Component> tooltips) {
+    protected void modifyItemStackTooltip(List<Component> tooltips) {
         var itemName = tooltips.getFirst().getString();
         tooltips.clear();
         tooltips.add(Resources.YOU_COLLECT);
-        tooltips.add(Component.literal(itemName + ": " + count));
+        tooltips.add(Component.literal(itemName + ": " + collectItem.total()));
+    }
+
+    @Override
+    public String text() {
+        var completed = collectItem.total() - collectItem.remaining();
+        return completed + "/" + collectItem.total();
+    }
+
+    @Override
+    public Optional<ItemStack> itemStack() {
+        return Optional.of(collectItem.stack());
+    }
+
+    @Override
+    public Color fillColor() {
+        var satisfied = collectItem.isSatisfied();
+        var none = collectItem.remaining() == collectItem.total();
+        var some = collectItem.remaining() < collectItem.total() && !satisfied;
+
+        if (satisfied) {
+            return getCompleteColor();
+        } else if (some) {
+            return getProgressColor();
+        } else if (none) {
+            return getMissingColor();
+        } else {
+            return DEFAULT_FILL_COLOR;
+        }
+    }
+
+    public Color getMissingColor() {
+        return new Color(0xff8080);
+    }
+
+    public Color getProgressColor() {
+        return new Color(0xffe080);
+    }
+
+    public Color getCompleteColor() {
+        return new Color(0x80ff80);
     }
 }
