@@ -216,7 +216,7 @@ public class Handlers extends Setup<VillagerTasks> {
         var state = TasksSavedData.getServerState(serverLevel.getServer());
         var playerName = player.getName().getString();
 
-        if (tasks.getTaskByDefinition(task.getDefinitionId()).isPresent()) {
+        if (tasks.getTaskById(task.id).isPresent()) {
             // Don't start the same task twice.
             return;
         }
