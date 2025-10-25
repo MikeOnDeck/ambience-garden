@@ -103,7 +103,7 @@ public class Handlers extends Setup<VillagerTasks> {
         // Get top three valid definitions.
         var valid = defs.stream()
             .filter(def -> def.appliesTo(level.registryAccess().lookupOrThrow(Registries.ENTITY_TYPE), merchant))
-            .limit(3)
+            .limit(4)
             .toList();
 
         // Generate tasks from definitions

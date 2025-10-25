@@ -10,6 +10,7 @@
   "gui.charmony.villager_tasks.available_tasks.button": "Available tasks",
   "gui.charmony.villager_tasks.available_tasks_for_villager": "Available tasks for %s",
   "gui.charmony.villager_tasks.collect_items": "Collect %s: %s",
+  "gui.charmony.villager_tasks.complete": "Complete",
   "gui.charmony.villager_tasks.doing_task": "You are currently working on this task.",
   "gui.charmony.villager_tasks.experience_levels": "Experience levels: %s",
   "gui.charmony.villager_tasks.details": "Details",

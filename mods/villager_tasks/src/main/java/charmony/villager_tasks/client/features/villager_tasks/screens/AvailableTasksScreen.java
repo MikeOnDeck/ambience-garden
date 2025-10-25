@@ -5,12 +5,14 @@ import charmony.core.helpers.TextComponentHelper;
 import charmony.villager_tasks.client.features.villager_tasks.Buttons;
 import charmony.villager_tasks.client.features.villager_tasks.Handlers;
 import charmony.villager_tasks.client.features.villager_tasks.VillagerTasks;
-import charmony.villager_tasks.client.features.villager_tasks.components.*;
+import charmony.villager_tasks.client.features.villager_tasks.components.AvailableTaskTooltip;
+import charmony.villager_tasks.client.features.villager_tasks.components.IndentedBox;
+import charmony.villager_tasks.client.features.villager_tasks.components.LevelScroll;
 import charmony.villager_tasks.client.features.villager_tasks.renderers.TaskRenderer;
 import charmony.villager_tasks.common.features.villager_tasks.Resources;
 import charmony.villager_tasks.common.features.villager_tasks.Tasks;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
@@ -22,9 +24,11 @@ public class AvailableTasksScreen extends BaseScreen {
     private final Handlers handlers; // Reference for easy access to handler functions.
 
     private int midX;
-    private int textColor;
-    private int epicTextColor;
-    private int rewardsTextColor;
+    private int midY;
+    private Color titleColor;
+    private Color textColor;
+    private Color fillColor;
+    private Color epicFillColor;
     private boolean hasRenderedTaskButtons = false;
 
     private Tasks availableTasks = Tasks.EMPTY;
@@ -47,9 +51,13 @@ public class AvailableTasksScreen extends BaseScreen {
         this.tooltips = new ArrayList<>();
 
         midX = width / 2;
-        textColor = new Color(0xffffff).getArgbColor();
-        epicTextColor = new Color(0xffff00).getArgbColor();
-        rewardsTextColor = new Color(0x80e0ff).getArgbColor();
+        midY = height / 2;
+
+        titleColor = new Color(0x454545);
+        textColor = new Color(0x202020);
+        fillColor = new Color(0x909090);
+        epicFillColor = new Color(0xa0a060);
+
         hasRenderedTaskButtons = false;
 
         // We check that the available tasks are for the last interacted villager.
@@ -70,6 +78,7 @@ public class AvailableTasksScreen extends BaseScreen {
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float tickDelta) {
+        renderBg(guiGraphics);
         renderTitle(guiGraphics);
         renderTasks(guiGraphics, mouseX, mouseY);
         super.render(guiGraphics, mouseX, mouseY, tickDelta);
@@ -83,54 +92,59 @@ public class AvailableTasksScreen extends BaseScreen {
         return super.getTitle();
     }
 
+    public void renderBg(GuiGraphics guiGraphics) {
+        var width = 298;
+        var height = 177;
+        var midX = (this.width - width) / 2;
+        var midY = (this.height - height) / 2;
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, Resources.TASKS_BACKGROUND, midX, midY, 0.0f, 0.0f, width, height, 512, 256);
+    }
+
     private void renderTitle(GuiGraphics guiGraphics) {
-        TextComponentHelper.drawCenteredString(guiGraphics, font, getTitle(), midX, 14, textColor);
+        TextComponentHelper.drawCenteredString(guiGraphics, font, getTitle(), midX, midY - 80, titleColor.getArgbColor());
     }
 
     private void renderTasks(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         if (minecraft == null) return;
+        var top = midY - 55;
+        var left = midX - 138;
+        var right = midX + 137;
 
         if (!availableTasks.isEmpty()) {
-            var rowHeight = 90;
-            var top = 46;
+            var rowHeight = 30;
 
             for (var i = 0; i < availableTasks.tasks().size(); i++) {
+                var rh = i * rowHeight;
                 var task = availableTasks.tasks().get(i);
-                var playerIsDoingTask = activeTasks != null && activeTasks.getTaskByDefinition(task.getDefinitionId()).isPresent();
-                var titleColor = task.isEpic() ? epicTextColor : textColor;
-                var distanceBetweenRewards = 3;
-                var distanceBetweenReqs = 3;
+                var playerIsDoingTask = activeTasks != null && activeTasks.getTaskById(task.id).isPresent();
 
                 // Background behind the task
-                var taskBg = new BorderedBox(130);
-                taskBg.render(guiGraphics, midX - 158, midX + 156, top - 9 + (i * rowHeight), top + 65 + (i * rowHeight), new Color(0x000000));
+                var taskBg = new IndentedBox();
+                taskBg.render(guiGraphics, left, right, top - 9 + rh, top + 14 + rh, task.isEpic() ? epicFillColor : fillColor);
 
                 // Level scroll icon
                 var scroll = new LevelScroll(font, task.level, playerIsDoingTask);
-                scroll.render(guiGraphics, midX - 152, top + (i * rowHeight) - 4, mouseX, mouseY);
+                var sx = left + 3;
+                var sy = top + rh - 6;
+                scroll.render(guiGraphics, sx, sy, mouseX, mouseY);
 
                 // Task title label
                 var title = MutableComponent.create(task.getTitle().getContents());
-                var titleWidth = font.width(title);
-                guiGraphics.drawString(font, title.withStyle(ChatFormatting.UNDERLINE), midX - 130,  top + (i * rowHeight), titleColor);
-
-                // Mouse over shows requirements of the task.
-                if (mouseX >= midX - 130 && mouseX <= midX - 130 + titleWidth &&
-                    mouseY >= top + (i * rowHeight) && mouseY <= top + 10 + (i * rowHeight)) {
-
-                    guiGraphics.setTooltipForNextFrame(font, List.of(
-                        Component.literal(title.getString())
-                    ), Optional.of(tooltips.get(i)), mouseX, mouseY);
-                }
+                var tx = sx + 22;
+                var ty = top + rh - 1;
+                guiGraphics.drawString(font, title, tx, ty, textColor.getArgbColor(), false);
 
                 // Task buttons
+                var detailsX = right - 44;
+                var acceptX = right - 22;
+                var buttonY = top + rh - 6;
                 if (!hasRenderedTaskButtons) {
-                    var detailsButton = new Buttons.DetailsButton(midX + 108, top - 4 + (i * rowHeight),
+                    var detailsButton = new Buttons.DetailsButton(detailsX, buttonY,
                         b -> {
                             minecraft.setScreen(null);
                         });
 
-                    var acceptButton = new Buttons.AcceptButton(midX + 130, top - 4 + (i * rowHeight),
+                    var acceptButton = new Buttons.AcceptButton(acceptX, buttonY,
                         playerIsDoingTask ? Resources.ALREADY_DOING_TASK : Buttons.AcceptButton.DEFAULT_TOOLTIP,
                         b -> {
                             handlers.acceptTask(task);
@@ -138,61 +152,69 @@ public class AvailableTasksScreen extends BaseScreen {
                         });
 
                     if (playerIsDoingTask) {
-                        // Set accept button disabled if the player already has this task.
-                        acceptButton.active = false;
+                        acceptButton.active = false; // Set accept button disabled if the player already has this task.
                     }
 
                     addRenderableWidget(detailsButton);
                     addRenderableWidget(acceptButton);
                 }
 
-                // Requirements
-                if (false) {
-                    top += 21;
-                    var reqsText = Resources.REQUIRES_LABEL;
-                    var reqsX = 0;
-                    guiGraphics.drawString(font, reqsText, midX - 150, top + (i * rowHeight) + 1, textColor);
+                // Mouse over title shows requirements of the task.
+                if (mouseX >= tx && mouseX <= detailsX - 4 &&
+                    mouseY >= top + rh - 8 && mouseY <= top + rh + 13) {
 
-                    for (var j = 0; j < task.collect.items().size(); j++) {
-                        var item = task.collect.items().get(j);
-                        var box = new CollectBox(item.stack(), item.total());
-                        var boxX = midX - 95 + reqsX;
-                        var boxY = top - 4 + (i * rowHeight);
-                        box.render(guiGraphics, boxX, boxY, mouseX, mouseY);
-                        reqsX += box.width() + distanceBetweenReqs;
-                    }
+                    guiGraphics.setTooltipForNextFrame(font, List.of(
+                        Component.literal(title.getString())
+                    ), Optional.of(tooltips.get(i)), mouseX, mouseY);
                 }
 
-                // Rewards
-                if (false) {
-                    top += 21;
-                    var rewardsText = Resources.REWARDS_LABEL;
-                    var rewardsX = 0; // track how much horizontal space used for rewards
-                    guiGraphics.drawString(font, rewardsText, midX - 150, top + (i * rowHeight) + 1, rewardsTextColor);
-
-                    // Reward XP
-                    if (task.rewards.experience > 0) {
-                        var box = new RewardXpBox(task.rewards.experience);
-                        var boxX = midX - 95 + rewardsX;
-                        var boxY = top - 4 + (i * rowHeight);
-                        box.render(guiGraphics, boxX, boxY, mouseX, mouseY);
-                        rewardsX += box.width() + distanceBetweenRewards;
-                    }
-
-
-                    // Reward items
-                    for (var j = 0; j < task.rewards.items.size(); j++) {
-                        var item = task.rewards.items.get(j);
-                        var box = new RewardItemBox(item);
-                        var boxX = midX - 95 + rewardsX;
-                        var boxY = top - 4 + (i * rowHeight);
-                        box.render(guiGraphics, boxX, boxY, mouseX, mouseY);
-                        rewardsX += box.width() + distanceBetweenRewards;
-                    }
-                }
+//                // Requirements
+//                if (false) {
+//                    top += 21;
+//                    var reqsText = Resources.REQUIRES_LABEL;
+//                    var reqsX = 0;
+//                    guiGraphics.drawString(font, reqsText, midX - 150, top + ry + 1, textColor);
+//
+//                    for (var j = 0; j < task.collect.items().size(); j++) {
+//                        var item = task.collect.items().get(j);
+//                        var box = new CollectBox(item.stack(), item.total());
+//                        var boxX = midX - 95 + reqsX;
+//                        var boxY = top - 4 + ry;
+//                        box.render(guiGraphics, boxX, boxY, mouseX, mouseY);
+//                        reqsX += box.width() + distanceBetweenReqs;
+//                    }
+//                }
+//
+//                // Rewards
+//                if (false) {
+//                    top += 21;
+//                    var rewardsText = Resources.REWARDS_LABEL;
+//                    var rewardsX = 0; // track how much horizontal space used for rewards
+//                    guiGraphics.drawString(font, rewardsText, midX - 150, top + ry + 1, rewardsTextColor);
+//
+//                    // Reward XP
+//                    if (task.rewards.experience > 0) {
+//                        var box = new RewardXpBox(task.rewards.experience);
+//                        var boxX = midX - 95 + rewardsX;
+//                        var boxY = top - 4 + ry;
+//                        box.render(guiGraphics, boxX, boxY, mouseX, mouseY);
+//                        rewardsX += box.width() + distanceBetweenRewards;
+//                    }
+//
+//
+//                    // Reward items
+//                    for (var j = 0; j < task.rewards.items.size(); j++) {
+//                        var item = task.rewards.items.get(j);
+//                        var box = new RewardItemBox(item);
+//                        var boxX = midX - 95 + rewardsX;
+//                        var boxY = top - 4 + ry;
+//                        box.render(guiGraphics, boxX, boxY, mouseX, mouseY);
+//                        rewardsX += box.width() + distanceBetweenRewards;
+//                    }
+//                }
             }
         } else {
-            TextComponentHelper.drawCenteredString(guiGraphics, font, Resources.NO_AVAILABLE_TASKS, midX, 40, textColor);
+            TextComponentHelper.drawCenteredString(guiGraphics, font, Resources.NO_AVAILABLE_TASKS, midX, top, textColor.getArgbColor());
         }
 
         hasRenderedTaskButtons = true;

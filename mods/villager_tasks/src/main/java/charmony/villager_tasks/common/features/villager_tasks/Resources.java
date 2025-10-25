@@ -17,6 +17,7 @@ public final class Resources {
     public static final Component AVAILABLE_TASKS_TITLE = Component.translatable("gui.charmony.villager_tasks.available_tasks.title");
     public static final Component AVAILABLE_TASKS_BUTTON = Component.translatable("gui.charmony.villager_tasks.available_tasks.button");
     public static final Component COLLECT_ASPECT = Component.translatable("gui.charmony.villager_tasks.aspect.collect");
+    public static final Component COMPLETE = Component.translatable("gui.charmony.villager_tasks.complete");
     public static final Component DETAILS = Component.translatable("gui.charmony.villager_tasks.details");
     public static final Component DOING_TASK = Component.translatable("gui.charmony.villager_tasks.doing_task");
     public static final Component MISSINGNO = Component.translatable("gui.charmony.villager_tasks.missingno");
@@ -36,6 +37,8 @@ public final class Resources {
 
     public static final Map<Integer, ResourceLocation> ACTIVE_LEVELS = new HashMap<>();
     public static final Map<Integer, ResourceLocation> AVAILABLE_LEVELS = new HashMap<>();
+
+    public static final ResourceLocation TASKS_BACKGROUND = ResourceLocation.fromNamespaceAndPath("charmony", "textures/gui/container/tasks.png");
 
     static {
         for (var i = 1; i <= 6; i++) {

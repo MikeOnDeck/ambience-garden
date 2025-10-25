@@ -11,6 +11,7 @@ import net.minecraft.network.chat.Component;
 public final class Buttons {
     public static final WidgetSprites ACCEPT_BUTTON = makeButtonWithDisabled("accept");
     public static final WidgetSprites ABANDON_BUTTON = makeButton("abandon");
+    public static final WidgetSprites COMPLETE_BUTTON = makeButtonWithDisabled("complete");
     public static final WidgetSprites DETAILS_BUTTON = makeButton("details");
 
     public static class ActiveTasksButton extends Button {
@@ -58,6 +59,22 @@ public final class Buttons {
         public AbandonButton(int x, int y, OnPress onPress) {
             super(x, y, WIDTH, HEIGHT, SPRITES, onPress);
             setTooltip(Tooltip.create(TEXT));
+        }
+    }
+
+    public static class CompleteButton extends ImageButton {
+        public static int WIDTH = 20;
+        public static int HEIGHT = 18;
+        public static Component DEFAULT_TOOLTIP = Resources.COMPLETE;
+        static WidgetSprites SPRITES = COMPLETE_BUTTON;
+
+        public CompleteButton(int x, int y, OnPress onPress) {
+            this(x, y, DEFAULT_TOOLTIP, onPress);
+        }
+
+        public CompleteButton(int x, int y, Component tooltip, OnPress onPress) {
+            super(x, y, WIDTH, HEIGHT, SPRITES, onPress);
+            setTooltip(Tooltip.create(tooltip));
         }
     }
 
