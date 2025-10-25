@@ -13,6 +13,7 @@
   "gui.charmony.villager_tasks.doing_task": "You are currently working on this task.",
   "gui.charmony.villager_tasks.experience_levels": "Experience levels: %s",
   "gui.charmony.villager_tasks.details": "Details",
+  "gui.charmony.villager_tasks.name_and_number": "%s: %s",
   "gui.charmony.villager_tasks.label.rewards": "Rewards:",
   "gui.charmony.villager_tasks.label.requires": "Requires:",
   "gui.charmony.villager_tasks.level_info": "Level %s task",
