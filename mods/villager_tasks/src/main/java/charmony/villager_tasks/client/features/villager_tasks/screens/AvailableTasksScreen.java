@@ -2,11 +2,11 @@ package charmony.villager_tasks.client.features.villager_tasks.screens;
 
 import charmony.api.core.Color;
 import charmony.core.helpers.TextComponentHelper;
-import charmony.villager_tasks.client.features.villager_tasks.AvailableTaskTooltip;
 import charmony.villager_tasks.client.features.villager_tasks.Buttons;
 import charmony.villager_tasks.client.features.villager_tasks.Handlers;
 import charmony.villager_tasks.client.features.villager_tasks.VillagerTasks;
 import charmony.villager_tasks.client.features.villager_tasks.components.*;
+import charmony.villager_tasks.client.features.villager_tasks.renderers.TaskRenderer;
 import charmony.villager_tasks.common.features.villager_tasks.Resources;
 import charmony.villager_tasks.common.features.villager_tasks.Tasks;
 import net.minecraft.ChatFormatting;
@@ -29,7 +29,6 @@ public class AvailableTasksScreen extends BaseScreen {
 
     private Tasks availableTasks = Tasks.EMPTY;
     private Tasks activeTasks = Tasks.EMPTY;
-
     private List<AvailableTaskTooltip> tooltips = new ArrayList<>();
 
     public AvailableTasksScreen() {
@@ -58,7 +57,8 @@ public class AvailableTasksScreen extends BaseScreen {
             this.availableTasks = availableTasks;
 
             for (var task : availableTasks.tasks()) {
-                this.tooltips.add(new AvailableTaskTooltip(task));
+                var renderer = new TaskRenderer(task);
+                this.tooltips.add(new AvailableTaskTooltip(renderer));
             }
         }
     }
