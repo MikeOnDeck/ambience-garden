@@ -85,6 +85,11 @@ public final class Collect extends Aspect implements Satisfiable {
     }
 
     @Override
+    public boolean isEmpty() {
+        return items.isEmpty();
+    }
+
+    @Override
     public void onTick(Player player) {
         super.onTick(player);
 

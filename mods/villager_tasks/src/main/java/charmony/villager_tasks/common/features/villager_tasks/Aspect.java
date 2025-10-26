@@ -24,4 +24,6 @@ public abstract class Aspect implements EventListener, PlayerHolder {
     public abstract String getId();
 
     public abstract Component getName();
+
+    public abstract boolean isEmpty();
 }

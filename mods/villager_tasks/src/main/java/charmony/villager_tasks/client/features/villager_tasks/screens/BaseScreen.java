@@ -64,7 +64,5 @@ public abstract class BaseScreen extends Screen {
         TextComponentHelper.drawCenteredString(guiGraphics, font, getTitle(), midX, midY - 80, titleColor.getArgbColor());
     }
 
-    protected void renderContent(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-
-    }
+    protected abstract void renderContent(GuiGraphics guiGraphics, int mouseX, int mouseY);
 }

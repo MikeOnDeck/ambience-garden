@@ -37,6 +37,11 @@ public class CollectBox extends AspectBox {
 
     @Override
     public Color fillColor() {
-        return new Color(0xff8080);
+        return new Color(0x900000);
+    }
+
+    @Override
+    public int fillAlpha() {
+        return 120;
     }
 }

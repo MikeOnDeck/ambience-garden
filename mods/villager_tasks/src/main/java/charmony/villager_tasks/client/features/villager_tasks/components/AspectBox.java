@@ -37,7 +37,7 @@ public class AspectBox {
         var ty = iy + 5;
 
         // Draw box outline and background
-        var box = new BorderedBox(fillAlpha());
+        var box = new IndentedOverlayBox(fillAlpha());
         box.render(guiGraphics, x, x1, y, y1, fillColor());
 
         var itemStack = itemStack().orElse(null);
@@ -71,7 +71,7 @@ public class AspectBox {
     }
 
     public int fillAlpha() {
-        return 50;
+        return 120;
     }
 
     public String text() {

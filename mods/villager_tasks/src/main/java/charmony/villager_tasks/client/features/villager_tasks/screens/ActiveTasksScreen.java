@@ -81,7 +81,7 @@ public class ActiveTasksScreen extends BaseScreen {
                 if (!hasRenderedTaskButtons) {
                     var detailsButton = new Buttons.DetailsButton(detailsX, buttonY,
                         b -> {
-                            minecraft.setScreen(null);
+                            minecraft.setScreen(new TaskDetailsScreen(task));
                         });
 
                     var abandonButton = new Buttons.AbandonButton(abandonX, buttonY,
@@ -101,18 +101,6 @@ public class ActiveTasksScreen extends BaseScreen {
                     var titleComponent = Component.literal(title.getString());
                     guiGraphics.setTooltipForNextFrame(font, List.of(titleComponent), Optional.of(tooltips.get(task)), mouseX, mouseY);
                 }
-
-//                // Requirements
-//                top += 21;
-//                var reqsX = 0;
-//                for (var j = 0; j < task.collect.items().size(); j++) {
-//                    var item = task.collect.items().get(j);
-//                    var box = new CollectItemBox(item);
-//                    var boxX = midX - 150 + reqsX;
-//                    var boxY = top - 4 + (i * rowHeight);
-//                    box.render(guiGraphics, boxX, boxY, mouseX, mouseY);
-//                    reqsX += box.width() + distanceBetweenReqs;
-//                }
             }
         } else {
             TextComponentHelper.drawCenteredString(guiGraphics, font, Resources.NO_ACTIVE_TASKS, midX, top, textColor.getArgbColor());

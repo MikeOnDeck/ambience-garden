@@ -47,6 +47,11 @@ public final class Rewards extends Aspect {
         return Resources.REWARD_ASPECT;
     }
 
+    @Override
+    public boolean isEmpty() {
+        return items.isEmpty() && effects.isEmpty() && experience <= 0;
+    }
+
     public static Rewards make(Task.AspectBuilder builder) {
         var map = builder.definition().rewards;
         if (map.isEmpty()) {

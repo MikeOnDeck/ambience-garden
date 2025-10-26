@@ -53,14 +53,19 @@ public class CollectItemBox extends AspectBox {
     }
 
     public Color getMissingColor() {
-        return new Color(0xff8080);
+        return new Color(0xb00000);
     }
 
     public Color getProgressColor() {
-        return new Color(0xffe080);
+        return new Color(0xc09000);
     }
 
     public Color getCompleteColor() {
-        return new Color(0x80ff80);
+        return new Color(0x00a040);
+    }
+
+    @Override
+    public int fillAlpha() {
+        return 120;
     }
 }

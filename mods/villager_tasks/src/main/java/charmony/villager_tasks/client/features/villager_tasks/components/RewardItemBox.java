@@ -36,6 +36,11 @@ public class RewardItemBox extends AspectBox {
 
     @Override
     public Color fillColor() {
-        return new Color(0x80e0ff);
+        return new Color(0x4090c0);
+    }
+
+    @Override
+    public int fillAlpha() {
+        return super.fillAlpha();
     }
 }

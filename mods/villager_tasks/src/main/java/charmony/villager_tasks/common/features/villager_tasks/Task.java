@@ -111,6 +111,10 @@ public class Task implements EventListener, Satisfiable {
         return List.of(collect);
     }
 
+    public Rewards rewards() {
+        return rewards;
+    }
+
     @Override
     public boolean isSatisfied() {
         return remaining() == 0;
