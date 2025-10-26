@@ -8,7 +8,6 @@ import charmony.villager_tasks.common.features.villager_tasks.Resources;
 import charmony.villager_tasks.common.features.villager_tasks.Task;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.network.chat.Component;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -58,13 +57,15 @@ public class ActiveTasksScreen extends BaseScreen {
                 // Task buttons
                 if (!hasRenderedTaskButtons) {
                     var buttonY = top + rh + 2;
-                    var idComponent = Component.literal(String.valueOf(task.id));
-                    buttons.addAll(List.of(
-                        new Buttons.DetailsButton(right - 44, buttonY, idComponent,
-                            b -> minecraft.setScreen(new TaskDetailsScreen(task))),
-                        new Buttons.AbandonButton(right - 22, buttonY, idComponent,
-                            b -> minecraft.setScreen(new ConfirmAbandonScreen(task)))
-                    ));
+                    // var idComponent = Tooltip.create(Component.literal(String.valueOf(task.id)));
+
+                    var details = new Buttons.DetailsButton(right - 44, buttonY,
+                        b -> minecraft.setScreen(new TaskDetailsScreen(task)));
+
+                    var abandon = new Buttons.AbandonButton(right - 22, buttonY,
+                        b -> minecraft.setScreen(new ConfirmAbandonScreen(task)));
+
+                    buttons.addAll(List.of(details, abandon));
                     buttons.forEach(this::addRenderableWidget);
                 }
             }

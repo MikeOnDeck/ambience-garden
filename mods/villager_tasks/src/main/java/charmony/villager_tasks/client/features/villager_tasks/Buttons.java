@@ -59,12 +59,8 @@ public final class Buttons {
         static Component TEXT = Resources.ABANDON;
 
         public AbandonButton(int x, int y, OnPress onPress) {
-            this(x, y, TEXT, onPress);
-        }
-
-        public AbandonButton(int x, int y, Component tooltip, OnPress onPress) {
             super(x, y, WIDTH, HEIGHT, SPRITES, onPress);
-            setTooltip(Tooltip.create(tooltip));
+            setTooltip(Tooltip.create(TEXT));
         }
     }
 
@@ -74,6 +70,16 @@ public final class Buttons {
         static Component TEXT = Component.translatable("gui.cancel");
 
         public CancelButton(int x, int y, OnPress onPress) {
+            super(x, y, WIDTH, HEIGHT, TEXT, onPress, DEFAULT_NARRATION);
+        }
+    }
+
+    public static class CloseButton extends Button {
+        public static final int WIDTH = 80;
+        public static final int HEIGHT = 20;
+        static Component TEXT = Resources.CLOSE;
+
+        public CloseButton(int x, int y, OnPress onPress) {
             super(x, y, WIDTH, HEIGHT, TEXT, onPress, DEFAULT_NARRATION);
         }
     }
@@ -123,12 +129,8 @@ public final class Buttons {
         static Component TEXT = Resources.DETAILS;
 
         public DetailsButton(int x, int y, OnPress onPress) {
-            this(x, y, TEXT, onPress);
-        }
-
-        public DetailsButton(int x, int y, Component component, OnPress onPress) {
             super(x, y, WIDTH, HEIGHT, SPRITES, onPress);
-            setTooltip(Tooltip.create(component));
+            setTooltip(Tooltip.create(TEXT));
         }
     }
 

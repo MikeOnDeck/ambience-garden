@@ -17,6 +17,7 @@ public final class Resources {
     public static final Component AVAILABLE_TASKS_TITLE = Component.translatable("gui.charmony.villager_tasks.available_tasks.title");
     public static final Component AVAILABLE_TASKS_BUTTON = Component.translatable("gui.charmony.villager_tasks.available_tasks.button");
     public static final Component AVAILABLE_TASKS_TOOLTIP = Component.translatable("gui.charmony.villager_tasks.available_tasks.tooltip");
+    public static final Component CLOSE = Component.translatable("gui.charmony.villager_tasks.close");
     public static final Component COLLECT_ASPECT = Component.translatable("gui.charmony.villager_tasks.aspect.collect");
     public static final Component COMPLETE = Component.translatable("gui.charmony.villager_tasks.complete");
     public static final Component COMPLETE_TASKS_TITLE = Component.translatable("gui.charmony.villager_tasks.complete_tasks.title");

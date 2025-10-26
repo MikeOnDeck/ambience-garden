@@ -61,7 +61,7 @@ public class CollectItemBox extends AspectBox {
     }
 
     public Color getCompleteColor() {
-        return new Color(0x00a040);
+        return new Color(0x00a020);
     }
 
     @Override

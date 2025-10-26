@@ -2,6 +2,7 @@ package charmony.villager_tasks.client.features.villager_tasks.screens;
 
 import charmony.api.core.Color;
 import charmony.core.helpers.TextComponentHelper;
+import charmony.villager_tasks.client.features.villager_tasks.Buttons;
 import charmony.villager_tasks.client.features.villager_tasks.Handlers;
 import charmony.villager_tasks.client.features.villager_tasks.VillagerTasks;
 import charmony.villager_tasks.common.features.villager_tasks.Resources;
@@ -29,6 +30,7 @@ public abstract class BaseScreen extends Screen {
     @Override
     protected void init() {
         super.init();
+        if (minecraft == null) return;
 
         midX = width / 2;
         midY = height / 2;
@@ -37,6 +39,11 @@ public abstract class BaseScreen extends Screen {
         textColor = new Color(0x202020);
         fillColor = new Color(0x909090);
         epicFillColor = new Color(0xa0a060);
+
+        var closeButton = new Buttons.CloseButton(midX - (Buttons.CloseButton.WIDTH / 2), midY + 94,
+            b -> minecraft.setScreen(null));
+
+        addRenderableWidget(closeButton);
     }
 
     @Override
