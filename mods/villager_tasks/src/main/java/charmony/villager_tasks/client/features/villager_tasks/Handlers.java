@@ -13,12 +13,16 @@ import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.gui.screens.inventory.MerchantScreen;
 import net.minecraft.world.entity.player.Player;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 public class Handlers extends Setup<VillagerTasks> {
     private Tasks activeTasks = Tasks.EMPTY;
     private Tasks availableTasks = Tasks.EMPTY;
     private UUID lastVillagerInteraction = UUID.randomUUID();
+    public Map<Screen, Consumer<Tasks>> onActiveTasksUpdate = new HashMap<>();
 
     public Handlers(VillagerTasks feature) {
         super(feature);
@@ -65,6 +69,7 @@ public class Handlers extends Setup<VillagerTasks> {
     public void handleReceiveActiveTasks(Player player, Networking.S2CSendActiveTasks payload) {
         var tasks = payload.tasks();
         this.activeTasks = tasks;
+        onActiveTasksUpdate.values().forEach(c -> c.accept(tasks));
 
         log().info("Client received " + tasks.tasks().size() + " active tasks.");
     }
@@ -95,6 +100,10 @@ public class Handlers extends Setup<VillagerTasks> {
         return lastVillagerInteraction;
     }
 
+    public boolean availableTasksAreValid() {
+        return !availableTasks.isEmpty() && availableTasks.uuid().equals(getLastVillagerInteraction());
+    }
+
     public void acceptTask(Task task) {
         Networking.C2SQueryTask.send(TaskQuery.Accept, task.id);
     }
@@ -106,5 +115,4 @@ public class Handlers extends Setup<VillagerTasks> {
     public void updateActiveTasks() {
         Networking.C2SRequestActiveTasks.send();
     }
-
 }

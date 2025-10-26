@@ -100,10 +100,10 @@ public class Handlers extends Setup<VillagerTasks> {
         var defs = new ArrayList<>(definitions.values());
         Util.shuffle(defs, random);
 
-        // Get top three valid definitions.
+        // Get top valid definitions.
         var valid = defs.stream()
             .filter(def -> def.appliesTo(level.registryAccess().lookupOrThrow(Registries.ENTITY_TYPE), merchant))
-            .limit(4)
+            .limit(5)
             .toList();
 
         // Generate tasks from definitions
@@ -221,7 +221,7 @@ public class Handlers extends Setup<VillagerTasks> {
             return;
         }
 
-        if (tasks.tasks().size() >= 3) {
+        if (tasks.tasks().size() >= 5) {
             // TODO: probably need to notify the player that they can't accept more tasks?
             log().error("Player " + playerName + " has reached the maximum number of active tasks.");
             return;

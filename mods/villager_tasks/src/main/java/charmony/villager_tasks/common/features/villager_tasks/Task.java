@@ -1,5 +1,6 @@
 package charmony.villager_tasks.common.features.villager_tasks;
 
+import charmony.core.helpers.UuidHelper;
 import charmony.villager_tasks.common.features.villager_tasks.aspects.Collect;
 import charmony.villager_tasks.common.features.villager_tasks.aspects.Rewards;
 import charmony.villager_tasks.common.features.villager_tasks.enums.TaskModifier;
@@ -76,16 +77,17 @@ public class Task implements EventListener, Satisfiable {
     public static Task create(ServerPlayer player, Definition definition, UUID uuid, TaskModifier modifier, long seed) {
         Task task;
 
-        var id = UUID.randomUUID();
         var random = RandomSource.create(seed);
-        var expiry = definition.expiry;
-        var level = definition.level;
-        var titleKey = definition.title;
-
-        // Initialise the aspect builder that will be passed to each aspect during task creation.
-        var builder = new AspectBuilder(player, definition, modifier, random);
 
         try {
+            var id = UuidHelper.fromString(definition.id.toString() + seed);
+            var expiry = definition.expiry;
+            var level = definition.level;
+            var titleKey = definition.title;
+
+            // Initialise the aspect builder that will be passed to each aspect during task creation.
+            var builder = new AspectBuilder(player, definition, modifier, random);
+
             // Create the task with its aspects.
             task = new Task(id, uuid, definition.id, TaskStatus.NotStarted, modifier, titleKey, seed, level, expiry, 0,
                 Collect.make(builder),

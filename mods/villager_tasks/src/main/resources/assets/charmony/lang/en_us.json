@@ -3,7 +3,7 @@
   "gui.charmony.villager_tasks.accept": "Accept",
   "gui.charmony.villager_tasks.active_tasks.button": "Active tasks",
   "gui.charmony.villager_tasks.active_tasks.title": "Active Tasks",
-  "gui.charmony.villager_tasks.already_doing_task": "You have already accepted this task or a similar task.",
+  "gui.charmony.villager_tasks.already_doing_task": "You have already accepted this task.",
   "gui.charmony.villager_tasks.aspect.collect": "Collect items",
   "gui.charmony.villager_tasks.aspect.reward": "Rewards",
   "gui.charmony.villager_tasks.available_tasks.title": "Available Tasks",

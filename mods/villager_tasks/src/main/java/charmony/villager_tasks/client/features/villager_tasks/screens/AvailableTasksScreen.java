@@ -1,122 +1,73 @@
 package charmony.villager_tasks.client.features.villager_tasks.screens;
 
-import charmony.api.core.Color;
 import charmony.core.helpers.TextComponentHelper;
 import charmony.villager_tasks.client.features.villager_tasks.Buttons;
-import charmony.villager_tasks.client.features.villager_tasks.Handlers;
-import charmony.villager_tasks.client.features.villager_tasks.VillagerTasks;
 import charmony.villager_tasks.client.features.villager_tasks.components.AvailableTaskTooltip;
 import charmony.villager_tasks.client.features.villager_tasks.components.IndentedBox;
 import charmony.villager_tasks.client.features.villager_tasks.components.LevelScroll;
 import charmony.villager_tasks.client.features.villager_tasks.renderers.TaskRenderer;
 import charmony.villager_tasks.common.features.villager_tasks.Resources;
-import charmony.villager_tasks.common.features.villager_tasks.Tasks;
+import charmony.villager_tasks.common.features.villager_tasks.Task;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class AvailableTasksScreen extends BaseScreen {
-    private final Handlers handlers; // Reference for easy access to handler functions.
+    private final Map<Task, AvailableTaskTooltip> tooltips = new HashMap<>();
+    private final List<Button> buttons = new ArrayList<>();
 
-    private int midX;
-    private int midY;
-    private Color titleColor;
-    private Color textColor;
-    private Color fillColor;
-    private Color epicFillColor;
     private boolean hasRenderedTaskButtons = false;
-
-    private Tasks availableTasks = Tasks.EMPTY;
-    private Tasks activeTasks = Tasks.EMPTY;
-    private List<AvailableTaskTooltip> tooltips = new ArrayList<>();
 
     public AvailableTasksScreen() {
         super(Resources.AVAILABLE_TASKS_TITLE);
-        this.handlers = VillagerTasks.feature().handlers;
     }
 
     @Override
     protected void init() {
         super.init();
         if (minecraft == null) return;
-
-        var villager = handlers.getLastVillagerInteraction();
-        var availableTasks = handlers.getAvailableTasks();
-        this.activeTasks = handlers.getActiveTasks();
-        this.tooltips = new ArrayList<>();
-
-        midX = width / 2;
-        midY = height / 2;
-
-        titleColor = new Color(0x454545);
-        textColor = new Color(0x202020);
-        fillColor = new Color(0x909090);
-        epicFillColor = new Color(0xa0a060);
-
         hasRenderedTaskButtons = false;
 
-        // We check that the available tasks are for the last interacted villager.
-        if (availableTasks != null && availableTasks.uuid().equals(villager)) {
-            this.availableTasks = availableTasks;
-
-            for (var task : availableTasks.tasks()) {
-                var renderer = new TaskRenderer(task);
-                this.tooltips.add(new AvailableTaskTooltip(renderer));
-            }
-        }
-    }
-
-    @Override
-    public boolean isPauseScreen() {
-        return false;
-    }
-
-    @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float tickDelta) {
-        renderBg(guiGraphics);
-        renderTitle(guiGraphics);
-        renderTasks(guiGraphics, mouseX, mouseY);
-        super.render(guiGraphics, mouseX, mouseY, tickDelta);
+        handlers.onActiveTasksUpdate.put(this, t -> {
+            this.buttons.forEach(this::removeWidget);
+            this.buttons.clear();
+            this.hasRenderedTaskButtons = false;
+        });
     }
 
     @Override
     public Component getTitle() {
+        var availableTasks = handlers.getAvailableTasks();
         if (!availableTasks.isEmpty()) {
             return Component.translatable("gui.charmony.villager_tasks.available_tasks_for_villager", availableTasks.name());
         }
         return super.getTitle();
     }
 
-    public void renderBg(GuiGraphics guiGraphics) {
-        var width = 298;
-        var height = 177;
-        var midX = (this.width - width) / 2;
-        var midY = (this.height - height) / 2;
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, Resources.TASKS_BACKGROUND, midX, midY, 0.0f, 0.0f, width, height, 512, 256);
-    }
-
-    private void renderTitle(GuiGraphics guiGraphics) {
-        TextComponentHelper.drawCenteredString(guiGraphics, font, getTitle(), midX, midY - 80, titleColor.getArgbColor());
-    }
-
-    private void renderTasks(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    @Override
+    protected void renderContent(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         if (minecraft == null) return;
+
         var top = midY - 55;
         var left = midX - 138;
         var right = midX + 137;
 
-        if (!availableTasks.isEmpty()) {
+        if (handlers.availableTasksAreValid()) {
+            var activeTasks = handlers.getActiveTasks();
+            var availableTasks = handlers.getAvailableTasks();
             var rowHeight = 30;
 
             for (var i = 0; i < availableTasks.tasks().size(); i++) {
                 var rh = i * rowHeight;
                 var task = availableTasks.tasks().get(i);
-                var playerIsDoingTask = activeTasks != null && activeTasks.getTaskById(task.id).isPresent();
+                var playerIsDoingTask = activeTasks.getTaskById(task.id).isPresent();
+
+                if (!tooltips.containsKey(task)) {
+                    tooltips.put(task, new AvailableTaskTooltip(new TaskRenderer(task)));
+                }
 
                 // Background behind the task
                 var taskBg = new IndentedBox();
@@ -148,7 +99,6 @@ public class AvailableTasksScreen extends BaseScreen {
                         playerIsDoingTask ? Resources.ALREADY_DOING_TASK : Buttons.AcceptButton.DEFAULT_TOOLTIP,
                         b -> {
                             handlers.acceptTask(task);
-                            minecraft.setScreen(null);
                         });
 
                     if (playerIsDoingTask) {
@@ -157,15 +107,14 @@ public class AvailableTasksScreen extends BaseScreen {
 
                     addRenderableWidget(detailsButton);
                     addRenderableWidget(acceptButton);
+                    this.buttons.addAll(List.of(detailsButton, acceptButton));
                 }
 
                 // Mouse over title shows requirements of the task.
                 if (mouseX >= tx && mouseX <= detailsX - 4 &&
                     mouseY >= top + rh - 8 && mouseY <= top + rh + 13) {
-
-                    guiGraphics.setTooltipForNextFrame(font, List.of(
-                        Component.literal(title.getString())
-                    ), Optional.of(tooltips.get(i)), mouseX, mouseY);
+                    var titleComponent = Component.literal(title.getString());
+                    guiGraphics.setTooltipForNextFrame(font, List.of(titleComponent), Optional.of(tooltips.get(task)), mouseX, mouseY);
                 }
 
 //                // Requirements

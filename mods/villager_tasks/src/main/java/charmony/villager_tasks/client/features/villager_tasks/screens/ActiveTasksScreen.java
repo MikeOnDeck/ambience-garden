@@ -1,119 +1,129 @@
 package charmony.villager_tasks.client.features.villager_tasks.screens;
 
-import charmony.api.core.Color;
 import charmony.core.helpers.TextComponentHelper;
 import charmony.villager_tasks.client.features.villager_tasks.Buttons;
-import charmony.villager_tasks.client.features.villager_tasks.Handlers;
-import charmony.villager_tasks.client.features.villager_tasks.VillagerTasks;
-import charmony.villager_tasks.client.features.villager_tasks.components.BorderedBox;
-import charmony.villager_tasks.client.features.villager_tasks.components.CollectItemBox;
+import charmony.villager_tasks.client.features.villager_tasks.components.AvailableTaskTooltip;
+import charmony.villager_tasks.client.features.villager_tasks.components.IndentedBox;
 import charmony.villager_tasks.client.features.villager_tasks.components.LevelScroll;
+import charmony.villager_tasks.client.features.villager_tasks.renderers.TaskRenderer;
 import charmony.villager_tasks.common.features.villager_tasks.Resources;
-import charmony.villager_tasks.common.features.villager_tasks.Tasks;
-import net.minecraft.ChatFormatting;
+import charmony.villager_tasks.common.features.villager_tasks.Task;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
-public class ActiveTasksScreen extends BaseScreen {
-    private final Handlers handlers; // Reference for easy access to handler functions.
+import java.util.*;
 
-    private int midX;
-    private int textColor;
-    private int epicTextColor;
+public class ActiveTasksScreen extends BaseScreen {
     private boolean hasRenderedTaskButtons = false;
-    private Tasks activeTasks;
+
+    private final Map<Task, AvailableTaskTooltip> tooltips = new HashMap<>();
+    private final List<Button> buttons = new ArrayList<>();
 
     public ActiveTasksScreen() {
         super(Resources.ACTIVE_TASKS_TITLE);
-        this.handlers = VillagerTasks.feature().handlers;
     }
 
     @Override
     protected void init() {
         super.init();
         if (minecraft == null) return;
-
-        activeTasks = handlers.getActiveTasks();
-        midX = width / 2;
-        textColor = new Color(0xffffff).getArgbColor();
-        epicTextColor = new Color(0xffff00).getArgbColor();
         hasRenderedTaskButtons = false;
+
+        handlers.onActiveTasksUpdate.put(this, t -> {
+            this.buttons.forEach(this::removeWidget);
+            this.buttons.clear();
+            this.hasRenderedTaskButtons = false;
+        });
     }
 
     @Override
-    public boolean isPauseScreen() {
-        return false;
-    }
-
-    @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float tickDelta) {
-        renderTitle(guiGraphics);
-        renderTasks(guiGraphics, mouseX, mouseY);
-        super.render(guiGraphics, mouseX, mouseY, tickDelta);
-    }
-
-    private void renderTitle(GuiGraphics guiGraphics) {
-        TextComponentHelper.drawCenteredString(guiGraphics, font, getTitle(), midX, 14, textColor);
-    }
-
-    private void renderTasks(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    protected void renderContent(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         if (minecraft == null) return;
 
-        if (!activeTasks.isEmpty()) {
-            var rowHeight = 40;
-            var top = 46;
+        var top = midY - 55;
+        var left = midX - 138;
+        var right = midX + 137;
+
+        if (!handlers.getActiveTasks().isEmpty()) {
+            var activeTasks = handlers.getActiveTasks();
+            var rowHeight = 30;
 
             for (var i = 0; i < activeTasks.tasks().size(); i++) {
+                var rh = i * rowHeight;
                 var task = activeTasks.tasks().get(i);
-                var titleColor = task.isEpic() ? epicTextColor : textColor;
-                var distanceBetweenReqs = 3;
+
+                if (!tooltips.containsKey(task)) {
+                    tooltips.put(task, new AvailableTaskTooltip(new TaskRenderer(task)));
+                }
 
                 // Background behind the task
-                var taskBg = new BorderedBox(130);
-                var taskBgColor = new Color(task.isSatisfied() ? 0x004010 : 0x000000);
-                taskBg.render(guiGraphics, midX - 158, midX + 156, top - 9 + (i * rowHeight), top + 43 + (i * rowHeight), taskBgColor);
+                var taskBg = new IndentedBox();
+                taskBg.render(guiGraphics, left, right, top - 9 + rh, top + 14 + rh, task.isEpic() ? epicFillColor : fillColor);
 
                 // Level scroll icon
                 var scroll = new LevelScroll(font, task.level, true);
-                scroll.render(guiGraphics, midX - 152, top + (i * rowHeight) - 4, mouseX, mouseY);
+                var sx = left + 3;
+                var sy = top + rh - 6;
+                scroll.render(guiGraphics, sx, sy, mouseX, mouseY);
 
                 // Task title label
                 var title = MutableComponent.create(task.getTitle().getContents());
-                guiGraphics.drawString(font, title.withStyle(ChatFormatting.UNDERLINE), midX - 130,  top + (i * rowHeight), titleColor);
+                var tx = sx + 22;
+                var ty = top + rh - 1;
+                guiGraphics.drawString(font, title, tx, ty, textColor.getArgbColor(), false);
 
                 // Task buttons
+                var detailsX = right - 44;
+                var abandonX = right - 22;
+                var buttonY = top + rh - 6;
                 if (!hasRenderedTaskButtons) {
-                    var detailsButton = new Buttons.DetailsButton(midX + 108, top - 4 + (i * rowHeight),
+                    var detailsButton = new Buttons.DetailsButton(detailsX, buttonY,
                         b -> {
                             minecraft.setScreen(null);
                         });
 
-                    var abandonButton = new Buttons.AbandonButton(midX + 130, top - 4 + (i * rowHeight),
+                    var abandonButton = new Buttons.AbandonButton(abandonX, buttonY,
                         b -> {
                             handlers.abandonTask(task);
-                            minecraft.setScreen(null);
+                            this.tooltips.remove(task);
                         });
 
                     addRenderableWidget(detailsButton);
                     addRenderableWidget(abandonButton);
+                    this.buttons.addAll(List.of(detailsButton, abandonButton));
                 }
 
-                // Requirements
-                top += 21;
-                var reqsX = 0;
-                for (var j = 0; j < task.collect.items().size(); j++) {
-                    var item = task.collect.items().get(j);
-                    var box = new CollectItemBox(item);
-                    var boxX = midX - 150 + reqsX;
-                    var boxY = top - 4 + (i * rowHeight);
-                    box.render(guiGraphics, boxX, boxY, mouseX, mouseY);
-                    reqsX += box.width() + distanceBetweenReqs;
+                // Mouse over title shows requirements of the task.
+                if (mouseX >= tx && mouseX <= detailsX - 4 &&
+                    mouseY >= top + rh - 8 && mouseY <= top + rh + 13) {
+                    var titleComponent = Component.literal(title.getString());
+                    guiGraphics.setTooltipForNextFrame(font, List.of(titleComponent), Optional.of(tooltips.get(task)), mouseX, mouseY);
                 }
+
+//                // Requirements
+//                top += 21;
+//                var reqsX = 0;
+//                for (var j = 0; j < task.collect.items().size(); j++) {
+//                    var item = task.collect.items().get(j);
+//                    var box = new CollectItemBox(item);
+//                    var boxX = midX - 150 + reqsX;
+//                    var boxY = top - 4 + (i * rowHeight);
+//                    box.render(guiGraphics, boxX, boxY, mouseX, mouseY);
+//                    reqsX += box.width() + distanceBetweenReqs;
+//                }
             }
         } else {
-            TextComponentHelper.drawCenteredString(guiGraphics, font, Resources.NO_ACTIVE_TASKS, midX, 40, textColor);
+            TextComponentHelper.drawCenteredString(guiGraphics, font, Resources.NO_ACTIVE_TASKS, midX, top, textColor.getArgbColor());
         }
 
         hasRenderedTaskButtons = true;
+    }
+
+    @Override
+    public void onClose() {
+        handlers.onActiveTasksUpdate.remove(this);
+        super.onClose();
     }
 }
