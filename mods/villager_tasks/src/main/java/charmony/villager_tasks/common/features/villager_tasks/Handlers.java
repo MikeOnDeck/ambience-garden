@@ -194,6 +194,8 @@ public class Handlers extends Setup<VillagerTasks> {
                 abandonTask(serverPlayer, task);
             }
         }
+
+        syncActiveTasks(serverPlayer);
     }
 
     public void handleReceiveRequestActiveTasks(Player player, Networking.C2SRequestActiveTasks payload) {
@@ -228,6 +230,7 @@ public class Handlers extends Setup<VillagerTasks> {
         }
 
         log().info("Starting task for player " + playerName + ": " + task.getDefinitionId());
+        task.onStart(player);
         tasks = tasks.addTask(task);
 
         state.updateTasks(tasks);

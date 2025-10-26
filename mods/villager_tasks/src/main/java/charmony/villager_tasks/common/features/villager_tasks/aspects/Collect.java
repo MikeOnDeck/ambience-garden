@@ -114,6 +114,11 @@ public final class Collect extends Aspect implements Satisfiable {
     }
 
     @Override
+    public int total() {
+        return items().stream().mapToInt(CollectItem::total).sum();
+    }
+
+    @Override
     public void onComplete(ServerPlayer player) {
         for (var req : items()) {
             var remainder = req.total();

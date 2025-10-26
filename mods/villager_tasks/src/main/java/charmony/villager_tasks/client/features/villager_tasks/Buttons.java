@@ -28,9 +28,11 @@ public final class Buttons {
         public static final int WIDTH = 120;
         public static final int HEIGHT = 20;
         static Component TEXT = Resources.AVAILABLE_TASKS_BUTTON;
+        static Component TOOLTIP = Resources.AVAILABLE_TASKS_TOOLTIP;
 
         public AvailableTasksButton(int x, int y, OnPress onPress) {
             super(x, y, WIDTH, HEIGHT, TEXT, onPress, DEFAULT_NARRATION);
+            setTooltip(Tooltip.create(TOOLTIP));
         }
     }
 
@@ -57,8 +59,12 @@ public final class Buttons {
         static Component TEXT = Resources.ABANDON;
 
         public AbandonButton(int x, int y, OnPress onPress) {
+            this(x, y, TEXT, onPress);
+        }
+
+        public AbandonButton(int x, int y, Component tooltip, OnPress onPress) {
             super(x, y, WIDTH, HEIGHT, SPRITES, onPress);
-            setTooltip(Tooltip.create(TEXT));
+            setTooltip(Tooltip.create(tooltip));
         }
     }
 
@@ -88,6 +94,18 @@ public final class Buttons {
         }
     }
 
+    public static class CompleteTasksButton extends Button {
+        public static final int WIDTH = 120;
+        public static final int HEIGHT = 20;
+        static Component TEXT = Resources.COMPLETE_TASKS_BUTTON;
+        static Component TOOLTIP = Resources.COMPLETE_TASKS_TOOLTIP;
+
+        public CompleteTasksButton(int x, int y, OnPress onPress) {
+            super(x, y, WIDTH, HEIGHT, TEXT, onPress, DEFAULT_NARRATION);
+            setTooltip(Tooltip.create(TOOLTIP));
+        }
+    }
+
     public static class ConfirmButton extends Button {
         public static final int WIDTH = 80;
         public static final int HEIGHT = 20;
@@ -105,8 +123,12 @@ public final class Buttons {
         static Component TEXT = Resources.DETAILS;
 
         public DetailsButton(int x, int y, OnPress onPress) {
+            this(x, y, TEXT, onPress);
+        }
+
+        public DetailsButton(int x, int y, Component component, OnPress onPress) {
             super(x, y, WIDTH, HEIGHT, SPRITES, onPress);
-            setTooltip(Tooltip.create(TEXT));
+            setTooltip(Tooltip.create(component));
         }
     }
 

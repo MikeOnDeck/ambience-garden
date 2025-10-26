@@ -4,4 +4,6 @@ public interface Satisfiable {
     boolean isSatisfied();
 
     int remaining();
+
+    int total();
 }

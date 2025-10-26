@@ -117,7 +117,7 @@ public class Task implements EventListener, Satisfiable {
 
     @Override
     public boolean isSatisfied() {
-        return remaining() == 0;
+        return isStarted() && remaining() == 0;
     }
 
     @Override
@@ -128,12 +128,20 @@ public class Task implements EventListener, Satisfiable {
     }
 
     @Override
+    public int total() {
+        return requirements().stream().map(Satisfiable::total).reduce(0, Integer::sum);
+    }
+
+    @Override
     public void onStart(ServerPlayer player) {
+        setStatus(TaskStatus.Starting);
         aspects().forEach(b -> b.onStart(player));
+        onStarted(player);
     }
 
     @Override
     public void onStarted(ServerPlayer player) {
+        setStatus(TaskStatus.InProgress);
         aspects().forEach(b -> b.onStarted(player));
     }
 
@@ -143,6 +151,21 @@ public class Task implements EventListener, Satisfiable {
 
         for (var aspect : aspects) {
             aspect.onTick(player);
+        }
+
+        if (!(player instanceof ServerPlayer serverPlayer)) {
+            return;
+        }
+
+        if (!isStarted()) {
+            return;
+        }
+
+        if (!isSatisfied()) {
+            // TODO: show timer
+            if (expiry > 0 && ++duration >= expiry) {
+                onAbandon(serverPlayer);
+            }
         }
     }
 
@@ -156,20 +179,16 @@ public class Task implements EventListener, Satisfiable {
         aspects().forEach(b -> b.onComplete(player));
     }
 
+    public boolean isNotStarted() {
+        return status.equals(TaskStatus.NotStarted);
+    }
+
     public boolean isStarting() {
         return status.equals(TaskStatus.Starting);
     }
 
     public boolean isStarted() {
         return status.equals(TaskStatus.InProgress);
-    }
-
-    public boolean isCompleted() {
-        return status.equals(TaskStatus.Completed);
-    }
-
-    public boolean isAbandoned() {
-        return status.equals(TaskStatus.Abandoned);
     }
 
     public void setStatus(TaskStatus status) {

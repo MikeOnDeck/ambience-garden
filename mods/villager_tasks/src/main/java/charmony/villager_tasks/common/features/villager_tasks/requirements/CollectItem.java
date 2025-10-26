@@ -71,6 +71,7 @@ public class CollectItem implements Satisfiable, PlayerHolder, HasWeight {
         return Math.max(0, remainder);
     }
 
+    @Override
     public int total() {
         return total;
     }

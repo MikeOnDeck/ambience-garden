@@ -3,6 +3,7 @@ package charmony.villager_tasks.client.features.villager_tasks;
 import charmony.core.base.Setup;
 import charmony.villager_tasks.client.features.villager_tasks.screens.ActiveTasksScreen;
 import charmony.villager_tasks.client.features.villager_tasks.screens.AvailableTasksScreen;
+import charmony.villager_tasks.client.features.villager_tasks.screens.CompleteTasksScreen;
 import charmony.villager_tasks.common.features.villager_tasks.Networking;
 import charmony.villager_tasks.common.features.villager_tasks.Task;
 import charmony.villager_tasks.common.features.villager_tasks.Tasks;
@@ -13,16 +14,13 @@ import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.gui.screens.inventory.MerchantScreen;
 import net.minecraft.world.entity.player.Player;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
-import java.util.function.Consumer;
 
 public class Handlers extends Setup<VillagerTasks> {
     private Tasks activeTasks = Tasks.EMPTY;
     private Tasks availableTasks = Tasks.EMPTY;
     private UUID lastVillagerInteraction = UUID.randomUUID();
-    public Map<Screen, Consumer<Tasks>> onActiveTasksUpdate = new HashMap<>();
+    private Runnable runAfterUpdate = () -> {};
 
     public Handlers(VillagerTasks feature) {
         super(feature);
@@ -37,39 +35,66 @@ public class Handlers extends Setup<VillagerTasks> {
     public void setupScreen(Screen screen) {
         if (screen instanceof MerchantScreen merchantScreen) {
             var midX = merchantScreen.width / 2;
-            var baseY = merchantScreen.topPos + 174;
+            var top = merchantScreen.topPos + 174;
             var minecraft = Minecraft.getInstance();
             updateActiveTasks();
 
-            screen.addRenderableWidget(new Buttons.AvailableTasksButton(
-                midX - (Buttons.AvailableTasksButton.WIDTH / 2),
-                baseY,
+            // Tick the active tasks to ensure we have the latest status.
+            clientTick(minecraft);
+
+            var shouldShowCompleteButton = activeTasks.tasks().stream().anyMatch(Task::isSatisfied);
+
+            var availableTasksX = shouldShowCompleteButton
+                ? midX - 5 - (Buttons.AvailableTasksButton.WIDTH)
+                : midX - (Buttons.AvailableTasksButton.WIDTH / 2);
+
+            var completeTasksX = shouldShowCompleteButton
+                ? midX + 5
+                : 0;
+
+            screen.addRenderableWidget(new Buttons.AvailableTasksButton(availableTasksX, top,
                 b -> {
                     merchantScreen.onClose();
                     minecraft.setScreen(new AvailableTasksScreen());
                 }));
+
+            if (shouldShowCompleteButton) {
+                screen.addRenderableWidget(new Buttons.CompleteTasksButton(completeTasksX, top,
+                    b -> {
+                        merchantScreen.onClose();
+                        minecraft.setScreen(new CompleteTasksScreen());
+                    }));
+            }
         }
 
-        if (screen instanceof InventoryScreen inventoryScreen && !activeTasks.isEmpty()) {
+        if (screen instanceof InventoryScreen inventoryScreen) {
             var midX = inventoryScreen.width / 2;
-            var baseY = inventoryScreen.topPos + 174;
+            var top = inventoryScreen.topPos + 174;
             var minecraft = Minecraft.getInstance();
             updateActiveTasks();
 
-            screen.addRenderableWidget(new Buttons.ActiveTasksButton(
-                midX - (Buttons.ActiveTasksButton.WIDTH / 2),
-                baseY,
-                b -> {
-                    inventoryScreen.onClose();
-                    minecraft.setScreen(new ActiveTasksScreen());
-                }));
+            if (!activeTasks.isEmpty()) {
+                screen.addRenderableWidget(new Buttons.ActiveTasksButton(
+                    midX - (Buttons.ActiveTasksButton.WIDTH / 2),
+                    top,
+                    b -> {
+                        inventoryScreen.onClose();
+                        minecraft.setScreen(new ActiveTasksScreen());
+                    }));
+            }
         }
     }
 
     public void handleReceiveActiveTasks(Player player, Networking.S2CSendActiveTasks payload) {
         var tasks = payload.tasks();
         this.activeTasks = tasks;
-        onActiveTasksUpdate.values().forEach(c -> c.accept(tasks));
+        clientTick(Minecraft.getInstance());
+
+        // Run anything queued for after the update.
+        runAfterUpdate.run();
+
+        // Clear the queued action.
+        runAfterUpdate = () -> {};
 
         log().info("Client received " + tasks.tasks().size() + " active tasks.");
     }
@@ -104,11 +129,13 @@ public class Handlers extends Setup<VillagerTasks> {
         return !availableTasks.isEmpty() && availableTasks.uuid().equals(getLastVillagerInteraction());
     }
 
-    public void acceptTask(Task task) {
+    public void acceptTask(Task task, Runnable then) {
+        this.runAfterUpdate = then;
         Networking.C2SQueryTask.send(TaskQuery.Accept, task.id);
     }
 
-    public void abandonTask(Task task) {
+    public void abandonTask(Task task, Runnable then) {
+        this.runAfterUpdate = then;
         Networking.C2SQueryTask.send(TaskQuery.Abandon, task.id);
     }
 

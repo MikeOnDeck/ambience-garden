@@ -21,8 +21,7 @@ public class ConfirmAbandonScreen extends BaseScreen {
         if (minecraft == null) return;
 
         var confirmButton = new Buttons.ConfirmButton(midX - 80, midY + 10, b -> {
-            handlers.abandonTask(task);
-            minecraft.setScreen(new ActiveTasksScreen());
+            handlers.abandonTask(task, () -> minecraft.setScreen(new ActiveTasksScreen()));
         });
         var cancelButton = new Buttons.CancelButton(midX + 10, midY + 10, b -> {
             minecraft.setScreen(new ActiveTasksScreen());

@@ -5,21 +5,16 @@ import net.minecraft.util.StringRepresentable;
 import java.util.Locale;
 
 public enum TaskStatus implements StringRepresentable {
-    Unspecified(0, "unspecified"),
-    NotStarted(1, "not_started"),
-    Starting(2, "starting"),
-    InProgress(3, "in_progress"),
-    Satisfied(4, "satisfied"),
-    Completed(5, "completed"),
-    Abandoned(6, "abandoned");
+    Unspecified("unspecified"),
+    NotStarted("not_started"),
+    Starting("starting"),
+    InProgress("in_progress");
 
     public static final EnumCodec<TaskStatus> CODEC = StringRepresentable.fromEnum(TaskStatus::values);
 
-    private final int id;
     private final String name;
 
-    TaskStatus(int id, String name) {
-        this.id = id;
+    TaskStatus(String name) {
         this.name = name;
     }
 
@@ -30,10 +25,6 @@ public enum TaskStatus implements StringRepresentable {
             }
         }
         throw new RuntimeException("Unknown TaskStatus name: " + name);
-    }
-
-    public int getId() {
-        return id;
     }
 
     public String getName() {

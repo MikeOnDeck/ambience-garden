@@ -3,20 +3,21 @@ package charmony.villager_tasks.client.features.villager_tasks.screens;
 import charmony.core.helpers.TextComponentHelper;
 import charmony.villager_tasks.client.features.villager_tasks.Buttons;
 import charmony.villager_tasks.client.features.villager_tasks.components.AvailableTaskTooltip;
-import charmony.villager_tasks.client.features.villager_tasks.components.IndentedBox;
-import charmony.villager_tasks.client.features.villager_tasks.components.LevelScroll;
 import charmony.villager_tasks.client.features.villager_tasks.renderers.TaskRenderer;
 import charmony.villager_tasks.common.features.villager_tasks.Resources;
 import charmony.villager_tasks.common.features.villager_tasks.Task;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class AvailableTasksScreen extends BaseScreen {
     private final Map<Task, AvailableTaskTooltip> tooltips = new HashMap<>();
+    private final Map<Task, TaskRenderer> renderers = new HashMap<>();
     private final List<Button> buttons = new ArrayList<>();
 
     private boolean hasRenderedTaskButtons = false;
@@ -29,13 +30,9 @@ public class AvailableTasksScreen extends BaseScreen {
     protected void init() {
         super.init();
         if (minecraft == null) return;
-        hasRenderedTaskButtons = false;
 
-        handlers.onActiveTasksUpdate.put(this, t -> {
-            this.buttons.forEach(this::removeWidget);
-            this.buttons.clear();
-            this.hasRenderedTaskButtons = false;
-        });
+        this.hasRenderedTaskButtons = false;
+        this.buttons.clear();
     }
 
     @Override
@@ -51,8 +48,7 @@ public class AvailableTasksScreen extends BaseScreen {
     protected void renderContent(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         if (minecraft == null) return;
 
-        var top = midY - 57;
-        var left = midX - 138;
+        var top = midY - 67;
         var right = midX + 137;
 
         if (handlers.availableTasksAreValid()) {
@@ -63,62 +59,54 @@ public class AvailableTasksScreen extends BaseScreen {
             for (var i = 0; i < availableTasks.tasks().size(); i++) {
                 var rh = i * rowHeight;
                 var task = availableTasks.tasks().get(i);
-                var playerIsDoingTask = activeTasks.getTaskById(task.id).isPresent();
 
-                if (!tooltips.containsKey(task)) {
-                    tooltips.put(task, new AvailableTaskTooltip(new TaskRenderer(task)));
+                var activeTask = activeTasks.getTaskById(task.id).orElse(null);
+
+                var playerIsDoingTask = activeTask != null;
+                var playerHasDoneTask = activeTask != null && activeTask.isSatisfied();
+
+                if (playerHasDoneTask) {
+                    task = activeTask; // Swap out with the active task to show progress and rewards.
                 }
 
-                // Background behind the task
-                var taskBg = new IndentedBox();
-                taskBg.render(guiGraphics, left, right, top - 9 + rh, top + 14 + rh, task.isEpic() ? epicFillColor : fillColor);
+                Task taskCopy = task; // have to do this for Java's lambdas, mumble mumble
 
-                // Level scroll icon
-                var scroll = new LevelScroll(font, task.level, playerIsDoingTask);
-                var sx = left + 3;
-                var sy = top + rh - 6;
-                scroll.render(guiGraphics, sx, sy, mouseX, mouseY);
+                var renderer = renderers.computeIfAbsent(task, TaskRenderer::new);
+                var tooltip = tooltips.computeIfAbsent(task, t -> new AvailableTaskTooltip(renderer));
 
-                // Task title label
-                var title = MutableComponent.create(task.getTitle().getContents());
-                var tx = sx + 22;
-                var ty = top + rh - 1;
-                guiGraphics.drawString(font, title, tx, ty, textColor.getArgbColor(), false);
+                renderer.simpleTaskRow(guiGraphics, midX, top + rh, mouseX, mouseY, tooltip);
 
                 // Task buttons
-                var detailsX = right - 44;
-                var acceptX = right - 22;
-                var buttonY = top + rh - 6;
                 if (!hasRenderedTaskButtons) {
-                    var detailsButton = new Buttons.DetailsButton(detailsX, buttonY,
-                        b -> {
-                            minecraft.setScreen(new TaskDetailsScreen(task));
-                        });
+                    var buttonY = top + rh + 2;
 
-                    var acceptButton = new Buttons.AcceptButton(acceptX, buttonY,
+                    var detailsButton = new Buttons.DetailsButton(right - 44, buttonY,
+                        b -> minecraft.setScreen(new TaskDetailsScreen(taskCopy)));
+
+                    var acceptButton = new Buttons.AcceptButton(right - 22, buttonY,
                         playerIsDoingTask ? Resources.DOING_TASK : Buttons.AcceptButton.DEFAULT_TOOLTIP,
-                        b -> {
-                            handlers.acceptTask(task);
-                        });
+                        b -> handlers.acceptTask(taskCopy, () -> minecraft.setScreen(new AvailableTasksScreen())));
+
+                    var completeButton = new Buttons.CompleteButton(right - 22, buttonY,
+                        Buttons.CompleteButton.DEFAULT_TOOLTIP,
+                        b -> handlers.acceptTask(taskCopy, () -> minecraft.setScreen(new AvailableTasksScreen())));
+
+                    completeButton.visible = false;
 
                     if (playerIsDoingTask) {
-                        acceptButton.active = false; // Set accept button disabled if the player already has this task.
+                        acceptButton.active = false;
+                    }
+                    if (playerHasDoneTask) {
+                        acceptButton.visible = false;
+                        completeButton.visible = true;
                     }
 
-                    addRenderableWidget(detailsButton);
-                    addRenderableWidget(acceptButton);
-                    this.buttons.addAll(List.of(detailsButton, acceptButton));
-                }
-
-                // Mouse over title shows requirements of the task.
-                if (mouseX >= tx && mouseX <= detailsX - 4 &&
-                    mouseY >= top + rh - 8 && mouseY <= top + rh + 13) {
-                    var titleComponent = Component.literal(title.getString());
-                    guiGraphics.setTooltipForNextFrame(font, List.of(titleComponent), Optional.of(tooltips.get(task)), mouseX, mouseY);
+                    buttons.addAll(List.of(detailsButton, acceptButton, completeButton));
+                    buttons.forEach(this::addRenderableWidget);
                 }
             }
         } else {
-            TextComponentHelper.drawCenteredString(guiGraphics, font, Resources.NO_AVAILABLE_TASKS, midX, top, textColor.getArgbColor());
+            TextComponentHelper.drawCenteredString(guiGraphics, font, Resources.NO_AVAILABLE_TASKS, midX, top + 20, textColor.getArgbColor());
         }
 
         hasRenderedTaskButtons = true;
