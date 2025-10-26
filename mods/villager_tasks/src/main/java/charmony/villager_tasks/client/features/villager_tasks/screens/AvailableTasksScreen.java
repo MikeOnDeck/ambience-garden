@@ -51,7 +51,7 @@ public class AvailableTasksScreen extends BaseScreen {
     protected void renderContent(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         if (minecraft == null) return;
 
-        var top = midY - 55;
+        var top = midY - 57;
         var left = midX - 138;
         var right = midX + 137;
 
