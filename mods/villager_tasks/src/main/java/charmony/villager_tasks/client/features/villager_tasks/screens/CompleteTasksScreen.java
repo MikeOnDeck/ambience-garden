@@ -61,7 +61,10 @@ public class CompleteTasksScreen extends BaseScreen {
                         new Buttons.DetailsButton(right - 44, buttonY,
                             b -> minecraft.setScreen(new TaskDetailsScreen(task))),
                         new Buttons.CompleteButton(right - 22, buttonY,
-                            b -> minecraft.setScreen(null))
+                            b -> {
+                                handlers.completeTask(task, () -> {});
+                                minecraft.setScreen(null);
+                            })
                     ));
                     buttons.forEach(this::addRenderableWidget);
                 }

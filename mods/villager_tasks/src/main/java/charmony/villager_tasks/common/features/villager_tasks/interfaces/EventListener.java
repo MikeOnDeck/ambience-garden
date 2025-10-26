@@ -1,5 +1,6 @@
 package charmony.villager_tasks.common.features.villager_tasks.interfaces;
 
+import charmony.villager_tasks.common.features.villager_tasks.Task;
 import net.fabricmc.fabric.api.loot.v3.LootTableSource;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.ResourceKey;
@@ -12,39 +13,39 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.storage.loot.LootTable;
 
 public interface EventListener {
-    default void onStart(ServerPlayer player) {
+    default void onStart(Task task, ServerPlayer player) {
         // hook
     }
 
-    default void onStarted(ServerPlayer player) {
+    default void onStarted(Task task, ServerPlayer player) {
         // hook
     }
 
-    default void onTick(Player player) {
+    default void onTick(Task task, Player player) {
         // hook
     }
 
-    default void onAbandon(ServerPlayer player) {
+    default void onAbandon(Task task, ServerPlayer player) {
         // hook
     }
 
-    default void onComplete(ServerPlayer player) {
+    default void onComplete(Task task, ServerPlayer player) {
         // hook
     }
 
-    default void onEntityKilled(LivingEntity livingEntity, DamageSource damageSource) {
+    default void onEntityKilled(Task task, LivingEntity livingEntity, DamageSource damageSource) {
         // hook
     }
 
-    default void onEntityLeave(Entity entity) {
+    default void onEntityLeave(Task task, Entity entity) {
         // hook
     }
 
-    default void onItemPickup(LivingEntity livingEntity, ItemEntity itemEntity) {
+    default void onItemPickup(Task task, LivingEntity livingEntity, ItemEntity itemEntity) {
         // hook
     }
 
-    default void onLootTableModify(ResourceKey<LootTable> key, LootTable.Builder builder, LootTableSource source, HolderLookup.Provider provider) {
+    default void onLootTableModify(Task task, ResourceKey<LootTable> key, LootTable.Builder builder, LootTableSource source, HolderLookup.Provider provider) {
         // hook
     }
 }

@@ -9,6 +9,9 @@ import charmony.villager_tasks.common.features.villager_tasks.rewards.RewardItem
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
@@ -52,6 +55,10 @@ public final class Rewards extends Aspect {
         return items.isEmpty() && effects.isEmpty() && experience <= 0;
     }
 
+    public List<RewardItem> items() {
+        return items;
+    }
+
     public static Rewards make(Task.AspectBuilder builder) {
         var map = builder.definition().rewards;
         if (map.isEmpty()) {
@@ -89,5 +96,24 @@ public final class Rewards extends Aspect {
 
         var rewardItems = Helpers.getRandomlyByWeight(criteria, count, random);
         return new Rewards(experience, rewardItems, List.of());
+    }
+
+    @Override
+    public void onComplete(Task task, ServerPlayer player) {
+        var level = player.level();
+        var stacks = new ArrayList<ItemStack>();
+
+        for (var item : items()) {
+            var stack = item.stack().copy();
+            stack.setCount(item.total());
+            stacks.add(stack);
+        }
+
+        var entity = Helpers.getRewardGiver(player, task.villager);
+        Helpers.throwItemsAtPlayer(entity, player, stacks);
+
+        if (entity instanceof AbstractVillager) {
+            level.playSound(null, entity.blockPosition(), SoundEvents.VILLAGER_YES, entity.getSoundSource(), 1.0f, 1.0f);
+        }
     }
 }

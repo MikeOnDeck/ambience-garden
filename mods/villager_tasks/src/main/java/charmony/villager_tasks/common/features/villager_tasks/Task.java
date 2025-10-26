@@ -133,24 +133,24 @@ public class Task implements EventListener, Satisfiable {
     }
 
     @Override
-    public void onStart(ServerPlayer player) {
+    public void onStart(Task task, ServerPlayer player) {
         setStatus(TaskStatus.Starting);
-        aspects().forEach(b -> b.onStart(player));
-        onStarted(player);
+        aspects().forEach(b -> b.onStart(this, player));
+        onStarted(this, player);
     }
 
     @Override
-    public void onStarted(ServerPlayer player) {
+    public void onStarted(Task task, ServerPlayer player) {
         setStatus(TaskStatus.InProgress);
-        aspects().forEach(b -> b.onStarted(player));
+        aspects().forEach(b -> b.onStarted(this, player));
     }
 
     @Override
-    public void onTick(Player player) {
+    public void onTick(Task task, Player player) {
         var aspects = aspects();
 
         for (var aspect : aspects) {
-            aspect.onTick(player);
+            aspect.onTick(task, player);
         }
 
         if (!(player instanceof ServerPlayer serverPlayer)) {
@@ -164,19 +164,19 @@ public class Task implements EventListener, Satisfiable {
         if (!isSatisfied()) {
             // TODO: show timer
             if (expiry > 0 && ++duration >= expiry) {
-                onAbandon(serverPlayer);
+                onAbandon(this, serverPlayer);
             }
         }
     }
 
     @Override
-    public void onAbandon(ServerPlayer player) {
-        aspects().forEach(b -> b.onAbandon(player));
+    public void onAbandon(Task task, ServerPlayer player) {
+        aspects().forEach(b -> b.onAbandon(this, player));
     }
 
     @Override
-    public void onComplete(ServerPlayer player) {
-        aspects().forEach(b -> b.onComplete(player));
+    public void onComplete(Task task, ServerPlayer player) {
+        aspects().forEach(b -> b.onComplete(this, player));
     }
 
     public boolean isNotStarted() {

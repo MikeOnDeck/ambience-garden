@@ -12,7 +12,7 @@ public abstract class Aspect implements EventListener, PlayerHolder {
     @Nullable private Player player;
 
     @Override
-    public void onTick(Player player) {
+    public void onTick(Task task, Player player) {
         this.player = player;
     }
 

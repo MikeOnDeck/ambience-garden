@@ -89,7 +89,10 @@ public class AvailableTasksScreen extends BaseScreen {
 
                     var completeButton = new Buttons.CompleteButton(right - 22, buttonY,
                         Buttons.CompleteButton.DEFAULT_TOOLTIP,
-                        b -> handlers.acceptTask(taskCopy, () -> minecraft.setScreen(new AvailableTasksScreen())));
+                        b -> {
+                            handlers.completeTask(taskCopy, () -> {});
+                            minecraft.setScreen(null);
+                        });
 
                     completeButton.visible = false;
 

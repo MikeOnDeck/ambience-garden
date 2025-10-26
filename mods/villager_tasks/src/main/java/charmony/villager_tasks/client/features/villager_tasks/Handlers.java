@@ -28,7 +28,7 @@ public class Handlers extends Setup<VillagerTasks> {
 
     public void clientTick(Minecraft minecraft) {
         if (minecraft != null && minecraft.player instanceof Player player) {
-            activeTasks.tasks().forEach(task -> task.onTick(player));
+            activeTasks.tasks().forEach(task -> task.onTick(task, player));
         }
     }
 
@@ -137,6 +137,11 @@ public class Handlers extends Setup<VillagerTasks> {
     public void abandonTask(Task task, Runnable then) {
         this.runAfterUpdate = then;
         Networking.C2SQueryTask.send(TaskQuery.Abandon, task.id);
+    }
+
+    public void completeTask(Task task, Runnable then) {
+        this.runAfterUpdate = then;
+        Networking.C2SQueryTask.send(TaskQuery.Complete, task.id);
     }
 
     public void updateActiveTasks() {

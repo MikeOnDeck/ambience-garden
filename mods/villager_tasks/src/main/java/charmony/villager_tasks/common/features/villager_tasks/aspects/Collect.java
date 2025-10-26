@@ -90,8 +90,8 @@ public final class Collect extends Aspect implements Satisfiable {
     }
 
     @Override
-    public void onTick(Player player) {
-        super.onTick(player);
+    public void onTick(Task task, Player player) {
+        super.onTick(task, player);
 
         // Pass player down to each item requirement on tick.
         for (var item : items()) {
@@ -119,7 +119,7 @@ public final class Collect extends Aspect implements Satisfiable {
     }
 
     @Override
-    public void onComplete(ServerPlayer player) {
+    public void onComplete(Task task, ServerPlayer player) {
         for (var req : items()) {
             var remainder = req.total();
 

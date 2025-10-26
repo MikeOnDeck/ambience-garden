@@ -193,6 +193,23 @@ public class Handlers extends Setup<VillagerTasks> {
                 log().info("Player " + playerName + " abandoned task: " + id);
                 abandonTask(serverPlayer, task);
             }
+
+            case TaskQuery.Complete -> {
+                var tasks = PLAYER_TASKS.getOrDefault(player, Tasks.EMPTY);
+                var task = tasks.getTaskById(id).orElse(null);
+                if (task == null) {
+                    log().warn("Task not found in active tasks: " + id);
+                    return;
+                }
+
+                if (!task.isSatisfied()) {
+                    log().warn("Player " + playerName + " attempted to complete unsatisfied task: " + id);
+                    return;
+                }
+
+                log().info("Player " + playerName + " completed task: " + id);
+                completeTask(serverPlayer, task);
+            }
         }
 
         syncActiveTasks(serverPlayer);
@@ -230,7 +247,7 @@ public class Handlers extends Setup<VillagerTasks> {
         }
 
         log().info("Starting task for player " + playerName + ": " + task.getDefinitionId());
-        task.onStart(player);
+        task.onStart(task, player);
         tasks = tasks.addTask(task);
 
         state.updateTasks(tasks);
@@ -250,11 +267,32 @@ public class Handlers extends Setup<VillagerTasks> {
         }
 
         log().info("Abandoning task for player " + playerName + ": " + task.id);
+        task.onAbandon(task, player);
         tasks = tasks.removeTask(task);
 
         state.updateTasks(tasks);
         PLAYER_TASKS.put(player, tasks);
         playSound(player, feature().registers.taskAbandon);
+        syncActiveTasks(player);
+    }
+
+    public void completeTask(ServerPlayer player, Task task) {
+        var tasks = PLAYER_TASKS.getOrDefault(player, Tasks.EMPTY);
+        var serverLevel = player.level();
+        var state = TasksSavedData.getServerState(serverLevel.getServer());
+        var playerName = player.getName().getString();
+
+        if (tasks.getTaskById(task.id).isEmpty()) {
+            return;
+        }
+
+        log().info("Completing task for player " + playerName + ": " + task.id);
+        task.onComplete(task, player);
+        tasks = tasks.removeTask(task);
+
+        state.updateTasks(tasks);
+        PLAYER_TASKS.put(player, tasks);
+        playSound(player, feature().registers.taskComplete);
         syncActiveTasks(player);
     }
 
@@ -278,7 +316,7 @@ public class Handlers extends Setup<VillagerTasks> {
 
         // Tick all tasks for the player.
         var tasks = PLAYER_TASKS.getOrDefault(player, Tasks.EMPTY);
-        tasks.tasks().forEach(task -> task.onTick(serverPlayer));
+        tasks.tasks().forEach(task -> task.onTick(task, serverPlayer));
     }
 
     public record PotentialTasks(long seed, long gameTime, Tasks tasks) {
