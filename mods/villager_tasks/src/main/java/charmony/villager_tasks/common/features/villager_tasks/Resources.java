@@ -17,6 +17,8 @@ public final class Resources {
     public static final Component AVAILABLE_TASKS_BUTTON = Component.translatable("gui.charmony.villager_tasks.available_tasks.button");
     public static final Component COLLECT_ASPECT = Component.translatable("gui.charmony.villager_tasks.aspect.collect");
     public static final Component COMPLETE = Component.translatable("gui.charmony.villager_tasks.complete");
+    public static final Component CONFIRM = Component.translatable("gui.charmony.villager_tasks.confirm");
+    public static final Component CONFIRM_ABANDON = Component.translatable("gui.charmony.villager_tasks.confirm_abandon");
     public static final Component DETAILS = Component.translatable("gui.charmony.villager_tasks.details");
     public static final Component DOING_TASK = Component.translatable("gui.charmony.villager_tasks.doing_task");
     public static final Component MISSINGNO = Component.translatable("gui.charmony.villager_tasks.missingno");
@@ -31,6 +33,9 @@ public final class Resources {
 
     public static final Component YOU_COLLECT = MutableComponent.create(
         Component.translatable("gui.charmony.villager_tasks.you_collect").getContents()).withStyle(ChatFormatting.RED, ChatFormatting.BOLD);
+
+    public static final Component YOU_COLLECTED = MutableComponent.create(
+        Component.translatable("gui.charmony.villager_tasks.you_collected").getContents()).withStyle(ChatFormatting.GREEN, ChatFormatting.BOLD);
 
     public static final Component YOU_RECEIVE = MutableComponent.create(
         Component.translatable("gui.charmony.villager_tasks.you_receive").getContents()).withStyle(ChatFormatting.AQUA, ChatFormatting.BOLD);

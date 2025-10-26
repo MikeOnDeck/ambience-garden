@@ -62,6 +62,16 @@ public final class Buttons {
         }
     }
 
+    public static class CancelButton extends Button {
+        public static final int WIDTH = 80;
+        public static final int HEIGHT = 20;
+        static Component TEXT = Component.translatable("gui.cancel");
+
+        public CancelButton(int x, int y, OnPress onPress) {
+            super(x, y, WIDTH, HEIGHT, TEXT, onPress, DEFAULT_NARRATION);
+        }
+    }
+
     public static class CompleteButton extends ImageButton {
         public static int WIDTH = 20;
         public static int HEIGHT = 18;
@@ -75,6 +85,16 @@ public final class Buttons {
         public CompleteButton(int x, int y, Component tooltip, OnPress onPress) {
             super(x, y, WIDTH, HEIGHT, SPRITES, onPress);
             setTooltip(Tooltip.create(tooltip));
+        }
+    }
+
+    public static class ConfirmButton extends Button {
+        public static final int WIDTH = 80;
+        public static final int HEIGHT = 20;
+        static Component TEXT = Resources.CONFIRM;
+
+        public ConfirmButton(int x, int y, OnPress onPress) {
+            super(x, y, WIDTH, HEIGHT, TEXT, onPress, DEFAULT_NARRATION);
         }
     }
 

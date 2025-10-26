@@ -20,7 +20,7 @@ public class CollectItemBox extends AspectBox {
     protected void modifyItemStackTooltip(List<Component> tooltips) {
         var itemName = tooltips.getFirst().getString();
         tooltips.clear();
-        tooltips.add(Resources.YOU_COLLECT);
+        tooltips.add(collectItem.isSatisfied() ? Resources.YOU_COLLECTED : Resources.YOU_COLLECT);
         tooltips.add(Component.literal(itemName + ": " + collectItem.total()));
     }
 

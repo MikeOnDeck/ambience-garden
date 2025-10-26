@@ -86,8 +86,7 @@ public class ActiveTasksScreen extends BaseScreen {
 
                     var abandonButton = new Buttons.AbandonButton(abandonX, buttonY,
                         b -> {
-                            handlers.abandonTask(task);
-                            this.tooltips.remove(task);
+                            minecraft.setScreen(new ConfirmAbandonScreen(task));
                         });
 
                     addRenderableWidget(detailsButton);
