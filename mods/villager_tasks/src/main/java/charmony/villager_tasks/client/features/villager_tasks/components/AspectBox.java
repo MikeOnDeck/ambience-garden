@@ -37,7 +37,7 @@ public class AspectBox {
         var ty = iy + 5;
 
         // Draw box outline and background
-        var box = new IndentedOverlayBox(fillAlpha());
+        var box = new IndentedBox(fillAlpha());
         box.render(guiGraphics, x, x1, y, y1, fillColor());
 
         var itemStack = itemStack().orElse(null);
