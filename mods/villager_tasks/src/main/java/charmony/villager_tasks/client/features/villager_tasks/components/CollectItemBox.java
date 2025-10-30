@@ -11,9 +11,15 @@ import java.util.Optional;
 
 public class CollectItemBox extends AspectBox {
     private final CollectItem collectItem;
+    private final boolean showProgress;
 
     public CollectItemBox(CollectItem collectItem) {
+        this(collectItem, false);
+    }
+
+    public CollectItemBox(CollectItem collectItem, boolean showProgress) {
         this.collectItem = collectItem;
+        this.showProgress = showProgress;
     }
 
     @Override
@@ -26,6 +32,10 @@ public class CollectItemBox extends AspectBox {
 
     @Override
     public String text() {
+        if (!showProgress) {
+            return "" + collectItem.total();
+        }
+
         var completed = collectItem.total() - collectItem.remaining();
         return completed + "/" + collectItem.total();
     }

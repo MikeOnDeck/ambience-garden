@@ -87,7 +87,7 @@ public class TaskDetailsScreen extends BaseScreen {
 
         for (var i = 0; i < collect.items().size(); i++) {
             var item = collect.items().get(i);
-            var box = new CollectItemBox(item);
+            var box = new CollectItemBox(item, task.isStarted());
             box.render(guiGraphics, x + xx, y + yy, mouseX, mouseY);
             xx += box.width() + boxMargin;
             if (xx >= maxWidth) {
