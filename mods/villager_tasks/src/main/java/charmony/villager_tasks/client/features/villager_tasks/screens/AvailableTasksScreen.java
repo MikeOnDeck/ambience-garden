@@ -33,6 +33,8 @@ public class AvailableTasksScreen extends BaseScreen {
 
         this.hasRenderedTaskButtons = false;
         this.buttons.clear();
+
+        addCloseButton();
     }
 
     @Override
@@ -78,7 +80,7 @@ public class AvailableTasksScreen extends BaseScreen {
                     var buttonY = top + rh + 2;
 
                     var detailsButton = new Buttons.DetailsButton(right - 44, buttonY,
-                        b -> minecraft.setScreen(new TaskDetailsScreen(taskCopy)));
+                        b -> minecraft.setScreen(new TaskDetailsScreen(taskCopy, this)));
 
                     var acceptButton = new Buttons.AcceptButton(right - 22, buttonY,
                         playerIsDoingTask ? Resources.DOING_TASK : Buttons.AcceptButton.DEFAULT_TOOLTIP,

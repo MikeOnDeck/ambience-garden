@@ -64,6 +64,16 @@ public final class Buttons {
         }
     }
 
+    public static class BackToTaskButton extends Button {
+        public static final int WIDTH = 120;
+        public static final int HEIGHT = 20;
+        static Component TEXT = Resources.BACK_TO_TASKS;
+
+        public BackToTaskButton(int x, int y, OnPress onPress) {
+            super(x, y, WIDTH, HEIGHT, TEXT, onPress, DEFAULT_NARRATION);
+        }
+    }
+
     public static class CancelButton extends Button {
         public static final int WIDTH = 80;
         public static final int HEIGHT = 20;

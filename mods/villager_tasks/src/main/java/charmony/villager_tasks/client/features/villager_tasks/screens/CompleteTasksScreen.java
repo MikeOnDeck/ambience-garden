@@ -1,6 +1,5 @@
 package charmony.villager_tasks.client.features.villager_tasks.screens;
 
-import charmony.core.helpers.TextComponentHelper;
 import charmony.villager_tasks.client.features.villager_tasks.Buttons;
 import charmony.villager_tasks.client.features.villager_tasks.components.AvailableTaskTooltip;
 import charmony.villager_tasks.client.features.villager_tasks.renderers.TaskRenderer;
@@ -32,6 +31,8 @@ public class CompleteTasksScreen extends BaseScreen {
 
         this.hasRenderedTaskButtons = false;
         this.buttons.clear();
+
+        addCloseButton();
     }
 
     @Override
@@ -42,13 +43,12 @@ public class CompleteTasksScreen extends BaseScreen {
         var right = midX + 137;
 
         if (!handlers.getActiveTasks().isEmpty()) {
-            var activeTasks = handlers.getActiveTasks();
+            var satisfiedTasks = handlers.getActiveTasks().tasks().stream().filter(Task::isSatisfied).toList();
             var rowHeight = 30;
 
-            for (var i = 0; i < activeTasks.tasks().size(); i++) {
+            for (var i = 0; i < satisfiedTasks.size(); i++) {
                 var rh = i * rowHeight;
-                var task = activeTasks.tasks().get(i);
-                if (!task.isSatisfied()) continue;
+                var task = satisfiedTasks.get(i);
 
                 var renderer = renderers.computeIfAbsent(task, TaskRenderer::new);
                 var tooltip = tooltips.computeIfAbsent(task, t -> new AvailableTaskTooltip(renderer));
@@ -60,7 +60,7 @@ public class CompleteTasksScreen extends BaseScreen {
                     var buttonY = top + rh + 2;
                     buttons.addAll(List.of(
                         new Buttons.DetailsButton(right - 44, buttonY,
-                            b -> minecraft.setScreen(new TaskDetailsScreen(task))),
+                            b -> minecraft.setScreen(new TaskDetailsScreen(task, this))),
                         new Buttons.CompleteButton(right - 22, buttonY,
                             b -> {
                                 handlers.completeTask(task, () -> {});
@@ -71,7 +71,7 @@ public class CompleteTasksScreen extends BaseScreen {
                 }
             }
         } else {
-            TextComponentHelper.drawCenteredString(guiGraphics, font, Resources.NO_SATISFIED_TASKS, midX, top + 20, textColor.getArgbColor());
+            this.onClose();
         }
 
         hasRenderedTaskButtons = true;

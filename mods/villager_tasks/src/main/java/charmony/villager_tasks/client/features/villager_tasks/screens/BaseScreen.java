@@ -39,11 +39,6 @@ public abstract class BaseScreen extends Screen {
         textColor = new Color(0x202020);
         fillColor = new Color(0x909090);
         epicFillColor = new Color(0xa0a060);
-
-        var closeButton = new Buttons.CloseButton(midX - (Buttons.CloseButton.WIDTH / 2), midY + 94,
-            b -> minecraft.setScreen(null));
-
-        addRenderableWidget(closeButton);
     }
 
     @Override
@@ -69,6 +64,15 @@ public abstract class BaseScreen extends Screen {
 
     protected void renderTitle(GuiGraphics guiGraphics) {
         TextComponentHelper.drawCenteredString(guiGraphics, font, getTitle(), midX, midY - 80, titleColor.getArgbColor());
+    }
+
+    protected void addCloseButton() {
+        if (minecraft == null) return;
+
+        var closeButton = new Buttons.CloseButton(midX - (Buttons.CloseButton.WIDTH / 2), midY + 94,
+            b -> minecraft.setScreen(null));
+
+        addRenderableWidget(closeButton);
     }
 
     protected abstract void renderContent(GuiGraphics guiGraphics, int mouseX, int mouseY);

@@ -1,6 +1,5 @@
 package charmony.villager_tasks.client.features.villager_tasks.screens;
 
-import charmony.core.helpers.TextComponentHelper;
 import charmony.villager_tasks.client.features.villager_tasks.Buttons;
 import charmony.villager_tasks.client.features.villager_tasks.components.AvailableTaskTooltip;
 import charmony.villager_tasks.client.features.villager_tasks.renderers.TaskRenderer;
@@ -32,6 +31,8 @@ public class ActiveTasksScreen extends BaseScreen {
 
         this.hasRenderedTaskButtons = false;
         this.buttons.clear();
+
+        addCloseButton();
     }
 
     @Override
@@ -61,7 +62,7 @@ public class ActiveTasksScreen extends BaseScreen {
                     // var idComponent = Tooltip.create(Component.literal(String.valueOf(task.id)));
 
                     var details = new Buttons.DetailsButton(right - 44, buttonY,
-                        b -> minecraft.setScreen(new TaskDetailsScreen(task)));
+                        b -> minecraft.setScreen(new TaskDetailsScreen(task, this)));
 
                     var abandon = new Buttons.AbandonButton(right - 22, buttonY,
                         b -> minecraft.setScreen(new ConfirmAbandonScreen(task)));
@@ -71,7 +72,7 @@ public class ActiveTasksScreen extends BaseScreen {
                 }
             }
         } else {
-            TextComponentHelper.drawCenteredString(guiGraphics, font, Resources.NO_ACTIVE_TASKS, midX, top + 20, textColor.getArgbColor());
+            this.onClose();
         }
 
         hasRenderedTaskButtons = true;

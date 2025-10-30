@@ -1,5 +1,6 @@
 package charmony.villager_tasks.client.features.villager_tasks.screens;
 
+import charmony.villager_tasks.client.features.villager_tasks.Buttons;
 import charmony.villager_tasks.client.features.villager_tasks.components.CollectItemBox;
 import charmony.villager_tasks.client.features.villager_tasks.components.IndentedBox;
 import charmony.villager_tasks.client.features.villager_tasks.components.RewardItemBox;
@@ -7,13 +8,38 @@ import charmony.villager_tasks.client.features.villager_tasks.components.RewardX
 import charmony.villager_tasks.common.features.villager_tasks.Resources;
 import charmony.villager_tasks.common.features.villager_tasks.Task;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
+
+import javax.annotation.Nullable;
 
 public class TaskDetailsScreen extends BaseScreen {
+    private final @Nullable Screen parent;
     private final Task task;
 
     public TaskDetailsScreen(Task task) {
+        this(task, null);
+    }
+
+    public TaskDetailsScreen(Task task, @Nullable Screen parent) {
         super(task.getTitle());
         this.task = task;
+        this.parent = parent;
+    }
+
+    @Override
+    protected void init() {
+        super.init();
+        if (minecraft == null) return;
+
+        if (parent != null) {
+            var backToTask = new Buttons.BackToTaskButton(midX - (Buttons.BackToTaskButton.WIDTH / 2), midY + 94,
+                b -> minecraft.setScreen(parent));
+
+            addRenderableWidget(backToTask);
+        } else {
+            addCloseButton();
+        }
+
     }
 
     @Override

@@ -11,6 +11,7 @@
   "gui.charmony.villager_tasks.available_tasks.button": "Available tasks",
   "gui.charmony.villager_tasks.available_tasks.tooltip": "View all tasks you can accept from this villager.",
   "gui.charmony.villager_tasks.available_tasks_for_villager": "Available tasks for %s",
+  "gui.charmony.villager_tasks.back_to_tasks": "Back to tasks",
   "gui.charmony.villager_tasks.close": "Close",
   "gui.charmony.villager_tasks.collect_items": "Collect %s: %s",
   "gui.charmony.villager_tasks.complete": "Complete",
