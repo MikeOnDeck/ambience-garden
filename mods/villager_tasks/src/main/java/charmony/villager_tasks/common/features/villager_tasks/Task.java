@@ -129,7 +129,7 @@ public class Task implements EventListener, Satisfiable {
     @Override
     public int remaining() {
         var remaining = 0;
-        remaining += requirements().stream().anyMatch(req -> !req.isSatisfied()) ? 1 : 0;
+        remaining += requirements().stream().map(Satisfiable::remaining).reduce(0, Integer::sum);
         return remaining;
     }
 

@@ -33,6 +33,7 @@
   "gui.charmony.villager_tasks.no_available_tasks": "No available tasks",
   "gui.charmony.villager_tasks.no_satisfied_tasks": "No tasks can be handed in",
   "gui.charmony.villager_tasks.requirements": "Requirements",
+  "gui.charmony.villager_tasks.requirements_remaining": "%s/%s requirements completed",
   "gui.charmony.villager_tasks.rewards": "Rewards",
   "gui.charmony.villager_tasks.tasks": "Tasks",
   "gui.charmony.villager_tasks.you_collect": "You collect",

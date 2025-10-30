@@ -3,6 +3,7 @@ package charmony.villager_tasks.client.features.villager_tasks.renderers;
 import charmony.api.core.Color;
 import charmony.villager_tasks.client.features.villager_tasks.components.IndentedBox;
 import charmony.villager_tasks.client.features.villager_tasks.components.LevelScroll;
+import charmony.villager_tasks.client.features.villager_tasks.components.ProgressBox;
 import charmony.villager_tasks.client.features.villager_tasks.components.TaskTooltip;
 import charmony.villager_tasks.common.features.villager_tasks.Task;
 import net.minecraft.client.Minecraft;
@@ -61,7 +62,8 @@ public class TaskRenderer extends BaseRenderer {
 
         // Background behind the task
         var taskBg = new IndentedBox();
-        taskBg.render(guiGraphics, left, right, top, top + 21, fillColor);
+        var taskHeight = task.isStarted() ? 23 : 21;
+        taskBg.render(guiGraphics, left, right, top, top + taskHeight, fillColor);
 
         // Level scroll icon
         var scroll = new LevelScroll(task, font);
@@ -76,10 +78,20 @@ public class TaskRenderer extends BaseRenderer {
         guiGraphics.drawString(font, title, tx, ty, textColor.getArgbColor(), false);
 
         // Mouse over title shows requirements of the task.
-        if (mouseX >= tx && mouseX <= right - 44 &&
-            mouseY >= top + 1 && mouseY <= top + 20) {
+        if (mouseX >= tx && mouseX <= right - 44
+            && mouseY >= top + 1 && mouseY <= top + 20) {
             var titleComponent = Component.literal(title.getString());
             guiGraphics.setTooltipForNextFrame(font, List.of(titleComponent), Optional.of(tooltip), mouseX, mouseY);
+        }
+
+        // Progress bar
+        if (task.isStarted()) {
+            var pWidth = right - left;
+            var pHeight = 2;
+            var pLeft = left + 1;
+            var pTop = top + 21;
+            var progress = new ProgressBox(task.remaining(), task.total());
+            progress.render(guiGraphics, pLeft, pTop, pWidth, pHeight, mouseX, mouseY);
         }
     }
 }
