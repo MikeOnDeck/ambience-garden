@@ -32,6 +32,10 @@ public record Tasks(UUID uuid, String name, List<Task> tasks) {
         return tag.read(TASKS_TAG, Tasks.CODEC).orElseThrow();
     }
 
+    public Tasks copy() {
+        return new Tasks(uuid(), name(), new ArrayList<>(tasks()));
+    }
+
     public boolean isEmpty() {
         return tasks.isEmpty();
     }

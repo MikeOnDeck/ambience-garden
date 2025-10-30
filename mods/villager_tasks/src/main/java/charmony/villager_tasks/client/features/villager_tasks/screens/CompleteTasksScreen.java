@@ -53,6 +53,7 @@ public class CompleteTasksScreen extends BaseScreen {
                 var renderer = renderers.computeIfAbsent(task, TaskRenderer::new);
                 var tooltip = tooltips.computeIfAbsent(task, t -> new AvailableTaskTooltip(renderer));
 
+                renderer.updateTask(task);
                 renderer.simpleTaskRow(guiGraphics, midX, top + rh, mouseX, mouseY, tooltip);
 
                 if (!hasRenderedTaskButtons) {

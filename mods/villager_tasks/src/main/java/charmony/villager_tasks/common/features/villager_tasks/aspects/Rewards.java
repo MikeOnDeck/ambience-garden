@@ -40,6 +40,10 @@ public final class Rewards extends Aspect {
         this.effects.addAll(effects);
     }
 
+    public Rewards copy() {
+        return new Rewards(experience, new ArrayList<>(items), new ArrayList<>(effects));
+    }
+
     @Override
     public String getId() {
         return ID;

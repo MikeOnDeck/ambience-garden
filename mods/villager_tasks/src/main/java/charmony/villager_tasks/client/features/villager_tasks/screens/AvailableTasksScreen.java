@@ -52,8 +52,8 @@ public class AvailableTasksScreen extends BaseScreen {
         var right = midX + 137;
 
         if (handlers.availableTasksAreValid()) {
-            var activeTasks = handlers.getActiveTasks();
-            var availableTasks = handlers.getAvailableTasks();
+            var activeTasks = handlers.getActiveTasks().copy();
+            var availableTasks = handlers.getAvailableTasks().copy();
             var rowHeight = 30;
 
             for (var i = 0; i < availableTasks.tasks().size(); i++) {
@@ -65,15 +65,12 @@ public class AvailableTasksScreen extends BaseScreen {
                 var playerIsDoingTask = activeTask != null;
                 var playerHasDoneTask = activeTask != null && activeTask.isSatisfied();
 
-                if (playerHasDoneTask) {
-                    task = activeTask; // Swap out with the active task to show progress and rewards.
-                }
+                Task taskCopy = playerIsDoingTask ? activeTask : task; // have to do this for Java's lambdas, mumble mumble
 
-                Task taskCopy = task; // have to do this for Java's lambdas, mumble mumble
+                var renderer = renderers.computeIfAbsent(taskCopy, TaskRenderer::new);
+                var tooltip = tooltips.computeIfAbsent(taskCopy, t -> new AvailableTaskTooltip(renderer));
 
-                var renderer = renderers.computeIfAbsent(task, TaskRenderer::new);
-                var tooltip = tooltips.computeIfAbsent(task, t -> new AvailableTaskTooltip(renderer));
-
+                renderer.updateTask(taskCopy);
                 renderer.simpleTaskRow(guiGraphics, midX, top + rh, mouseX, mouseY, tooltip);
 
                 // Task buttons

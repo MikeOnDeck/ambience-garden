@@ -14,8 +14,7 @@ import net.minecraft.network.chat.MutableComponent;
 import java.util.List;
 import java.util.Optional;
 
-public class TaskRenderer {
-    private final Task task;
+public class TaskRenderer extends BaseRenderer {
     private final Font font;
 
     public final CollectRenderer collect;
@@ -30,6 +29,7 @@ public class TaskRenderer {
     public Color completeFillColor;
 
     public TaskRenderer(Task task) {
+        super(task);
         this.collect = new CollectRenderer(task);
         this.rewards = new RewardsRenderer(task);
         this.task = task;
@@ -42,6 +42,14 @@ public class TaskRenderer {
         this.fillColor = new Color(0x909090);
         this.epicFillColor = new Color(0xa0a060);
         this.completeFillColor = new Color(0x70a070);
+    }
+
+    @Override
+    public void updateTask(Task task) {
+        super.updateTask(task);
+        this.task = task;
+        this.collect.updateTask(task);
+        this.rewards.updateTask(task);
     }
 
     public void simpleTaskRow(GuiGraphics guiGraphics, int midX, int top, int mouseX, int mouseY, TaskTooltip tooltip) {

@@ -74,6 +74,12 @@ public class Task implements EventListener, Satisfiable {
         this.rewards = reward;
     }
 
+    public Task copy() {
+        return new Task(
+            id, villager, definitionId, status, modifier, titleKey, seed, level, expiry, duration, collect.copy(), rewards.copy()
+        );
+    }
+
     public static Task create(ServerPlayer player, Definition definition, UUID uuid, TaskModifier modifier, long seed) {
         Task task;
 

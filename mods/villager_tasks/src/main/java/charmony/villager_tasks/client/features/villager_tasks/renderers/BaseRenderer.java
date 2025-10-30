@@ -10,8 +10,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 public abstract class BaseRenderer {
-    protected final Task task;
     protected final Font font;
+    protected Task task;
 
     public BaseRenderer(Task task) {
         this.task = task;
@@ -20,6 +20,10 @@ public abstract class BaseRenderer {
 
     public Task task() {
         return task;
+    }
+
+    public void updateTask(Task task) {
+        this.task = task;
     }
 
     public int renderTooltipItem(GuiGraphics guiGraphics, ItemStack stack, Component component, int x, int y) {

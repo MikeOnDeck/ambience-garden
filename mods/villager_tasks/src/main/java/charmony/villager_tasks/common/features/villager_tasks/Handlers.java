@@ -179,7 +179,7 @@ public class Handlers extends Setup<VillagerTasks> {
                 }
 
                 log().info("Player " + playerName + " accepted task: " + id);
-                startTask(serverPlayer, task);
+                startTask(serverPlayer, task.copy()); // We copy the task to avoid mutating the available tasks.
             }
 
             case TaskQuery.Abandon -> {
@@ -211,8 +211,6 @@ public class Handlers extends Setup<VillagerTasks> {
                 completeTask(serverPlayer, task);
             }
         }
-
-        syncActiveTasks(serverPlayer);
     }
 
     public void handleReceiveRequestActiveTasks(Player player, Networking.C2SRequestActiveTasks payload) {

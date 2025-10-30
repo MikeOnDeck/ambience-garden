@@ -38,6 +38,10 @@ public final class Collect extends Aspect implements Satisfiable {
         this.items = items;
     }
 
+    public Collect copy() {
+        return new Collect(new ArrayList<>(items));
+    }
+
     public static Collect make(Task.AspectBuilder builder) {
         var map = builder.definition().collect;
         if (map.isEmpty()) {
