@@ -10,6 +10,8 @@ import charmony.villager_tasks.common.features.villager_tasks.Tasks;
 import charmony.villager_tasks.common.features.villager_tasks.enums.TaskQuery;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.gui.screens.inventory.MerchantScreen;
 import net.minecraft.world.entity.player.Player;
@@ -67,18 +69,27 @@ public class Handlers extends Setup<VillagerTasks> {
             }
         }
 
-        if (screen instanceof InventoryScreen inventoryScreen) {
-            var midX = inventoryScreen.width / 2;
-            var top = inventoryScreen.topPos + 174;
+        if (screen instanceof AbstractContainerScreen<?> containerScreen) {
+            int inventoryTop;
+
+            if (screen instanceof InventoryScreen) {
+                inventoryTop = containerScreen.topPos + 174;
+            } else if (screen instanceof CreativeModeInventoryScreen) {
+                inventoryTop = containerScreen.topPos + 164;
+            } else {
+                return;
+            }
+
+            var midX = containerScreen.width / 2;
             var minecraft = Minecraft.getInstance();
             updateActiveTasks();
 
             if (!activeTasks.isEmpty()) {
                 screen.addRenderableWidget(new Buttons.ActiveTasksButton(
                     midX - (Buttons.ActiveTasksButton.WIDTH / 2),
-                    top,
+                    inventoryTop,
                     b -> {
-                        inventoryScreen.onClose();
+                        containerScreen.onClose();
                         minecraft.setScreen(new ActiveTasksScreen());
                     }));
             }
