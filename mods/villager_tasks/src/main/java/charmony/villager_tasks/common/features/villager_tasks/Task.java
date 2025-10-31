@@ -122,6 +122,10 @@ public class Task implements EventListener, Satisfiable {
         return rewards;
     }
 
+    public boolean belongsTo(UUID villager) {
+        return this.villager.equals(villager);
+    }
+
     @Override
     public boolean isSatisfied() {
         return isStarted() && remaining() == 0;

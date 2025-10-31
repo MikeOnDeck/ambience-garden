@@ -34,6 +34,7 @@ public class Handlers extends Setup<VillagerTasks> {
     public static final Map<Player, Tasks> RECENT_TASKS = new HashMap<>();
     public static final Map<Player, AvailableTasks> AVAILABLE_TASKS = new HashMap<>();
     public static final Map<Player, Long> LAST_REQUESTED_TASK_SYNC = new HashMap<>();
+    public static final Map<Player, UUID> LAST_VILLAGER_INTERACTION = new HashMap<>();
 
     public final Map<ResourceLocation, Definition> definitions = new HashMap<>();
 
@@ -73,14 +74,26 @@ public class Handlers extends Setup<VillagerTasks> {
         Networking.S2CSendAvailableTasks.send(player, tasks);
     }
 
-    public void makeAvailableTasks(ServerPlayer player, AbstractVillager merchant) {
+    /**
+     * Called by villger interaction mixins for the villager and wandering trader.
+     */
+    public void interactWithVillager(ServerPlayer player, AbstractVillager villager) {
+        LAST_VILLAGER_INTERACTION.put(player, villager.getUUID());
+        makeAvailableTasks(player, villager);
+    }
+
+    /**
+     * Generate a list of tasks based on a deterministic seed using the villager's UUID and current minecraft day.
+     * Cache tasks in the AVAILABLE_TASKS map for faster lookup.
+     */
+    public void makeAvailableTasks(ServerPlayer player, AbstractVillager abstractVillager) {
         var level = player.level();
-        var uuid = merchant.getUUID();
+        var uuid = abstractVillager.getUUID();
 
         TaskModifier taskModifier;
         int reputation;
 
-        if (merchant instanceof Villager villager) {
+        if (abstractVillager instanceof Villager villager) {
             reputation = villager.getPlayerReputation(player);
             taskModifier = TaskModifier.fromReputation(reputation);
         } else {
@@ -98,7 +111,7 @@ public class Handlers extends Setup<VillagerTasks> {
 
             // Get top valid definitions.
             var valid = defs.stream()
-                .filter(def -> def.appliesTo(level.registryAccess().lookupOrThrow(Registries.ENTITY_TYPE), merchant))
+                .filter(def -> def.appliesTo(level.registryAccess().lookupOrThrow(Registries.ENTITY_TYPE), abstractVillager))
                 .limit(5)
                 .toList();
 
@@ -112,13 +125,26 @@ public class Handlers extends Setup<VillagerTasks> {
                 }
             }
 
-            var tasks = new Tasks(uuid, merchant.getDisplayName().getString(), taskList);
+            var tasks = new Tasks(uuid, abstractVillager.getDisplayName().getString(), taskList);
             availableTasks = new AvailableTasks(seed, tasks);
             AVAILABLE_TASKS.put(player, availableTasks);
         }
 
         var filtered = filterRecentTasks(player, availableTasks.tasks);
         syncAvailableTasks(player, filtered);
+    }
+
+    public void tryIncreaseLoyalty(ServerPlayer player, Task task) {
+        var uuid = LAST_VILLAGER_INTERACTION.getOrDefault(player, Helpers.emptyUuid());
+        if (!task.belongsTo(uuid)) {
+            log().debug("Not increasing loyalty since the task does not belong to the last interacted villager.");
+            return;
+        }
+
+        var state = VillagerTasksSavedData.getServerState(player.level().getServer());
+        var loyalty = state.getLoyalty(player);
+        state.updateLoyalty(loyalty.addLoyalty(uuid));
+        log().debug("Increasing loyalty for villager " + uuid + " for player " + player.getName().getString());
     }
 
     public void addToRecentTasks(ServerPlayer player, Task task) {
@@ -319,6 +345,7 @@ public class Handlers extends Setup<VillagerTasks> {
         var playerName = player.getName().getString();
 
         if (tasks.getTaskById(task.id).isEmpty()) {
+            log().error("Task not found for player " + playerName + ": " + task.id);
             return;
         }
 
@@ -326,6 +353,7 @@ public class Handlers extends Setup<VillagerTasks> {
         task.onComplete(task, player);
         tasks = tasks.removeTask(task);
 
+        tryIncreaseLoyalty(player, task);
         addToRecentTasks(player, task);
         state.updateTasks(tasks);
         PLAYER_TASKS.put(player, tasks);

@@ -31,7 +31,7 @@ public record Loyalty(UUID uuid, String name, List<VillagerLoyalty> loyalties) {
         var currentPoints = entry.map(VillagerLoyalty::loyalty).orElse(0);
         updated.removeIf(vl -> vl.villager().equals(villager));
 
-        updated.add(new VillagerLoyalty(villager, currentPoints));
+        updated.add(new VillagerLoyalty(villager, currentPoints + 1));
         return new Loyalty(uuid, name, updated);
     }
 

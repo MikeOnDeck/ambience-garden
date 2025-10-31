@@ -52,7 +52,7 @@ public class TaskRenderer extends BaseRenderer {
         this.epicFillColor = new Color(0xa0a060);
         this.completeFillColor = new Color(0x70a070);
 
-        this.villagerOwnsTask = task.villager.equals(handlers.getLastVillagerInteraction());
+        this.villagerOwnsTask = task.belongsTo(handlers.getLastVillagerInteraction());
     }
 
     @Override
@@ -61,7 +61,7 @@ public class TaskRenderer extends BaseRenderer {
         this.task = task;
         this.collect.updateTask(task);
         this.rewards.updateTask(task);
-        this.villagerOwnsTask = task.villager.equals(handlers.getLastVillagerInteraction());
+        this.villagerOwnsTask = task.belongsTo(handlers.getLastVillagerInteraction());
     }
 
     /**
