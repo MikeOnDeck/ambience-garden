@@ -116,4 +116,8 @@ public final class Helpers {
             BehaviorUtils.throwItem(villager, stack, player.position());
         }
     }
+
+    public static UUID emptyUuid() {
+        return UUID.randomUUID(); // TODO: make actually empty
+    }
 }

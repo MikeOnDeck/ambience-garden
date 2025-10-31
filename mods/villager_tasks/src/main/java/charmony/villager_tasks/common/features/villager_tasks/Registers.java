@@ -27,10 +27,12 @@ public class Registers extends Setup<VillagerTasks> {
         registry.packetSender(Side.Common, Networking.S2CSendVillagerInteraction.TYPE, Networking.S2CSendVillagerInteraction.CODEC);
         registry.packetSender(Side.Client, Networking.C2SQueryTask.TYPE, Networking.C2SQueryTask.CODEC);
         registry.packetSender(Side.Client, Networking.C2SRequestActiveTasks.TYPE, Networking.C2SRequestActiveTasks.CODEC);
+        registry.packetSender(Side.Client, Networking.C2SRequestAvailableTasks.TYPE, Networking.C2SRequestAvailableTasks.CODEC);
 
         // Packet handling from client.
         registry.packetReceiver(Networking.C2SQueryTask.TYPE, feature.handlers::handleReceiveQueryTask);
         registry.packetReceiver(Networking.C2SRequestActiveTasks.TYPE, feature.handlers::handleReceiveRequestActiveTasks);
+        registry.packetReceiver(Networking.C2SRequestAvailableTasks.TYPE, feature.handlers::handleReceiveRequestAvailableTasks);
 
         // Sound effects.
         taskAbandon = registry.sound("task_abandon");

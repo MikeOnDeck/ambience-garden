@@ -23,7 +23,7 @@ import java.util.UUID;
 public class Handlers extends Setup<VillagerTasks> {
     private Tasks activeTasks = Tasks.EMPTY;
     private Tasks availableTasks = Tasks.EMPTY;
-    private UUID lastVillagerInteraction = UUID.randomUUID();
+    private UUID lastVillagerInteraction = Helpers.emptyUuid();
     private Runnable runAfterUpdate = () -> {};
 
     public Handlers(VillagerTasks feature) {
@@ -143,6 +143,10 @@ public class Handlers extends Setup<VillagerTasks> {
         return lastVillagerInteraction;
     }
 
+    public void clearLastVillagerInteraction() {
+        lastVillagerInteraction = Helpers.emptyUuid();
+    }
+
     /**
      * Show particles above villagers who own completed tasks.
      */
@@ -194,5 +198,9 @@ public class Handlers extends Setup<VillagerTasks> {
 
     public void updateActiveTasks() {
         Networking.C2SRequestActiveTasks.send();
+    }
+
+    public void updateAvailableTasks() {
+        Networking.C2SRequestAvailableTasks.send(lastVillagerInteraction);
     }
 }

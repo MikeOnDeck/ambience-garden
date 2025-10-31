@@ -48,7 +48,11 @@ public class AvailableTasksScreen extends BaseScreen {
 
     @Override
     protected void renderContent(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        if (minecraft == null) return;
+        if (minecraft == null || minecraft.level == null) return;
+
+        if (minecraft.level.getGameTime() % 100 == 0) {
+            handlers.updateAvailableTasks();
+        }
 
         var top = midY - 67;
         var right = midX + 137;
@@ -112,5 +116,11 @@ public class AvailableTasksScreen extends BaseScreen {
         }
 
         hasRenderedTaskButtons = true;
+    }
+
+    @Override
+    public void onClose() {
+        handlers.clearLastVillagerInteraction();
+        super.onClose();
     }
 }

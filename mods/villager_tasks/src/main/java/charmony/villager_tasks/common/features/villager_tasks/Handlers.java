@@ -31,7 +31,8 @@ public class Handlers extends Setup<VillagerTasks> {
     public static final String DEFINITIONS_DIR = "villager_tasks";
 
     public static final Map<Player, Tasks> PLAYER_TASKS = new HashMap<>();
-    public static final Map<Player, PotentialTasks> AVAILABLE_TASKS = new HashMap<>();
+    public static final Map<Player, Tasks> RECENT_TASKS = new HashMap<>();
+    public static final Map<Player, AvailableTasks> AVAILABLE_TASKS = new HashMap<>();
     public static final Map<Player, Long> LAST_REQUESTED_TASK_SYNC = new HashMap<>();
 
     public final Map<ResourceLocation, Definition> definitions = new HashMap<>();
@@ -75,7 +76,6 @@ public class Handlers extends Setup<VillagerTasks> {
     public void makeAvailableTasks(ServerPlayer player, AbstractVillager merchant) {
         var level = player.level();
         var uuid = merchant.getUUID();
-        var gameTime = level.getGameTime();
 
         TaskModifier taskModifier;
         int reputation;
@@ -88,37 +88,53 @@ public class Handlers extends Setup<VillagerTasks> {
         }
 
         var seed = getTaskSeed(level, uuid, taskModifier);
-        var potentialTasks = AVAILABLE_TASKS.computeIfAbsent(player, p -> PotentialTasks.EMPTY);
+        var availableTasks = AVAILABLE_TASKS.computeIfAbsent(player, p -> AvailableTasks.EMPTY);
 
-        // Fetch from cache if the seed matches and is recent.
-        if (potentialTasks.seed == seed && potentialTasks.gameTime > gameTime - 1200) {
-            syncAvailableTasks(player, potentialTasks.tasks);
-            return;
-        }
-        
-        var random = RandomSource.create(seed);
-        var defs = new ArrayList<>(definitions.values());
-        Util.shuffle(defs, random);
+        // Regenerate tasks if the seed no longer matches.
+        if (availableTasks.seed != seed) {
+            var random = RandomSource.create(seed);
+            var defs = new ArrayList<>(definitions.values());
+            Util.shuffle(defs, random);
 
-        // Get top valid definitions.
-        var valid = defs.stream()
-            .filter(def -> def.appliesTo(level.registryAccess().lookupOrThrow(Registries.ENTITY_TYPE), merchant))
-            .limit(5)
-            .toList();
+            // Get top valid definitions.
+            var valid = defs.stream()
+                .filter(def -> def.appliesTo(level.registryAccess().lookupOrThrow(Registries.ENTITY_TYPE), merchant))
+                .limit(5)
+                .toList();
 
-        // Generate tasks from definitions
-        var taskList = new ArrayList<Task>();
-        for (var def : valid) {
-            try {
-                taskList.add(Task.create(player, def, uuid, taskModifier, seed));
-            } catch (Exception e) {
-                log().error("Failed to create task from definition " + def.id + ": " + e.getMessage());
+            // Generate tasks from definitions
+            var taskList = new ArrayList<Task>();
+            for (var def : valid) {
+                try {
+                    taskList.add(Task.create(player, def, uuid, taskModifier, seed));
+                } catch (Exception e) {
+                    log().error("Failed to create task from definition " + def.id + ": " + e.getMessage());
+                }
             }
+
+            var tasks = new Tasks(uuid, merchant.getDisplayName().getString(), taskList);
+            availableTasks = new AvailableTasks(seed, tasks);
+            AVAILABLE_TASKS.put(player, availableTasks);
         }
 
-        var tasks = new Tasks(uuid, merchant.getDisplayName().getString(), taskList);
-        AVAILABLE_TASKS.put(player, new PotentialTasks(seed, gameTime, tasks));
-        syncAvailableTasks(player, tasks);
+        syncAvailableTasks(player, availableTasks.tasks);
+    }
+
+    public void addToRecentTasks(ServerPlayer player, Task task) {
+        var recent = RECENT_TASKS.computeIfAbsent(player, p -> Tasks.EMPTY);
+        var updated = recent.addTask(task.copyWithTime(player.level().getGameTime()));
+        RECENT_TASKS.put(player, updated);
+    }
+
+    public Tasks filterRecentTasks(ServerPlayer player, Tasks tasks) {
+        var updated = new ArrayList<>(tasks.tasks());
+        var recent = RECENT_TASKS.computeIfAbsent(player, p -> Tasks.EMPTY);
+
+        for (var task : recent.tasks()) {
+            updated.removeIf(t -> t.definitionId == task.definitionId);
+        }
+
+        return new Tasks(tasks.uuid(), tasks.name(), updated);
     }
 
     /**
@@ -171,7 +187,7 @@ public class Handlers extends Setup<VillagerTasks> {
 
         switch (query) {
             case TaskQuery.Accept -> {
-                var potentialTasks = AVAILABLE_TASKS.getOrDefault(player, PotentialTasks.EMPTY);
+                var potentialTasks = AVAILABLE_TASKS.getOrDefault(player, AvailableTasks.EMPTY);
                 var task = potentialTasks.tasks.getTaskById(id).orElse(null);
                 if (task == null) {
                     log().warn("Task not found in available tasks: " + id);
@@ -215,16 +231,30 @@ public class Handlers extends Setup<VillagerTasks> {
 
     public void handleReceiveRequestActiveTasks(Player player, Networking.C2SRequestActiveTasks payload) {
         if (!(player instanceof ServerPlayer serverPlayer)) return;
-        var gameTime = serverPlayer.level().getGameTime();
+        if (shouldThrottleRequest(serverPlayer)) return;
+
+        syncActiveTasks(serverPlayer);
+    }
+
+    public void handleReceiveRequestAvailableTasks(Player player, Networking.C2SRequestAvailableTasks payload) {
+        if (!(player instanceof ServerPlayer serverPlayer)) return;
+        if (shouldThrottleRequest(serverPlayer)) return;
+
+        Helpers.getNearbyTaskOwner(serverPlayer, payload.villager()).ifPresent(
+            villager -> makeAvailableTasks(serverPlayer, villager));
+    }
+
+    public boolean shouldThrottleRequest(ServerPlayer player) {
         var lastRequested = LAST_REQUESTED_TASK_SYNC.getOrDefault(player, 0L);
+        var gameTime = player.level().getGameTime();
 
         if (gameTime - lastRequested < 20) {
             // Throttle requests to once per second.
-            return;
+            return true;
         }
 
         LAST_REQUESTED_TASK_SYNC.put(player, gameTime);
-        syncActiveTasks(serverPlayer);
+        return false;
     }
 
     public void startTask(ServerPlayer player, Task task) {
@@ -248,6 +278,7 @@ public class Handlers extends Setup<VillagerTasks> {
         task.onStart(task, player);
         tasks = tasks.addTask(task);
 
+        addToRecentTasks(player, task);
         state.updateTasks(tasks);
         PLAYER_TASKS.put(player, tasks);
         playSound(player, feature().registers.taskAccept);
@@ -288,6 +319,7 @@ public class Handlers extends Setup<VillagerTasks> {
         task.onComplete(task, player);
         tasks = tasks.removeTask(task);
 
+        addToRecentTasks(player, task);
         state.updateTasks(tasks);
         PLAYER_TASKS.put(player, tasks);
         playSound(player, feature().registers.taskComplete);
@@ -315,9 +347,15 @@ public class Handlers extends Setup<VillagerTasks> {
         // Tick all tasks for the player.
         var tasks = PLAYER_TASKS.getOrDefault(player, Tasks.EMPTY);
         tasks.tasks().forEach(task -> task.onTick(task, serverPlayer));
+
+        // Remove recent tasks after a certain time.
+        var gameTime = serverPlayer.level().getGameTime();
+        var recent = RECENT_TASKS.getOrDefault(serverPlayer, Tasks.EMPTY);
+        var updated = recent.removeOlderThan(gameTime - 300); // TODO: needs config
+        RECENT_TASKS.put(serverPlayer, updated);
     }
 
-    public record PotentialTasks(long seed, long gameTime, Tasks tasks) {
-        public static PotentialTasks EMPTY = new PotentialTasks(0L, 0L, Tasks.EMPTY);
+    public record AvailableTasks(long seed, Tasks tasks) {
+        public static AvailableTasks EMPTY = new AvailableTasks(0L, Tasks.EMPTY);
     }
 }
