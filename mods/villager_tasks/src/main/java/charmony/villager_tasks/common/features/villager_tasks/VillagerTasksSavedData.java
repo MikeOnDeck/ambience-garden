@@ -14,26 +14,29 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public class TasksSavedData extends SavedData {
+public class VillagerTasksSavedData extends SavedData {
     private List<Tasks> tasks = new ArrayList<>();
+    private List<Loyalty> loyalties = new ArrayList<>();
 
-    public static final Codec<TasksSavedData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-        Tasks.CODEC.listOf().fieldOf("tasks").forGetter(data -> data.tasks)
-    ).apply(instance, TasksSavedData::new));
+    public static final Codec<VillagerTasksSavedData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+        Tasks.CODEC.listOf().fieldOf("tasks").forGetter(data -> data.tasks),
+        Loyalty.CODEC.listOf().fieldOf("loyalty").forGetter(data -> data.loyalties)
+    ).apply(instance, VillagerTasksSavedData::new));
 
-    public static final SavedDataType<TasksSavedData> TYPE = new SavedDataType<>(
+    public static final SavedDataType<VillagerTasksSavedData> TYPE = new SavedDataType<>(
         VillagerTasksMod.ID,
-        TasksSavedData::new,
+        VillagerTasksSavedData::new,
         CODEC,
         null
     );
 
-    public TasksSavedData() {
+    public VillagerTasksSavedData() {
         setDirty();
     }
 
-    private TasksSavedData(List<Tasks> tasks) {
+    private VillagerTasksSavedData(List<Tasks> tasks, List<Loyalty> loyalties) {
         this.tasks = new ArrayList<>(tasks);
+        this.loyalties = new ArrayList<>(loyalties);
     }
 
     public Tasks getTasks(Player player) {
@@ -41,6 +44,10 @@ public class TasksSavedData extends SavedData {
         var name = player.getScoreboardName();
         var existing = getTasksByUUID(uuid);
         return existing.orElseGet(() -> new Tasks(uuid, name, List.of()));
+    }
+
+    public Optional<Tasks> getTasksByUUID(UUID uuid) {
+        return tasks.stream().filter(t -> t.uuid().equals(uuid)).findFirst();
     }
 
     public void updateTasks(Tasks updated) {
@@ -56,13 +63,37 @@ public class TasksSavedData extends SavedData {
         setDirty();
     }
 
+    public Loyalty getLoyalty(Player player) {
+        var uuid = player.getUUID();
+        var name = player.getScoreboardName();
+        var existing = getLoyaltyByUUID(uuid);
+        return existing.orElseGet(() -> new Loyalty(uuid, name, List.of()));
+    }
+
+    public Optional<Loyalty> getLoyaltyByUUID(UUID uuid) {
+        return loyalties.stream().filter(l -> l.uuid().equals(uuid)).findFirst();
+    }
+
+    public void updateLoyalty(Loyalty updated) {
+        var existing = getLoyaltyByUUID(updated.uuid());
+
+        if (!(loyalties instanceof ArrayList<Loyalty>)) {
+            // Stupid hack.
+            loyalties = new ArrayList<>(loyalties);
+        }
+
+        existing.ifPresent(loyalties::remove);
+        loyalties.add(updated);
+        setDirty();
+    }
+
     /**
      * Helper to get the saved data for the server.
      *
      * @param server Server instance.
      * @return Saved data.
      */
-    public static TasksSavedData getServerState(MinecraftServer server) {
+    public static VillagerTasksSavedData getServerState(MinecraftServer server) {
         var level = server.getLevel(Level.OVERWORLD);
         if (level == null) {
             throw new RuntimeException("Level not available");
@@ -71,9 +102,5 @@ public class TasksSavedData extends SavedData {
         var state = storage.computeIfAbsent(TYPE);
         state.setDirty();
         return state;
-    }
-
-    public Optional<Tasks> getTasksByUUID(UUID uuid) {
-        return tasks.stream().filter(t -> t.uuid().equals(uuid)).findFirst();
     }
 }

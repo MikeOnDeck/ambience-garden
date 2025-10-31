@@ -43,7 +43,7 @@ public class Handlers extends Setup<VillagerTasks> {
 
     public void entityJoin(Entity entity, ServerLevel level) {
         if (entity instanceof ServerPlayer player) {
-            var state = TasksSavedData.getServerState(level.getServer());
+            var state = VillagerTasksSavedData.getServerState(level.getServer());
             var tasks = state.getTasks(player);
 
             // Update this player's tasks.
@@ -267,7 +267,7 @@ public class Handlers extends Setup<VillagerTasks> {
     public void startTask(ServerPlayer player, Task task) {
         var tasks = PLAYER_TASKS.getOrDefault(player, Tasks.EMPTY);
         var serverLevel = player.level();
-        var state = TasksSavedData.getServerState(serverLevel.getServer());
+        var state = VillagerTasksSavedData.getServerState(serverLevel.getServer());
         var playerName = player.getName().getString();
 
         if (tasks.getTaskById(task.id).isPresent()) {
@@ -295,7 +295,7 @@ public class Handlers extends Setup<VillagerTasks> {
     public void abandonTask(ServerPlayer player, Task task) {
         var tasks = PLAYER_TASKS.getOrDefault(player, Tasks.EMPTY);
         var serverLevel = player.level();
-        var state = TasksSavedData.getServerState(serverLevel.getServer());
+        var state = VillagerTasksSavedData.getServerState(serverLevel.getServer());
         var playerName = player.getName().getString();
 
         if (tasks.getTaskById(task.id).isEmpty()) {
@@ -315,7 +315,7 @@ public class Handlers extends Setup<VillagerTasks> {
     public void completeTask(ServerPlayer player, Task task) {
         var tasks = PLAYER_TASKS.getOrDefault(player, Tasks.EMPTY);
         var serverLevel = player.level();
-        var state = TasksSavedData.getServerState(serverLevel.getServer());
+        var state = VillagerTasksSavedData.getServerState(serverLevel.getServer());
         var playerName = player.getName().getString();
 
         if (tasks.getTaskById(task.id).isEmpty()) {
