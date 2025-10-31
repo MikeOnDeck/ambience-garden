@@ -117,7 +117,8 @@ public class Handlers extends Setup<VillagerTasks> {
             AVAILABLE_TASKS.put(player, availableTasks);
         }
 
-        syncAvailableTasks(player, availableTasks.tasks);
+        var filtered = filterRecentTasks(player, availableTasks.tasks);
+        syncAvailableTasks(player, filtered);
     }
 
     public void addToRecentTasks(ServerPlayer player, Task task) {
@@ -128,10 +129,16 @@ public class Handlers extends Setup<VillagerTasks> {
 
     public Tasks filterRecentTasks(ServerPlayer player, Tasks tasks) {
         var updated = new ArrayList<>(tasks.tasks());
-        var recent = RECENT_TASKS.computeIfAbsent(player, p -> Tasks.EMPTY);
+        var active = PLAYER_TASKS.getOrDefault(player, Tasks.EMPTY);
+        var recent = RECENT_TASKS.getOrDefault(player, Tasks.EMPTY);
 
-        for (var task : recent.tasks()) {
-            updated.removeIf(t -> t.definitionId == task.definitionId);
+        for (var availableTask : tasks.tasks()) {
+            if (active.getTaskById(availableTask.id).isPresent()) continue;
+            var matching = recent.ofDefinition(availableTask.definitionId);
+
+            for (var toRemove : matching) {
+                updated.removeIf(t -> t.definitionId == toRemove.definitionId);
+            }
         }
 
         return new Tasks(tasks.uuid(), tasks.name(), updated);

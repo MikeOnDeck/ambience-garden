@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +44,10 @@ public record Tasks(UUID uuid, String name, List<Task> tasks) {
         return tasks.stream()
             .filter(task -> task.id.equals(id))
             .findFirst();
+    }
+
+    public List<Task> ofDefinition(ResourceLocation def) {
+        return tasks.stream().filter(task -> task.definitionId.equals(def)).toList();
     }
 
     public Tasks removeOlderThan(long time) {

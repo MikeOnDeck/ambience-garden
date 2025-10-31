@@ -51,21 +51,24 @@ public class Handlers extends Setup<VillagerTasks> {
             // Tick the active tasks to ensure we have the latest status.
             clientTick(minecraft);
 
+            var shouldShowAvailableButton = !availableTasks.isEmpty();
             var shouldShowCompleteButton = activeTasks.tasks().stream().anyMatch(Task::isSatisfied);
 
             var availableTasksX = shouldShowCompleteButton
                 ? midX - 5 - (Buttons.AvailableTasksButton.WIDTH)
                 : midX - (Buttons.AvailableTasksButton.WIDTH / 2);
 
-            var completeTasksX = shouldShowCompleteButton
+            var completeTasksX = shouldShowAvailableButton
                 ? midX + 5
-                : 0;
+                : midX - (Buttons.CompleteTasksButton.WIDTH / 2);
 
-            screen.addRenderableWidget(new Buttons.AvailableTasksButton(availableTasksX, top,
-                b -> {
-                    merchantScreen.onClose();
-                    minecraft.setScreen(new AvailableTasksScreen());
-                }));
+            if (shouldShowAvailableButton) {
+                screen.addRenderableWidget(new Buttons.AvailableTasksButton(availableTasksX, top,
+                    b -> {
+                        merchantScreen.onClose();
+                        minecraft.setScreen(new AvailableTasksScreen());
+                    }));
+            }
 
             if (shouldShowCompleteButton) {
                 screen.addRenderableWidget(new Buttons.CompleteTasksButton(completeTasksX, top,
