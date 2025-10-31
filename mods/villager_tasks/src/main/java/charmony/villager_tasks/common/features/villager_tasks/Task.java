@@ -27,14 +27,13 @@ public class Task implements EventListener, Satisfiable {
     public final TaskModifier modifier;
     public final String titleKey;
     public final long seed;
+    public final long created;
     public final int level;
-    public final int expiry;
 
     public final Collect collect;
     public final Rewards rewards;
 
     private TaskStatus status;
-    private int duration = 0;
 
     public static final Codec<Task> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         UUIDUtil.CODEC.fieldOf("id").forGetter(task -> task.id),
@@ -44,19 +43,18 @@ public class Task implements EventListener, Satisfiable {
         TaskModifier.CODEC.fieldOf("modifier").forGetter(task -> task.modifier),
         Codec.STRING.fieldOf("titleKey").forGetter(task -> task.titleKey),
         Codec.LONG.fieldOf("seed").forGetter(task -> task.seed),
+        Codec.LONG.fieldOf("created").forGetter(task -> task.created),
         Codec.INT.fieldOf("level").forGetter(task -> task.level),
-        Codec.INT.fieldOf("expiry").forGetter(task -> task.expiry),
-        Codec.INT.fieldOf("duration").forGetter(task -> task.duration),
         Collect.CODEC.fieldOf("collect").forGetter(task -> task.collect),
         Rewards.CODEC.fieldOf("rewards").forGetter(task -> task.rewards)
     ).apply(instance, Task::new));
 
     public static final Task EMPTY = new Task(
-        UUID.randomUUID(), UUID.randomUUID(), ResourceLocation.parse("minecraft:empty"), TaskStatus.Unspecified, TaskModifier.Unspecified, "", 0L, 0, 0, 0,
+        UUID.randomUUID(), UUID.randomUUID(), ResourceLocation.parse("minecraft:empty"), TaskStatus.Unspecified, TaskModifier.Unspecified, "", 0L, 0L, 0,
         Collect.EMPTY, Rewards.EMPTY
     );
 
-    private Task(UUID id, UUID villager, ResourceLocation definitionId, TaskStatus status, TaskModifier modifier, String titleKey, long seed, int level, int expiry, int duration,
+    private Task(UUID id, UUID villager, ResourceLocation definitionId, TaskStatus status, TaskModifier modifier, String titleKey, long seed, long created, int level,
                  Collect collect, Rewards reward
     ) {
         this.id = id;
@@ -66,17 +64,20 @@ public class Task implements EventListener, Satisfiable {
         this.villager = villager;
         this.titleKey = titleKey;
         this.seed = seed;
-        this.expiry = expiry;
+        this.created = created;
         this.level = level;
-        this.duration = duration;
 
         this.collect = collect;
         this.rewards = reward;
     }
 
     public Task copy() {
+        return copyWithTime(created);
+    }
+
+    public Task copyWithTime(long created) {
         return new Task(
-            id, villager, definitionId, status, modifier, titleKey, seed, level, expiry, duration, collect.copy(), rewards.copy()
+            id, villager, definitionId, status, modifier, titleKey, seed, created, level, collect.copy(), rewards.copy()
         );
     }
 
@@ -87,7 +88,7 @@ public class Task implements EventListener, Satisfiable {
 
         try {
             var id = UuidHelper.fromString(definition.id.toString() + seed);
-            var expiry = definition.expiry;
+            var created = player.level().getGameTime();
             var level = definition.level;
             var titleKey = definition.title;
 
@@ -95,7 +96,7 @@ public class Task implements EventListener, Satisfiable {
             var builder = new AspectBuilder(player, definition, modifier, random);
 
             // Create the task with its aspects.
-            task = new Task(id, uuid, definition.id, TaskStatus.NotStarted, modifier, titleKey, seed, level, expiry, 0,
+            task = new Task(id, uuid, definition.id, TaskStatus.NotStarted, modifier, titleKey, seed, created, level,
                 Collect.make(builder),
                 Rewards.make(builder)
             );
@@ -157,21 +158,6 @@ public class Task implements EventListener, Satisfiable {
 
         for (var aspect : aspects) {
             aspect.onTick(task, player);
-        }
-
-        if (!(player instanceof ServerPlayer serverPlayer)) {
-            return;
-        }
-
-        if (!isStarted()) {
-            return;
-        }
-
-        if (!isSatisfied()) {
-            // TODO: show timer
-            if (expiry > 0 && ++duration >= expiry) {
-                onAbandon(this, serverPlayer);
-            }
         }
     }
 
