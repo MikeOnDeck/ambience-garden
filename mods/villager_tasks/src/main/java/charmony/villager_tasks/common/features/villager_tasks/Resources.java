@@ -51,6 +51,9 @@ public final class Resources {
     public static final Component DONE_TASK = MutableComponent.create(
         Component.translatable("gui.charmony.villager_tasks.done_task").getContents()).withStyle(ChatFormatting.GREEN);
 
+    public static final Component DONE_TASK_WITH_LOYALTY = MutableComponent.create(
+        Component.translatable("gui.charmony.villager_tasks.done_task_with_loyalty").getContents()).withStyle(ChatFormatting.GREEN);
+
     public static final Map<Integer, ResourceLocation> ACTIVE_LEVELS = new HashMap<>();
     public static final Map<Integer, ResourceLocation> AVAILABLE_LEVELS = new HashMap<>();
 

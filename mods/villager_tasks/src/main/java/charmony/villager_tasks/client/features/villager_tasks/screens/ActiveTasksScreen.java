@@ -32,6 +32,7 @@ public class ActiveTasksScreen extends BaseScreen {
         this.hasRenderedTaskButtons = false;
         this.buttons.clear();
 
+        handlers.clearLastVillagerInteraction();
         addCloseButton();
     }
 
@@ -54,7 +55,7 @@ public class ActiveTasksScreen extends BaseScreen {
                 var tooltip = tooltips.computeIfAbsent(task, t -> new AvailableTaskTooltip(renderer));
 
                 renderer.updateTask(task);
-                renderer.simpleTaskRow(guiGraphics, midX, top + rh, mouseX, mouseY, tooltip);
+                renderer.renderSimpleTaskRow(guiGraphics, midX, top + rh, mouseX, mouseY, tooltip);
 
                 // Task buttons
                 if (!hasRenderedTaskButtons) {
@@ -80,6 +81,7 @@ public class ActiveTasksScreen extends BaseScreen {
 
     @Override
     public void onClose() {
+        handlers.clearLastVillagerInteraction();
         super.onClose();
     }
 }

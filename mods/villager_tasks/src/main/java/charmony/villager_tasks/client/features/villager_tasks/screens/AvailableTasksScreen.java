@@ -73,7 +73,7 @@ public class AvailableTasksScreen extends BaseScreen {
                 var tooltip = tooltips.computeIfAbsent(taskCopy, t -> new AvailableTaskTooltip(renderer));
 
                 renderer.updateTask(taskCopy);
-                renderer.simpleTaskRow(guiGraphics, midX, top + rh, mouseX, mouseY, tooltip);
+                renderer.renderSimpleTaskRow(guiGraphics, midX, top + rh, mouseX, mouseY, tooltip);
 
                 // Task buttons
                 if (!hasRenderedTaskButtons) {

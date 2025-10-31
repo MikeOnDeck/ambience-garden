@@ -1,6 +1,8 @@
 package charmony.villager_tasks.client.features.villager_tasks.renderers;
 
 import charmony.api.core.Color;
+import charmony.villager_tasks.client.features.villager_tasks.Handlers;
+import charmony.villager_tasks.client.features.villager_tasks.VillagerTasks;
 import charmony.villager_tasks.common.features.villager_tasks.Task;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -11,11 +13,13 @@ import net.minecraft.world.item.ItemStack;
 
 public abstract class BaseRenderer {
     protected final Font font;
+    protected final Handlers handlers;
     protected Task task;
 
     public BaseRenderer(Task task) {
         this.task = task;
         this.font = Minecraft.getInstance().font;
+        this.handlers = VillagerTasks.feature().handlers;
     }
 
     public Task task() {

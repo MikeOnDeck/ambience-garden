@@ -54,7 +54,7 @@ public class CompleteTasksScreen extends BaseScreen {
                 var tooltip = tooltips.computeIfAbsent(task, t -> new AvailableTaskTooltip(renderer));
 
                 renderer.updateTask(task);
-                renderer.simpleTaskRow(guiGraphics, midX, top + rh, mouseX, mouseY, tooltip);
+                renderer.renderSimpleTaskRow(guiGraphics, midX, top + rh, mouseX, mouseY, tooltip);
 
                 if (!hasRenderedTaskButtons) {
                     var buttonY = top + rh + 2;
@@ -79,6 +79,7 @@ public class CompleteTasksScreen extends BaseScreen {
 
     @Override
     public void onClose() {
+        handlers.clearLastVillagerInteraction();
         super.onClose();
     }
 }
