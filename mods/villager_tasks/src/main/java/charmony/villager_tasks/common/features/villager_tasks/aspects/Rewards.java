@@ -11,7 +11,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
@@ -113,11 +112,11 @@ public final class Rewards extends Aspect {
             stacks.add(stack);
         }
 
-        var entity = Helpers.getRewardGiver(player, task.villager);
-        Helpers.throwItemsAtPlayer(entity, player, stacks);
+        var villager = Helpers.getNearbyTaskOwner(player, task.villager).or(() -> Helpers.getNearbyRewardGiver(player));
 
-        if (entity instanceof AbstractVillager) {
-            level.playSound(null, entity.blockPosition(), SoundEvents.VILLAGER_YES, entity.getSoundSource(), 1.0f, 1.0f);
-        }
+        villager.ifPresent(v -> {
+            Helpers.throwItemsAtPlayer(v, player, stacks);
+            level.playSound(null, v.blockPosition(), SoundEvents.VILLAGER_YES, v.getSoundSource(), 1.0f, 1.0f);
+        });
     }
 }

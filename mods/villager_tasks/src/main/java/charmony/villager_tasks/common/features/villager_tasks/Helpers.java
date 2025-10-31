@@ -8,7 +8,6 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
@@ -16,10 +15,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public final class Helpers {
     /**
@@ -101,23 +97,23 @@ public final class Helpers {
         return item;
     }
 
-    public static LivingEntity getRewardGiver(Player player, UUID uuid) {
-        var nearby = player.level().getEntitiesOfClass(AbstractVillager.class, new AABB(player.blockPosition()).inflate(8.0d));
-        var found = nearby.stream().filter(e -> e.getUUID().equals(uuid)).findFirst();
-
-        if (found.isEmpty()) {
-            var first = nearby.stream().findFirst();
-            if (first.isPresent()) {
-                return first.get();
-            }
-        }
-
-        return player;
+    public static Optional<AbstractVillager> getNearbyTaskOwner(Player player, UUID uuid) {
+        var nearby = getNearbyVillagers(player);
+        return nearby.stream().filter(e -> e.getUUID().equals(uuid)).findFirst();
     }
 
-    public static void throwItemsAtPlayer(LivingEntity entity, Player player, List<ItemStack> items) {
+    public static List<AbstractVillager> getNearbyVillagers(Player player) {
+        return player.level().getEntitiesOfClass(AbstractVillager.class, new AABB(player.blockPosition()).inflate(8.0d));
+    }
+
+    public static Optional<AbstractVillager> getNearbyRewardGiver(Player player) {
+        var nearby = getNearbyVillagers(player);
+        return nearby.stream().findFirst();
+    }
+
+    public static void throwItemsAtPlayer(AbstractVillager villager, Player player, List<ItemStack> items) {
         for (ItemStack stack : items) {
-            BehaviorUtils.throwItem(entity, stack, player.position());
+            BehaviorUtils.throwItem(villager, stack, player.position());
         }
     }
 }

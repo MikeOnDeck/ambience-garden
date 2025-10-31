@@ -4,6 +4,7 @@ import charmony.core.base.Setup;
 import charmony.villager_tasks.client.features.villager_tasks.screens.ActiveTasksScreen;
 import charmony.villager_tasks.client.features.villager_tasks.screens.AvailableTasksScreen;
 import charmony.villager_tasks.client.features.villager_tasks.screens.CompleteTasksScreen;
+import charmony.villager_tasks.common.features.villager_tasks.Helpers;
 import charmony.villager_tasks.common.features.villager_tasks.Networking;
 import charmony.villager_tasks.common.features.villager_tasks.Task;
 import charmony.villager_tasks.common.features.villager_tasks.Tasks;
@@ -14,6 +15,7 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.gui.screens.inventory.MerchantScreen;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.UUID;
@@ -31,6 +33,11 @@ public class Handlers extends Setup<VillagerTasks> {
     public void clientTick(Minecraft minecraft) {
         if (minecraft != null && minecraft.player instanceof Player player) {
             activeTasks.tasks().forEach(task -> task.onTick(task, player));
+
+            // Villagers who own completed tasks will show particles.
+            if (player.level().getGameTime() % 15 == 0) {
+                highlightTaskOwners();
+            }
         }
     }
 
@@ -134,6 +141,36 @@ public class Handlers extends Setup<VillagerTasks> {
 
     public UUID getLastVillagerInteraction() {
         return lastVillagerInteraction;
+    }
+
+    /**
+     * Show particles above villagers who own completed tasks.
+     */
+    public void highlightTaskOwners() {
+        var player = Minecraft.getInstance().player;
+        if (player == null) return;
+
+        if (activeTasks.isEmpty()) {
+            return;
+        }
+
+        var satisfied = activeTasks.tasks().stream().filter(Task::isSatisfied).toList();
+        if (satisfied.isEmpty()) {
+            return;
+        }
+
+        for (var task : satisfied) {
+            Helpers.getNearbyTaskOwner(player, task.villager).ifPresent(villager -> {
+                var spread = 0.75d;
+                var villagerPos = villager.position();
+                for (int i = 0; i < 3; i++) {
+                    var px = villagerPos.x() + (Math.random() - 0.5d) * spread;
+                    var py = villagerPos.y() + 2.25d + (Math.random() - 0.5d) * spread;
+                    var pz = villagerPos.z() + (Math.random() - 0.5d) * spread;
+                    player.level().addParticle(ParticleTypes.HAPPY_VILLAGER, px, py, pz, 0, 0, 0.12d);
+                }
+            });
+        }
     }
 
     public boolean availableTasksAreValid() {
