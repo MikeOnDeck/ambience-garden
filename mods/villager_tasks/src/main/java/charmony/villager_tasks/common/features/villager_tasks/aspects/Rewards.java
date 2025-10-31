@@ -11,6 +11,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
@@ -105,6 +106,11 @@ public final class Rewards extends Aspect {
     public void onComplete(Task task, ServerPlayer player) {
         var level = player.level();
         var stacks = new ArrayList<ItemStack>();
+
+        if (experience > 0) {
+            player.giveExperienceLevels(experience);
+            level.playSound(null, player, SoundEvents.PLAYER_LEVELUP, SoundSource.PLAYERS, 0.25f, 1.0f);
+        }
 
         for (var item : items()) {
             var stack = item.stack().copy();
