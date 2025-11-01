@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.48.0
+
+- Add mob and loot table sprites.
+
 ## 1.47.0
 
 - Remove need for supplier when registering server packet receivers.
