@@ -1,11 +1,11 @@
-package charmony.villager_tasks.client.features.villager_tasks.components;
+package charmony.villager_tasks.client.features.villager_tasks.tooltips;
 
 import charmony.villager_tasks.client.features.villager_tasks.renderers.TaskRenderer;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 
-public class AvailableTaskTooltip extends TaskTooltip {
+public class AvailableTaskTooltip extends BaseTooltip {
     private final TaskRenderer renderer;
 
     public AvailableTaskTooltip(TaskRenderer renderer) {
@@ -25,7 +25,7 @@ public class AvailableTaskTooltip extends TaskTooltip {
         calcHeight += xy.getSecond() + 5;
 
         // Rewards
-        xy = renderer.rewards.renderTooltip(guiGraphics, x, y + calcHeight);
+        xy = renderer.rewards.renderTaskHoverTooltip(guiGraphics, x, y + calcHeight);
         calcWidth = Math.max(calcWidth, xy.getFirst());
         calcHeight += xy.getSecond();
 

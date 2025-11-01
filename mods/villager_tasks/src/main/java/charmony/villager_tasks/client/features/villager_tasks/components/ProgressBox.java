@@ -5,6 +5,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 
+@Deprecated
 public record ProgressBox(double remaining, double total) {
 
     public void render(GuiGraphics guiGraphics, int left, int top, int width, int height, int mouseX, int mouseY) {

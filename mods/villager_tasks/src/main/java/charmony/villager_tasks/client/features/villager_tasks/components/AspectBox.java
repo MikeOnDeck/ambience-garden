@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Deprecated
 public class AspectBox {
     public static final Color DEFAULT_FILL_COLOR = new Color(0x808080);
     public static final Color DEFAULT_TEXT_COLOR = new Color(0xffffff);

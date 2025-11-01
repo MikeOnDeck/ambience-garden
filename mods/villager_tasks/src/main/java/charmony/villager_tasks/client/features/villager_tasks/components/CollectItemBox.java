@@ -9,6 +9,7 @@ import net.minecraft.world.item.ItemStack;
 import java.util.List;
 import java.util.Optional;
 
+@Deprecated
 public class CollectItemBox extends AspectBox {
     private final CollectItem collectItem;
     private final boolean showProgress;

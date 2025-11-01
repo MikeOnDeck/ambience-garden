@@ -1,4 +1,4 @@
-package charmony.villager_tasks.client.features.villager_tasks.components;
+package charmony.villager_tasks.client.features.villager_tasks.tooltips;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -6,13 +6,13 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 
-public abstract class TaskTooltip implements ClientTooltipComponent, TooltipComponent {
+public abstract class BaseTooltip implements ClientTooltipComponent, TooltipComponent {
     protected final Minecraft minecraft;
     protected final Font font;
     protected int height;
     protected int width;
 
-    public TaskTooltip() {
+    public BaseTooltip() {
         this.minecraft = Minecraft.getInstance();
         this.font = minecraft.font;
     }

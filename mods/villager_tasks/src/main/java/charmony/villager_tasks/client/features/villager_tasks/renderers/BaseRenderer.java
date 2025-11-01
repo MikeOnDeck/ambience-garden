@@ -4,15 +4,17 @@ import charmony.api.core.Color;
 import charmony.core.client.MobSpriteRenderer;
 import charmony.villager_tasks.client.features.villager_tasks.Handlers;
 import charmony.villager_tasks.client.features.villager_tasks.VillagerTasks;
-import charmony.villager_tasks.client.features.villager_tasks.components.IndentedBox;
 import charmony.villager_tasks.common.features.villager_tasks.Task;
+import charmony.villager_tasks.common.features.villager_tasks.interfaces.Satisfiable;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
@@ -23,6 +25,9 @@ import java.util.WeakHashMap;
 public abstract class BaseRenderer {
     protected static final Color DEFAULT_FILL_COLOR = new Color(0x808080);
     protected static final Color DEFAULT_TEXT_COLOR = new Color(0xffffff);
+    protected static final Color INDENT_COLOR = new Color(0xffffff);
+    protected static final Color OUTDENT_COLOR = new Color(0x000000);
+
     protected static final Map<ResourceLocation, MobSpriteRenderer> CACHED_MOB_SPRITE_RENDERERS = new WeakHashMap<>();
 
     protected final Font font;
@@ -43,8 +48,35 @@ public abstract class BaseRenderer {
         this.task = task;
     }
 
+    public void renderIndentedBox(GuiGraphics guiGraphics, int x0, int x1, int y0, int y1, Color color) {
+        renderIndentedBox(guiGraphics, x0, x1, y0, y1, color, 255, false);
+    }
+
+    public void renderIndentedBox(GuiGraphics guiGraphics, int x0, int x1, int y0, int y1, Color color, int opacity, boolean overlay) {
+        var bgColor = ARGB.color(opacity, color.getArgbColor());
+
+        guiGraphics.hLine(x0, x1 - 1, y0, OUTDENT_COLOR.getArgbColor());
+        guiGraphics.vLine(x1, y0, y1 + 1, INDENT_COLOR.getArgbColor());
+        guiGraphics.hLine(x0 + 1, x1, y1, INDENT_COLOR.getArgbColor());
+        guiGraphics.vLine(x0, y0, y1, OUTDENT_COLOR.getArgbColor());
+
+        int bx0, bx1, by0, by1;
+        if (overlay) {
+            bx0 = x0;
+            bx1 = x1 + 1;
+            by0 = y0;
+            by1 = y1 + 1;
+        } else {
+            bx0 = x0 + 1;
+            bx1 = x1;
+            by0 = y0 + 1;
+            by1 = y1;
+        }
+
+        guiGraphics.fill(RenderPipelines.GUI, bx0, by0, bx1, by1, bgColor);
+    }
+
     public Pair<Integer, Integer> renderRequirementBox(GuiGraphics guiGraphics, Component text, int x, int y, Color fillColor) {
-        // Dimensions of box
         var width = font.width(text) + 24;
         var height = 18;
         var alpha = 120;
@@ -52,9 +84,7 @@ public abstract class BaseRenderer {
         var x1 = x + width;
         var y1 = y + height;
 
-        // Draw box outline and background
-        var box = new IndentedBox(alpha);
-        box.render(guiGraphics, x, x1, y, y1, fillColor);
+        renderIndentedBox(guiGraphics, x, x1, y, y1, fillColor, alpha, true);
 
         return Pair.of(width, height);
     }
@@ -64,12 +94,9 @@ public abstract class BaseRenderer {
         if (mouseX > x && mouseX < x + 16 - 1 && mouseY > y && mouseY < y + 16 - 1) {
             List<Component> finalTooltip = new ArrayList<>();
 
-            var itemTooltip = Screen.getTooltipFromItem(Minecraft.getInstance(), itemStack);
             if (customToooltip.isEmpty()) {
-                finalTooltip.addAll(itemTooltip);
+                finalTooltip.addAll(Screen.getTooltipFromItem(Minecraft.getInstance(), itemStack));
             } else {
-                var first = itemTooltip.getFirst();
-                finalTooltip.add(first);
                 finalTooltip.addAll(customToooltip);
             }
 
@@ -106,6 +133,26 @@ public abstract class BaseRenderer {
         guiGraphics.drawString(font, component, x + 20, y + 4, new Color(0xffffff).getArgbColor(), false);
 
         return font.width(component) + 24;
+    }
+
+    public Color fillColor(Satisfiable item) {
+        var satisfied = item.isSatisfied();
+        var none = item.remaining() == item.total();
+        var some = item.remaining() < item.total() && !satisfied;
+
+        if (satisfied) {
+            return getCompleteColor();
+        } else if (some) {
+            return getProgressColor();
+        } else if (none) {
+            return getMissingColor();
+        } else {
+            return DEFAULT_FILL_COLOR;
+        }
+    }
+
+    public Color textColor(Satisfiable item) {
+        return DEFAULT_TEXT_COLOR;
     }
 
     public Color getMissingColor() {

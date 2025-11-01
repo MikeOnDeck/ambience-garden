@@ -9,6 +9,7 @@ import net.minecraft.world.item.ItemStack;
 import java.util.List;
 import java.util.Optional;
 
+@Deprecated
 public class RewardItemBox extends AspectBox {
     private final RewardItem rewardItem;
 

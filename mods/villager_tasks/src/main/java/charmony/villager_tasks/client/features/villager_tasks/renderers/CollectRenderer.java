@@ -5,7 +5,9 @@ import charmony.villager_tasks.common.features.villager_tasks.Resources;
 import charmony.villager_tasks.common.features.villager_tasks.Task;
 import charmony.villager_tasks.common.features.villager_tasks.requirements.CollectItem;
 import com.mojang.datafixers.util.Pair;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
 import java.util.ArrayList;
@@ -16,6 +18,9 @@ public final class CollectRenderer extends BaseRenderer {
         super(task);
     }
 
+    /**
+     * Render tooltip when hovering over the task name in a task row.
+     */
     public Pair<Integer, Integer> renderTaskHoverTooltip(GuiGraphics guiGraphics, int x, int y) {
         var calcHeight = 0;
         var calcWidth = 0;
@@ -35,8 +40,33 @@ public final class CollectRenderer extends BaseRenderer {
         return Pair.of(calcWidth, calcHeight);
     }
 
+    public void renderPanel(GuiGraphics guiGraphics, int x, int y, int maxWidth, int mouseX, int mouseY) {
+        var collect = task.collect;
+        if (collect.isEmpty()) {
+            return;
+        }
 
-    public Pair<Integer, Integer> renderCollectItemBox(CollectItem collectItem, GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY, boolean showProgress) {
+        var xx = 0;
+        var yy = 0;
+        var boxMargin = 3;
+
+        for (var i = 0; i < collect.items().size(); i++) {
+            var item = collect.items().get(i);
+            var box = renderItemBox(guiGraphics, item, x + xx, y + yy, mouseX, mouseY, task.isStarted());
+
+            var width = box.getFirst();
+            var height = box.getSecond();
+
+            xx += width + boxMargin;
+            if (xx >= maxWidth) {
+                // Move to next row
+                xx = 0;
+                yy += height + boxMargin;
+            }
+        }
+    }
+
+    public Pair<Integer, Integer> renderItemBox(GuiGraphics guiGraphics, CollectItem collectItem, int x, int y, int mouseX, int mouseY, boolean showProgress) {
         var textColor = textColor(collectItem);
         var fillColor = fillColor(collectItem);
         var text = showProgress ? (collectItem.total() - collectItem.remaining()) + "/" + collectItem.total() : "" + collectItem.total();
@@ -46,10 +76,15 @@ public final class CollectRenderer extends BaseRenderer {
         var ix = x + 2;
         var iy = y + 1;
 
-        List<Component> tooltips = new ArrayList<>();
-        tooltips.add(collectItem.isSatisfied() ? Resources.YOU_COLLECTED : Resources.YOU_COLLECT);
-        tooltips.add(Component.literal(text + ": " + collectItem.total()));
-        renderItemStack(guiGraphics, collectItem.stack(), tooltips, ix, iy, mouseX, mouseY);
+        var itemTooltip = Screen.getTooltipFromItem(Minecraft.getInstance(), collectItem.stack());
+        var itemName = itemTooltip.getFirst();
+
+        List<Component> tooltip = new ArrayList<>();
+        tooltip.add(itemName);
+        tooltip.add(collectItem.isSatisfied() ? Resources.YOU_COLLECTED : Resources.YOU_COLLECT);
+        tooltip.add(Component.literal(itemName + ": " + text));
+
+        renderItemStack(guiGraphics, collectItem.stack(), tooltip, ix, iy, mouseX, mouseY);
 
         // Text x and y
         var tx = ix + 18;
@@ -57,25 +92,5 @@ public final class CollectRenderer extends BaseRenderer {
 
         guiGraphics.drawString(font, text, tx, ty, textColor.getArgbColor());
         return box;
-    }
-
-    public Color fillColor(CollectItem collectItem) {
-        var satisfied = collectItem.isSatisfied();
-        var none = collectItem.remaining() == collectItem.total();
-        var some = collectItem.remaining() < collectItem.total() && !satisfied;
-
-        if (satisfied) {
-            return getCompleteColor();
-        } else if (some) {
-            return getProgressColor();
-        } else if (none) {
-            return getMissingColor();
-        } else {
-            return DEFAULT_FILL_COLOR;
-        }
-    }
-
-    public Color textColor(CollectItem collectItem) {
-        return DEFAULT_TEXT_COLOR;
     }
 }

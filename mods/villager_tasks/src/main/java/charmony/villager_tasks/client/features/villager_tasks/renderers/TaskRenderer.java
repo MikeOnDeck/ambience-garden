@@ -1,9 +1,7 @@
 package charmony.villager_tasks.client.features.villager_tasks.renderers;
 
 import charmony.api.core.Color;
-import charmony.villager_tasks.client.features.villager_tasks.components.IndentedBox;
-import charmony.villager_tasks.client.features.villager_tasks.components.ProgressBox;
-import charmony.villager_tasks.client.features.villager_tasks.components.TaskTooltip;
+import charmony.villager_tasks.client.features.villager_tasks.tooltips.BaseTooltip;
 import charmony.villager_tasks.common.features.villager_tasks.Resources;
 import charmony.villager_tasks.common.features.villager_tasks.Task;
 import net.minecraft.client.Minecraft;
@@ -69,7 +67,7 @@ public class TaskRenderer extends BaseRenderer {
      * This is common to the Available, Active and Completed tasks screens.
      * Use villagerOwnsTask to adjust colors when rendering tasks for the villager that owns them.
      */
-    public void renderSimpleTaskRow(GuiGraphics guiGraphics, int midX, int top, int mouseX, int mouseY, TaskTooltip tooltip) {
+    public void renderSimpleTaskRow(GuiGraphics guiGraphics, int midX, int top, int mouseX, int mouseY, BaseTooltip tooltip) {
         var left = midX - 138;
         var right = midX + 137;
 
@@ -80,9 +78,8 @@ public class TaskRenderer extends BaseRenderer {
         var fillColor = isSatisfied && villagerOwnsTask ? completeFillColor : this.fillColor;
 
         // Background behind the task
-        var taskBg = new IndentedBox();
         var taskHeight = task.isStarted() ? 23 : 21;
-        taskBg.render(guiGraphics, left, right, top, top + taskHeight, fillColor);
+        renderIndentedBox(guiGraphics, left, right, top, top + taskHeight, fillColor);
 
         // Level scroll icon
         var sx = left + 3;
@@ -113,8 +110,7 @@ public class TaskRenderer extends BaseRenderer {
             var pHeight = 2;
             var pLeft = left + 1;
             var pTop = top + 21;
-            var progress = new ProgressBox(task.remaining(), task.total());
-            progress.render(guiGraphics, pLeft, pTop, pWidth, pHeight, mouseX, mouseY);
+            renderProgressBar(guiGraphics, pLeft, pTop, pWidth, pHeight, mouseX, mouseY);
         }
     }
 
@@ -129,6 +125,33 @@ public class TaskRenderer extends BaseRenderer {
             components.add(Resources.EPIC_TASK_TITLE);
             components.add(Resources.EPIC_TASK_DESCRIPTION);
             guiGraphics.setTooltipForNextFrame(font, components, Optional.empty(), mouseX, mouseY);
+        }
+    }
+
+    public void renderProgressBar(GuiGraphics guiGraphics, int left, int top, int width, int height, int mouseX, int mouseY) {
+        var bgColor = new Color(0x000000);
+        var progressColor = new Color(0xffd000);
+        var completeColor = new Color(0x00ff00);
+        var total = task.total();
+        var remaining = task.remaining();
+
+        var x0 = left;
+        var y0 = top;
+        var x1 = left + width;
+        var y1 = top + height;
+
+        guiGraphics.fill(RenderPipelines.GUI, x0, y0, x1, y1, bgColor.getArgbColor());
+
+        var completed = total - remaining;
+        var percent = ((double) completed /total) * 100d;
+        var completion = remaining == 0 ? width : (int)(((double)width / 100d) * percent);
+        var lineColor = remaining == 0 ? completeColor : progressColor;
+
+        guiGraphics.fill(RenderPipelines.GUI, left, top, left + completion, top + 2, lineColor.getArgbColor());
+
+        if (mouseX >= x0 && mouseX <= x1 && mouseY >= y0 && mouseY <= y1) {
+            var component = Component.translatable("gui.charmony.villager_tasks.requirements_remaining", completed, total);
+            guiGraphics.setTooltipForNextFrame(component, mouseX, mouseY);
         }
     }
 

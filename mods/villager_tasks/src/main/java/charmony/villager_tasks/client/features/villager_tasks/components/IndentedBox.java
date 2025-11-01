@@ -5,6 +5,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.util.ARGB;
 
+@Deprecated
 public record IndentedBox(int opacity, boolean overlay) {
     public static final Color INDENT_COLOR = new Color(0xffffff);
     public static final Color OUTDENT_COLOR = new Color(0x000000);

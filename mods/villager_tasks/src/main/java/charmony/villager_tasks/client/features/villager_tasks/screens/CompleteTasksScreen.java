@@ -1,8 +1,8 @@
 package charmony.villager_tasks.client.features.villager_tasks.screens;
 
 import charmony.villager_tasks.client.features.villager_tasks.Buttons;
-import charmony.villager_tasks.client.features.villager_tasks.components.AvailableTaskTooltip;
 import charmony.villager_tasks.client.features.villager_tasks.renderers.TaskRenderer;
+import charmony.villager_tasks.client.features.villager_tasks.tooltips.AvailableTaskTooltip;
 import charmony.villager_tasks.common.features.villager_tasks.Resources;
 import charmony.villager_tasks.common.features.villager_tasks.Task;
 import net.minecraft.client.gui.GuiGraphics;

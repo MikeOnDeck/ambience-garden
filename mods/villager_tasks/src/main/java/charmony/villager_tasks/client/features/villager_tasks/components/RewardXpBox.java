@@ -9,6 +9,7 @@ import net.minecraft.world.item.Items;
 import java.util.List;
 import java.util.Optional;
 
+@Deprecated
 public class RewardXpBox extends AspectBox {
     private final int count;
 
