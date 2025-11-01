@@ -2,6 +2,7 @@ package charmony.villager_tasks.common.features.villager_tasks;
 
 import charmony.core.helpers.UuidHelper;
 import charmony.villager_tasks.common.features.villager_tasks.aspects.Collect;
+import charmony.villager_tasks.common.features.villager_tasks.aspects.Hunt;
 import charmony.villager_tasks.common.features.villager_tasks.aspects.Rewards;
 import charmony.villager_tasks.common.features.villager_tasks.enums.TaskModifier;
 import charmony.villager_tasks.common.features.villager_tasks.enums.TaskStatus;
@@ -31,6 +32,7 @@ public class Task implements EventListener, Satisfiable {
     public final int level;
 
     public final Collect collect;
+    public final Hunt hunt;
     public final Rewards rewards;
 
     private TaskStatus status;
@@ -46,16 +48,17 @@ public class Task implements EventListener, Satisfiable {
         Codec.LONG.fieldOf("created").forGetter(task -> task.created),
         Codec.INT.fieldOf("level").forGetter(task -> task.level),
         Collect.CODEC.fieldOf("collect").forGetter(task -> task.collect),
+        Hunt.CODEC.fieldOf("hunt").forGetter(task -> task.hunt),
         Rewards.CODEC.fieldOf("rewards").forGetter(task -> task.rewards)
     ).apply(instance, Task::new));
 
     public static final Task EMPTY = new Task(
         UUID.randomUUID(), UUID.randomUUID(), ResourceLocation.parse("minecraft:empty"), TaskStatus.Unspecified, TaskModifier.Unspecified, "", 0L, 0L, 0,
-        Collect.EMPTY, Rewards.EMPTY
+        Collect.EMPTY, Hunt.EMPTY, Rewards.EMPTY
     );
 
     private Task(UUID id, UUID villager, ResourceLocation definitionId, TaskStatus status, TaskModifier modifier, String titleKey, long seed, long created, int level,
-                 Collect collect, Rewards reward
+                 Collect collect, Hunt hunt, Rewards reward
     ) {
         this.id = id;
         this.status = status;
@@ -68,6 +71,7 @@ public class Task implements EventListener, Satisfiable {
         this.level = level;
 
         this.collect = collect;
+        this.hunt = hunt;
         this.rewards = reward;
     }
 
@@ -77,7 +81,8 @@ public class Task implements EventListener, Satisfiable {
 
     public Task copyWithTime(long created) {
         return new Task(
-            id, villager, definitionId, status, modifier, titleKey, seed, created, level, collect.copy(), rewards.copy()
+            id, villager, definitionId, status, modifier, titleKey, seed, created, level,
+            collect.copy(), hunt.copy(), rewards.copy()
         );
     }
 
@@ -98,6 +103,7 @@ public class Task implements EventListener, Satisfiable {
             // Create the task with its aspects.
             task = new Task(id, uuid, definition.id, TaskStatus.NotStarted, modifier, titleKey, seed, created, level,
                 Collect.make(builder),
+                Hunt.make(builder),
                 Rewards.make(builder)
             );
         } catch (Exception e) {
@@ -110,12 +116,12 @@ public class Task implements EventListener, Satisfiable {
 
     // Define all aspects here or they won't be ticked.
     public List<? extends Aspect> aspects() {
-        return List.of(collect, rewards);
+        return List.of(collect, hunt, rewards);
     }
 
     // Define the aspects that are also requirements for completing the task or they won't be calculated when checking completion.
     public List<? extends Satisfiable> requirements() {
-        return List.of(collect);
+        return List.of(collect, hunt);
     }
 
     public Rewards rewards() {

@@ -4,6 +4,7 @@ import charmony.api.core.Side;
 import charmony.api.events.PlayerTickCallback;
 import charmony.core.base.Setup;
 import charmony.core.common.CommonRegistry;
+import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
@@ -49,7 +50,8 @@ public class Registers extends Setup<VillagerTasks> {
 
             PlayerTickCallback.EVENT.register(feature().handlers::playerTick);
             ServerEntityEvents.ENTITY_LOAD.register(feature().handlers::entityJoin);
-            UseEntityCallback.EVENT.register(feature().handlers::handleUseEntity);
+            UseEntityCallback.EVENT.register(feature().handlers::useEntity);
+            ServerLivingEntityEvents.AFTER_DEATH.register(feature().handlers::afterEntityDeath);
         };
     }
 }

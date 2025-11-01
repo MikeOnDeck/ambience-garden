@@ -41,15 +41,15 @@ public class AspectBox {
         box.render(guiGraphics, x, x1, y, y1, fillColor());
 
         var itemStack = itemStack().orElse(null);
-        var sprite = sprite().orElse(null);
+        var mob = mob().orElse(null);
         var text = text();
 
         if (itemStack != null) {
             renderItemStack(guiGraphics, itemStack, ix, iy, mouseX, mouseY);
         }
 
-        if (sprite != null) {
-            // TODO: render sprite
+        if (mob != null) {
+
         }
 
         if (!text.isEmpty()) {
@@ -62,7 +62,7 @@ public class AspectBox {
         int width = 0;
         width += font().width(text());
         width += itemStack().isPresent() ? 16 : 0;
-        width += sprite().isPresent() ? 16 : 0;
+        width += mob().isPresent() ? 16 : 0;
         return width + 7; // padding
     }
 
@@ -82,7 +82,7 @@ public class AspectBox {
         return Optional.empty();
     }
 
-    public Optional<ResourceLocation> sprite() {
+    public Optional<ResourceLocation> mob() {
         return Optional.empty();
     }
 
@@ -107,6 +107,10 @@ public class AspectBox {
         if (mouseX > x && mouseX < x + width() - 1 && mouseY > y && mouseY < y + height() - 1) {
             renderItemStackTooltip(guiGraphics, itemStack, mouseX, mouseY);
         }
+    }
+
+    private void renderMob(GuiGraphics guiGraphics, ResourceLocation mob, int x, int y, int mouseX, int mouseY) {
+
     }
 
     protected void renderItemStackTooltip(GuiGraphics guiGraphics, ItemStack itemStack, int mouseX, int mouseY) {

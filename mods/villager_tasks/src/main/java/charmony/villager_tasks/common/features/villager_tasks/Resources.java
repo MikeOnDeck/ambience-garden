@@ -36,6 +36,7 @@ public final class Resources {
         Component.translatable("gui.charmony.villager_tasks.epic_task.title").getContents()).withStyle(ChatFormatting.GOLD);
     public static final Component EPIC_TASK_DESCRIPTION = MutableComponent.create(
         Component.translatable("gui.charmony.villager_tasks.epic_task.description").getContents()).withStyle(ChatFormatting.GRAY);
+    public static final Component HUNT_ASPECT = Component.translatable("gui.charmony.villager_tasks.aspect.hunt");
     public static final Component MISSINGNO = Component.translatable("gui.charmony.villager_tasks.missingno");
     public static final Component NO_AVAILABLE_TASKS = Component.translatable("gui.charmony.villager_tasks.no_available_tasks");
     public static final Component REQUIRES_LABEL = Component.translatable("gui.charmony.villager_tasks.label.requires");
@@ -48,6 +49,10 @@ public final class Resources {
         Component.translatable("gui.charmony.villager_tasks.you_collect").getContents()).withStyle(ChatFormatting.RED, ChatFormatting.BOLD);
     public static final Component YOU_COLLECTED = MutableComponent.create(
         Component.translatable("gui.charmony.villager_tasks.you_collected").getContents()).withStyle(ChatFormatting.GREEN, ChatFormatting.BOLD);
+    public static final Component YOU_HUNT = MutableComponent.create(
+        Component.translatable("gui.charmony.villager_tasks.you_hunt").getContents()).withStyle(ChatFormatting.RED, ChatFormatting.BOLD);
+    public static final Component YOU_HUNTED = MutableComponent.create(
+        Component.translatable("gui.charmony.villager_tasks.you_hunted").getContents()).withStyle(ChatFormatting.GREEN, ChatFormatting.BOLD);
     public static final Component YOU_RECEIVE = MutableComponent.create(
         Component.translatable("gui.charmony.villager_tasks.you_receive").getContents()).withStyle(ChatFormatting.AQUA, ChatFormatting.BOLD);
 

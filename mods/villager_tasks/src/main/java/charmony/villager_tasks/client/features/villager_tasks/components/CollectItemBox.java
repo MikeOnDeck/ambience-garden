@@ -13,10 +13,6 @@ public class CollectItemBox extends AspectBox {
     private final CollectItem collectItem;
     private final boolean showProgress;
 
-    public CollectItemBox(CollectItem collectItem) {
-        this(collectItem, false);
-    }
-
     public CollectItemBox(CollectItem collectItem, boolean showProgress) {
         this.collectItem = collectItem;
         this.showProgress = showProgress;
@@ -24,10 +20,10 @@ public class CollectItemBox extends AspectBox {
 
     @Override
     protected void modifyItemStackTooltip(List<Component> tooltips) {
-        var itemName = tooltips.getFirst().getString();
+        var name = tooltips.getFirst().getString();
         tooltips.clear();
         tooltips.add(collectItem.isSatisfied() ? Resources.YOU_COLLECTED : Resources.YOU_COLLECT);
-        tooltips.add(Component.literal(itemName + ": " + collectItem.total()));
+        tooltips.add(Component.literal(name + ": " + collectItem.total()));
     }
 
     @Override

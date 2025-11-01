@@ -33,8 +33,8 @@ public interface EventListener {
         // hook
     }
 
-    default void onEntityKilled(Task task, LivingEntity livingEntity, DamageSource damageSource) {
-        // hook
+    default boolean onEntityKilled(Task task, LivingEntity livingEntity, DamageSource damageSource) {
+        return false; // False to show that it was not handled and should pass to other handlers.
     }
 
     default void onEntityLeave(Task task, Entity entity) {

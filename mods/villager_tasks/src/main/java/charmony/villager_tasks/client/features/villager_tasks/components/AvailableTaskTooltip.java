@@ -20,7 +20,7 @@ public class AvailableTaskTooltip extends TaskTooltip {
         startScaling(guiGraphics, x, y);
 
         // Collect items
-        xy = renderer.collect.renderTooltip(guiGraphics, x, y + calcHeight);
+        xy = renderer.collect.renderTaskHoverTooltip(guiGraphics, x, y + calcHeight);
         calcWidth = Math.max(calcWidth, xy.getFirst());
         calcHeight += xy.getSecond() + 5;
 

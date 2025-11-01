@@ -14,7 +14,9 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.player.Player;
@@ -68,7 +70,7 @@ public class Handlers extends Setup<VillagerTasks> {
     /**
      * Handle player interaction with a merchant entity (villager, wandering trader).
      */
-    public InteractionResult handleUseEntity(Player player, Level level, InteractionHand hand, Entity entity, @Nullable EntityHitResult entityHitResult) {
+    public InteractionResult useEntity(Player player, Level level, InteractionHand hand, Entity entity, @Nullable EntityHitResult entityHitResult) {
         if (entity instanceof AbstractVillager villager && player instanceof ServerPlayer serverPlayer) {
             setLastVillagerInteraction(serverPlayer, villager.getUUID());
             syncVillagerInteraction(serverPlayer);
@@ -76,6 +78,18 @@ public class Handlers extends Setup<VillagerTasks> {
         }
 
         return InteractionResult.PASS;
+    }
+
+    public void afterEntityDeath(LivingEntity entity, DamageSource damageSource) {
+        if (entity.level() instanceof ServerLevel && damageSource.getEntity() instanceof ServerPlayer player) {
+            var tasks = PLAYER_TASKS.getOrDefault(player, Tasks.EMPTY);
+            for (var task : tasks.tasks()) {
+                var result = task.onEntityKilled(task, entity, damageSource);
+                if (result) {
+                    return; // Stop processing if the event was handled.
+                }
+            }
+        }
     }
 
     public void handleReceiveQueryTask(Player player, Networking.C2SQueryTask payload) {

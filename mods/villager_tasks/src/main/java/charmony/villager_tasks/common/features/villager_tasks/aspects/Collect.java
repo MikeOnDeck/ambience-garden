@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-@SuppressWarnings("unchecked")
 public final class Collect extends Aspect implements Satisfiable {
     public static final String ID = "collect";
 
@@ -42,11 +41,10 @@ public final class Collect extends Aspect implements Satisfiable {
         return new Collect(new ArrayList<>(items));
     }
 
+    @SuppressWarnings("unchecked")
     public static Collect make(Task.AspectBuilder builder) {
         var map = builder.definition().collect;
-        if (map.isEmpty()) {
-            return EMPTY;
-        }
+        if (map.isEmpty()) return EMPTY;
 
         var random = builder.random();
         var multiplier = builder.modifier().negativeMultiplier();
@@ -54,7 +52,7 @@ public final class Collect extends Aspect implements Satisfiable {
         // Resolve items from map.
         var items = (List<Map<String, Object>>)map.getOrDefault("items", List.of());
         if (items.isEmpty()) {
-            throw new IllegalStateException("Collect requires at least one item to collect.");
+            throw new IllegalStateException("Aspect requires at least one item.");
         }
 
         var count = Math.min(items.size(), Helpers.getCountFromMap(map, multiplier, random));
@@ -70,7 +68,7 @@ public final class Collect extends Aspect implements Satisfiable {
 
                 criteria.add(new CollectItem(itemStack, itemCount, (int)itemWeight));
             } catch (Exception e) {
-                throw new IllegalStateException("Failed to parse collect item at index " + i, e);
+                throw new IllegalStateException("Failed to parse item at index " + i, e);
             }
         }
 
@@ -90,7 +88,7 @@ public final class Collect extends Aspect implements Satisfiable {
 
     @Override
     public boolean isEmpty() {
-        return items.isEmpty();
+        return items().isEmpty();
     }
 
     @Override
@@ -101,10 +99,6 @@ public final class Collect extends Aspect implements Satisfiable {
         for (var item : items()) {
             item.setPlayer(player);
         }
-    }
-
-    public List<CollectItem> items() {
-        return items;
     }
 
     @Override
@@ -143,5 +137,9 @@ public final class Collect extends Aspect implements Satisfiable {
                 }
             }
         }
+    }
+
+    public List<CollectItem> items() {
+        return items;
     }
 }

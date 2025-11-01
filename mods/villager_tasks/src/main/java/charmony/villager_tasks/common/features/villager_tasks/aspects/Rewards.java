@@ -94,7 +94,7 @@ public final class Rewards extends Aspect {
 
                 criteria.add(new RewardItem(itemStack, itemCount, (int)itemWeight));
             } catch (Exception e) {
-                throw new IllegalStateException("Failed to parse collect item at index " + i, e);
+                throw new IllegalStateException("Failed to parse item at index " + i, e);
             }
         }
 
