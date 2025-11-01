@@ -12,7 +12,7 @@ public final class HuntRenderer extends BaseRenderer {
         super(task);
     }
 
-    public Pair<Integer, Integer> renderTooltip(GuiGraphics guiGraphics, int x, int y) {
+    public Pair<Integer, Integer> renderTaskHoverTooltip(GuiGraphics guiGraphics, int x, int y) {
         var calcHeight = 0;
         var calcWidth = 0;
 
