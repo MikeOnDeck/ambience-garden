@@ -29,11 +29,11 @@
     "experience": 5,
     "items": [
       {
-        "item": "minecraft:copper_leggings",
+        "item": "minecraft:copper_ingot",
         "exactly": 5
       },
       {
-        "item": "minecraft:iron_leggings",
+        "item": "minecraft:iron_ingot",
         "exactly": 5
       }
     ]

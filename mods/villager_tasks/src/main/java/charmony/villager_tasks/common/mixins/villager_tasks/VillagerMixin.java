@@ -20,7 +20,7 @@ public class VillagerMixin {
     )
     private void hookMobInteract(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
         if (player instanceof ServerPlayer serverPlayer) {
-            VillagerTasks.feature().handlers.interactWithVillager(serverPlayer, (AbstractVillager) (Object) this);
+            VillagerTasks.feature().handlers.interactWithVillager(serverPlayer, (AbstractVillager)(Object)this);
         }
     }
 }

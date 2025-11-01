@@ -28,35 +28,32 @@ public final class Resources {
     public static final Component CONFIRM_ABANDON = Component.translatable("gui.charmony.villager_tasks.confirm_abandon");
     public static final Component DETAILS = Component.translatable("gui.charmony.villager_tasks.details");
     public static final Component DOING_TASK = Component.translatable("gui.charmony.villager_tasks.doing_task");
+    public static final Component DONE_TASK = MutableComponent.create(
+        Component.translatable("gui.charmony.villager_tasks.done_task").getContents()).withStyle(ChatFormatting.GREEN);
+    public static final Component DONE_TASK_WITH_LOYALTY = MutableComponent.create(
+        Component.translatable("gui.charmony.villager_tasks.done_task_with_loyalty").getContents()).withStyle(ChatFormatting.GREEN);
+    public static final Component EPIC_TASK_TITLE = MutableComponent.create(
+        Component.translatable("gui.charmony.villager_tasks.epic_task.title").getContents()).withStyle(ChatFormatting.GOLD);
+    public static final Component EPIC_TASK_DESCRIPTION = MutableComponent.create(
+        Component.translatable("gui.charmony.villager_tasks.epic_task.description").getContents()).withStyle(ChatFormatting.GRAY);
     public static final Component MISSINGNO = Component.translatable("gui.charmony.villager_tasks.missingno");
-    public static final Component NO_ACTIVE_TASKS = Component.translatable("gui.charmony.villager_tasks.no_active_tasks");
     public static final Component NO_AVAILABLE_TASKS = Component.translatable("gui.charmony.villager_tasks.no_available_tasks");
-    public static final Component NO_SATISFIED_TASKS = Component.translatable("gui.charmony.villager_tasks.no_satisfied_tasks");
     public static final Component REQUIRES_LABEL = Component.translatable("gui.charmony.villager_tasks.label.requires");
     public static final Component REWARD_ASPECT = Component.translatable("gui.charmony.villager_tasks.aspect.reward");
     public static final Component REWARDS_LABEL = Component.translatable("gui.charmony.villager_tasks.label.rewards");
     public static final Component REQUIREMENTS = Component.translatable("gui.charmony.villager_tasks.requirements");
     public static final Component REWARDS = Component.translatable("gui.charmony.villager_tasks.rewards");
     public static final Component TASKS = Component.translatable("gui.charmony.villager_tasks.tasks");
-
     public static final Component YOU_COLLECT = MutableComponent.create(
         Component.translatable("gui.charmony.villager_tasks.you_collect").getContents()).withStyle(ChatFormatting.RED, ChatFormatting.BOLD);
-
     public static final Component YOU_COLLECTED = MutableComponent.create(
         Component.translatable("gui.charmony.villager_tasks.you_collected").getContents()).withStyle(ChatFormatting.GREEN, ChatFormatting.BOLD);
-
     public static final Component YOU_RECEIVE = MutableComponent.create(
         Component.translatable("gui.charmony.villager_tasks.you_receive").getContents()).withStyle(ChatFormatting.AQUA, ChatFormatting.BOLD);
 
-    public static final Component DONE_TASK = MutableComponent.create(
-        Component.translatable("gui.charmony.villager_tasks.done_task").getContents()).withStyle(ChatFormatting.GREEN);
-
-    public static final Component DONE_TASK_WITH_LOYALTY = MutableComponent.create(
-        Component.translatable("gui.charmony.villager_tasks.done_task_with_loyalty").getContents()).withStyle(ChatFormatting.GREEN);
-
     public static final Map<Integer, ResourceLocation> ACTIVE_LEVELS = new HashMap<>();
     public static final Map<Integer, ResourceLocation> AVAILABLE_LEVELS = new HashMap<>();
-
+    public static final ResourceLocation STAR = ResourceLocation.fromNamespaceAndPath("charmony", "task/star");
     public static final ResourceLocation TASKS_BACKGROUND = ResourceLocation.fromNamespaceAndPath("charmony", "textures/gui/container/tasks.png");
 
     static {

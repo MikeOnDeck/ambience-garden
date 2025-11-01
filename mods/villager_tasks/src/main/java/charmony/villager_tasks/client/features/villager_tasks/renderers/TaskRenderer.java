@@ -46,10 +46,10 @@ public class TaskRenderer extends BaseRenderer {
 
         this.titleColor = new Color(0x454545);
         this.textColor = new Color(0x202020);
-        this.epicTextColor = new Color(0x606020);
+        this.epicTextColor = new Color(0x604514);
         this.completeTextColor = new Color(0x004000);
         this.fillColor = new Color(0x909090);
-        this.epicFillColor = new Color(0xa0a060);
+        this.epicFillColor = new Color(0xb09660);
         this.completeFillColor = new Color(0x70a070);
 
         this.villagerOwnsTask = task.belongsTo(handlers.getLastVillagerInteraction());
@@ -73,8 +73,11 @@ public class TaskRenderer extends BaseRenderer {
         var left = midX - 138;
         var right = midX + 137;
 
-        var textColor = task.isSatisfied() && villagerOwnsTask ? completeTextColor : (task.isEpic() ? epicTextColor : this.textColor);
-        var fillColor = task.isSatisfied() && villagerOwnsTask ? completeFillColor : (task.isEpic() ? epicFillColor : this.fillColor);
+        var isSatisfied = task.isSatisfied();
+        var isEpic = task.isEpic();
+
+        var textColor = isSatisfied && villagerOwnsTask ? completeTextColor : this.textColor;
+        var fillColor = isSatisfied && villagerOwnsTask ? completeFillColor : this.fillColor;
 
         // Background behind the task
         var taskBg = new IndentedBox();
@@ -85,6 +88,11 @@ public class TaskRenderer extends BaseRenderer {
         var sx = left + 3;
         var sy = top + 3;
         renderScroll(guiGraphics, sx, sy, mouseX, mouseY);
+
+        // Star icon for epic tasks
+        if (isEpic) {
+            renderStar(guiGraphics, left - 2, top - 2, mouseX, mouseY);
+        }
 
         // Task title label
         var title = MutableComponent.create(task.getTitle().getContents());
@@ -107,6 +115,20 @@ public class TaskRenderer extends BaseRenderer {
             var pTop = top + 21;
             var progress = new ProgressBox(task.remaining(), task.total());
             progress.render(guiGraphics, pLeft, pTop, pWidth, pHeight, mouseX, mouseY);
+        }
+    }
+
+    public void renderStar(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY) {
+        var texture = Resources.STAR;
+        var width = 8;
+        var height = 8;
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, texture, x, y, width, height);
+
+        if (mouseX > x && mouseX < x + width && mouseY > y && mouseY < y + height) {
+            List<Component> components = new ArrayList<>();
+            components.add(Resources.EPIC_TASK_TITLE);
+            components.add(Resources.EPIC_TASK_DESCRIPTION);
+            guiGraphics.setTooltipForNextFrame(font, components, Optional.empty(), mouseX, mouseY);
         }
     }
 

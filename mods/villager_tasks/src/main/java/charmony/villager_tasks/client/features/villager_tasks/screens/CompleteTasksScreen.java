@@ -28,11 +28,8 @@ public class CompleteTasksScreen extends BaseScreen {
     protected void init() {
         super.init();
         if (minecraft == null) return;
-
-        this.hasRenderedTaskButtons = false;
-        this.buttons.clear();
-
         addCloseButton();
+        refresh();
     }
 
     @Override
@@ -63,7 +60,7 @@ public class CompleteTasksScreen extends BaseScreen {
                             b -> minecraft.setScreen(new TaskDetailsScreen(task, this))),
                         new Buttons.CompleteButton(right - 22, buttonY,
                             b -> {
-                                handlers.completeTask(task, () -> {});
+                                handlers.completeTask(task);
                                 minecraft.setScreen(null);
                             })
                     ));
@@ -81,5 +78,13 @@ public class CompleteTasksScreen extends BaseScreen {
     public void onClose() {
         handlers.clearLastVillagerInteraction();
         super.onClose();
+    }
+
+    public void refresh() {
+        this.hasRenderedTaskButtons = false;
+        this.clearWidgets();
+        this.buttons.clear();
+        this.tooltips.clear();
+        this.renderers.clear();
     }
 }

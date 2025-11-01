@@ -30,11 +30,8 @@ public class AvailableTasksScreen extends BaseScreen {
     protected void init() {
         super.init();
         if (minecraft == null) return;
-
-        this.hasRenderedTaskButtons = false;
-        this.buttons.clear();
-
         addCloseButton();
+        refresh();
     }
 
     @Override
@@ -84,12 +81,12 @@ public class AvailableTasksScreen extends BaseScreen {
 
                     var acceptButton = new Buttons.AcceptButton(right - 22, buttonY,
                         playerIsDoingTask ? Resources.DOING_TASK : Buttons.AcceptButton.DEFAULT_TOOLTIP,
-                        b -> handlers.acceptTask(taskCopy, () -> minecraft.setScreen(new AvailableTasksScreen())));
+                        b -> handlers.acceptTask(taskCopy));
 
                     var completeButton = new Buttons.CompleteButton(right - 22, buttonY,
                         Buttons.CompleteButton.DEFAULT_TOOLTIP,
                         b -> {
-                            handlers.completeTask(taskCopy, () -> {});
+                            handlers.completeTask(taskCopy);
                             minecraft.setScreen(null);
                         });
 
@@ -118,5 +115,13 @@ public class AvailableTasksScreen extends BaseScreen {
     public void onClose() {
         handlers.clearLastVillagerInteraction();
         super.onClose();
+    }
+
+    public void refresh() {
+        this.hasRenderedTaskButtons = false;
+        this.clearWidgets();
+        this.buttons.clear();
+        this.tooltips.clear();
+        this.renderers.clear();
     }
 }

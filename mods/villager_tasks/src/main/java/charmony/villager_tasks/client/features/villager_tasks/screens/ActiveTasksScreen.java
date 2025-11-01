@@ -28,12 +28,9 @@ public class ActiveTasksScreen extends BaseScreen {
     protected void init() {
         super.init();
         if (minecraft == null) return;
-
-        this.hasRenderedTaskButtons = false;
-        this.buttons.clear();
-
         handlers.clearLastVillagerInteraction();
         addCloseButton();
+        refresh();
     }
 
     @Override
@@ -83,5 +80,13 @@ public class ActiveTasksScreen extends BaseScreen {
     public void onClose() {
         handlers.clearLastVillagerInteraction();
         super.onClose();
+    }
+
+    public void refresh() {
+        this.hasRenderedTaskButtons = false;
+        this.clearWidgets();
+        this.buttons.clear();
+        this.tooltips.clear();
+        this.renderers.clear();
     }
 }

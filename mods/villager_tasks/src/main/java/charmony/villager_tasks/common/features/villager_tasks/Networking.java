@@ -146,27 +146,4 @@ public class Networking extends Setup<VillagerTasks> {
             return new C2SRequestActiveTasks();
         }
     }
-
-    public record C2SRequestAvailableTasks(UUID villager) implements CustomPacketPayload {
-        public static Type<C2SRequestAvailableTasks> TYPE = new Type<>(VillagerTasksMod.id("request_available_tasks"));
-        public static StreamCodec<FriendlyByteBuf, C2SRequestAvailableTasks> CODEC =
-            StreamCodec.of(C2SRequestAvailableTasks::encode, C2SRequestAvailableTasks::decode);
-
-        public static void send(UUID villager) {
-            ClientPlayNetworking.send(new C2SRequestAvailableTasks(villager));
-        }
-
-        @Override
-        public Type<? extends CustomPacketPayload> type() {
-            return TYPE;
-        }
-
-        private static void encode(FriendlyByteBuf buf, C2SRequestAvailableTasks self) {
-            buf.writeUUID(self.villager);
-        }
-
-        private static C2SRequestAvailableTasks decode(FriendlyByteBuf buf) {
-            return new C2SRequestAvailableTasks(buf.readUUID());
-        }
-    }
 }

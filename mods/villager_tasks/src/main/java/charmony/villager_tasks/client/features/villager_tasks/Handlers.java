@@ -3,6 +3,7 @@ package charmony.villager_tasks.client.features.villager_tasks;
 import charmony.core.base.Setup;
 import charmony.villager_tasks.client.features.villager_tasks.screens.ActiveTasksScreen;
 import charmony.villager_tasks.client.features.villager_tasks.screens.AvailableTasksScreen;
+import charmony.villager_tasks.client.features.villager_tasks.screens.BaseScreen;
 import charmony.villager_tasks.client.features.villager_tasks.screens.CompleteTasksScreen;
 import charmony.villager_tasks.common.features.villager_tasks.Helpers;
 import charmony.villager_tasks.common.features.villager_tasks.Networking;
@@ -24,7 +25,6 @@ public class Handlers extends Setup<VillagerTasks> {
     private Tasks activeTasks = Tasks.EMPTY;
     private Tasks availableTasks = Tasks.EMPTY;
     private UUID lastVillagerInteraction = Helpers.emptyUuid();
-    private Runnable runAfterUpdate = () -> {};
 
     public Handlers(VillagerTasks feature) {
         super(feature);
@@ -108,21 +108,22 @@ public class Handlers extends Setup<VillagerTasks> {
 
     public void handleReceiveActiveTasks(Player player, Networking.S2CSendActiveTasks payload) {
         var tasks = payload.tasks();
+        var minecraft = Minecraft.getInstance();
         this.activeTasks = tasks;
-        clientTick(Minecraft.getInstance());
 
-        // Run anything queued for after the update.
-        runAfterUpdate.run();
-
-        // Clear the queued action.
-        runAfterUpdate = () -> {};
+        clientTick(minecraft);
+        refreshScreen(minecraft);
 
         log().info("Client received " + tasks.tasks().size() + " active tasks.");
     }
 
     public void handleReceiveAvailableTasks(Player player, Networking.S2CSendAvailableTasks payload) {
         var tasks = payload.tasks();
+        var minecraft = Minecraft.getInstance();
         this.availableTasks = tasks;
+
+        clientTick(minecraft);
+        refreshScreen(minecraft);
 
         log().info("Client received " + tasks.tasks().size() + " available tasks.");
     }
@@ -148,6 +149,12 @@ public class Handlers extends Setup<VillagerTasks> {
 
     public void clearLastVillagerInteraction() {
         lastVillagerInteraction = Helpers.emptyUuid();
+    }
+
+    public void refreshScreen(Minecraft minecraft) {
+        if (minecraft.screen instanceof BaseScreen baseScreen) {
+            baseScreen.refresh();
+        }
     }
 
     /**
@@ -184,26 +191,19 @@ public class Handlers extends Setup<VillagerTasks> {
         return !availableTasks.isEmpty() && availableTasks.uuid().equals(getLastVillagerInteraction());
     }
 
-    public void acceptTask(Task task, Runnable then) {
-        this.runAfterUpdate = then;
+    public void acceptTask(Task task) {
         Networking.C2SQueryTask.send(TaskQuery.Accept, task.id);
     }
 
-    public void abandonTask(Task task, Runnable then) {
-        this.runAfterUpdate = then;
+    public void abandonTask(Task task) {
         Networking.C2SQueryTask.send(TaskQuery.Abandon, task.id);
     }
 
-    public void completeTask(Task task, Runnable then) {
-        this.runAfterUpdate = then;
+    public void completeTask(Task task) {
         Networking.C2SQueryTask.send(TaskQuery.Complete, task.id);
     }
 
     public void updateActiveTasks() {
         Networking.C2SRequestActiveTasks.send();
-    }
-
-    public void updateAvailableTasks() {
-        Networking.C2SRequestAvailableTasks.send(lastVillagerInteraction);
     }
 }

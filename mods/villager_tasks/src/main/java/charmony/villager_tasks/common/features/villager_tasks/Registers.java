@@ -14,8 +14,8 @@ import java.util.function.Supplier;
 public class Registers extends Setup<VillagerTasks> {
     public final Supplier<SoundEvent> taskAbandon;
     public final Supplier<SoundEvent> taskAccept;
-    public final Supplier<SoundEvent> taskComplete;
-    public final Supplier<SoundEvent> taskEpicComplete;
+    public final Supplier<SoundEvent> taskCompleteSound;
+    public final Supplier<SoundEvent> epicTaskCompleteSound;
 
     public Registers(VillagerTasks feature) {
         super(feature);
@@ -27,18 +27,16 @@ public class Registers extends Setup<VillagerTasks> {
         registry.packetSender(Side.Common, Networking.S2CSendVillagerInteraction.TYPE, Networking.S2CSendVillagerInteraction.CODEC);
         registry.packetSender(Side.Client, Networking.C2SQueryTask.TYPE, Networking.C2SQueryTask.CODEC);
         registry.packetSender(Side.Client, Networking.C2SRequestActiveTasks.TYPE, Networking.C2SRequestActiveTasks.CODEC);
-        registry.packetSender(Side.Client, Networking.C2SRequestAvailableTasks.TYPE, Networking.C2SRequestAvailableTasks.CODEC);
 
         // Packet handling from client.
         registry.packetReceiver(Networking.C2SQueryTask.TYPE, feature.handlers::handleReceiveQueryTask);
         registry.packetReceiver(Networking.C2SRequestActiveTasks.TYPE, feature.handlers::handleReceiveRequestActiveTasks);
-        registry.packetReceiver(Networking.C2SRequestAvailableTasks.TYPE, feature.handlers::handleReceiveRequestAvailableTasks);
 
         // Sound effects.
         taskAbandon = registry.sound("task_abandon");
         taskAccept = registry.sound("task_accept");
-        taskComplete = registry.sound("task_complete");
-        taskEpicComplete = registry.sound("task_epic_complete");
+        taskCompleteSound = registry.sound("task_complete");
+        epicTaskCompleteSound = registry.sound("epic_task_complete");
     }
 
     @Override

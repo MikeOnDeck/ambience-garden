@@ -26,10 +26,10 @@
     ],
     "subtitle": "subtitles.charmony.villager_tasks.complete"
   },
-  "task_epic_complete": {
+  "epic_task_complete": {
     "sounds": [
       {
-        "name": "charmony:task_epic_complete",
+        "name": "charmony:epic_task_complete",
         "volume": 1.0
       }
     ],

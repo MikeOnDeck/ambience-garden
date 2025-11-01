@@ -54,6 +54,10 @@ public abstract class BaseScreen extends Screen {
         return false;
     }
 
+    public void refresh() {
+        // Hook
+    }
+
     protected void renderBg(GuiGraphics guiGraphics) {
         var width = 298;
         var height = 177;

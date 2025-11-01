@@ -120,9 +120,6 @@ public final class Rewards extends Aspect {
 
         var villager = Helpers.getNearbyTaskOwner(player, task.villager).or(() -> Helpers.getNearbyRewardGiver(player));
 
-        villager.ifPresent(v -> {
-            Helpers.throwItemsAtPlayer(v, player, stacks);
-            level.playSound(null, v.blockPosition(), SoundEvents.VILLAGER_YES, v.getSoundSource(), 1.0f, 1.0f);
-        });
+        villager.ifPresent(v -> Helpers.throwItemsAtPlayer(v, player, stacks));
     }
 }
