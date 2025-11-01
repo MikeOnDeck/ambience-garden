@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.48.1
+
+- Add MobSpriteRenderer.
+
 ## 1.48.0
 
 - Add mob and loot table sprites.
