@@ -137,9 +137,9 @@ public class TaskRenderer extends BaseRenderer {
         var level = task.level;
 
         if (task.isStarted()) {
-            texture = Resources.ACTIVE_LEVELS.getOrDefault(level, Resources.ACTIVE_LEVELS.get(level));
+            texture = Resources.ACTIVE_SCROLL_LEVELS.getOrDefault(level, Resources.ACTIVE_SCROLL_LEVELS.get(level));
         } else {
-            texture = Resources.AVAILABLE_LEVELS.getOrDefault(level, Resources.AVAILABLE_LEVELS.get(level));
+            texture = Resources.AVAILABLE_SCROLL_LEVELS.getOrDefault(level, Resources.AVAILABLE_SCROLL_LEVELS.get(level));
         }
 
         guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, texture, x, y, SCROLL_WIDTH, SCROLL_HEIGHT);

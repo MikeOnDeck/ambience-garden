@@ -51,15 +51,15 @@ public final class Resources {
     public static final Component YOU_RECEIVE = MutableComponent.create(
         Component.translatable("gui.charmony.villager_tasks.you_receive").getContents()).withStyle(ChatFormatting.AQUA, ChatFormatting.BOLD);
 
-    public static final Map<Integer, ResourceLocation> ACTIVE_LEVELS = new HashMap<>();
-    public static final Map<Integer, ResourceLocation> AVAILABLE_LEVELS = new HashMap<>();
+    public static final Map<Integer, ResourceLocation> ACTIVE_SCROLL_LEVELS = new HashMap<>();
+    public static final Map<Integer, ResourceLocation> AVAILABLE_SCROLL_LEVELS = new HashMap<>();
     public static final ResourceLocation STAR = ResourceLocation.fromNamespaceAndPath("charmony", "task/star");
     public static final ResourceLocation TASKS_BACKGROUND = ResourceLocation.fromNamespaceAndPath("charmony", "textures/gui/container/tasks.png");
 
     static {
         for (var i = 1; i <= 6; i++) {
-            ACTIVE_LEVELS.put(i, ResourceLocation.fromNamespaceAndPath("charmony", "active/level" + i));
-            AVAILABLE_LEVELS.put(i, ResourceLocation.fromNamespaceAndPath("charmony", "available/level" + i));
+            ACTIVE_SCROLL_LEVELS.put(i, ResourceLocation.fromNamespaceAndPath("charmony", "scroll/active/level" + i));
+            AVAILABLE_SCROLL_LEVELS.put(i, ResourceLocation.fromNamespaceAndPath("charmony", "scroll/available/level" + i));
         }
     }
 }
