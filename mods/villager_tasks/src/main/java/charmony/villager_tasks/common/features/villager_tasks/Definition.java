@@ -31,11 +31,9 @@ public class Definition {
     public int expiry = 0;
     public String villager = ""; // Don't reference this directly; use appliesTo().
     public Map<String, Object> collect = new HashMap<>();
-    public Map<String, Object> deliver = new HashMap<>();
     public Map<String, Object> treasure = new HashMap<>();
     public Map<String, Object> hunt = new HashMap<>();
-    public Map<String, Object> encounter = new HashMap<>();
-    public Map<String, Object> retrieve = new HashMap<>();
+    public Map<String, Object> battle = new HashMap<>();
     public Map<String, Object> rewards = new HashMap<>();
     public Map<String, Object> penalties = new HashMap<>();
     public Map<String, Object> effects = new HashMap<>();

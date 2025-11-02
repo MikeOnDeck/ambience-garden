@@ -65,9 +65,7 @@ public final class Rewards extends Aspect {
 
     public static Rewards make(Task.AspectBuilder builder) {
         var map = builder.definition().rewards;
-        if (map.isEmpty()) {
-            return EMPTY;
-        }
+        if (map.isEmpty()) return EMPTY;
 
         var random = builder.random();
         var multiplier = builder.modifier().positiveMultiplier();
@@ -78,7 +76,7 @@ public final class Rewards extends Aspect {
         // Resolve items from map.
         var items = (List<Map<String, Object>>)map.getOrDefault("items", List.of());
         if (items.isEmpty()) {
-            throw new RuntimeException();
+            throw new IllegalStateException("Aspect requires at least one item.");
         }
 
         var count = Math.min(items.size(), Helpers.getCountFromMap(map, multiplier, random));

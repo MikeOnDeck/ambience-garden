@@ -45,7 +45,7 @@ public class HuntMob implements Satisfiable, HasWeight {
 
     @Override
     public int remaining() {
-        return Math.max(0, total - hunted);
+        return Math.max(0, total() - getHunted());
     }
 
     @Override

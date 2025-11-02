@@ -55,7 +55,7 @@ public record Tasks(UUID uuid, String name, List<Task> tasks) {
 
         for (var task : tasks()) {
             if (task.created < time) {
-                VillagerTasks.feature().log().debug("Removed old recent task: " + task.id);
+                VillagerTasks.feature().log().debug("Removed old task: " + task.id);
                 updated.remove(task);
             }
         }
