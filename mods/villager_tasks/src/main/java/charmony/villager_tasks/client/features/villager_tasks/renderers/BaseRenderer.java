@@ -17,7 +17,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.item.ItemStack;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -89,18 +88,10 @@ public abstract class BaseRenderer {
         return Pair.of(width, height);
     }
 
-    public void renderItemStack(GuiGraphics guiGraphics, ItemStack itemStack, List<Component> customToooltip, int x, int y, int mouseX, int mouseY) {
+    public void renderItemStack(GuiGraphics guiGraphics, ItemStack itemStack, List<Component> tooltip, int x, int y, int mouseX, int mouseY) {
         guiGraphics.renderFakeItem(itemStack, x, y);
-        if (mouseX > x && mouseX < x + 16 - 1 && mouseY > y && mouseY < y + 16 - 1) {
-            List<Component> finalTooltip = new ArrayList<>();
-
-            if (customToooltip.isEmpty()) {
-                finalTooltip.addAll(Screen.getTooltipFromItem(Minecraft.getInstance(), itemStack));
-            } else {
-                finalTooltip.addAll(customToooltip);
-            }
-
-            guiGraphics.setTooltipForNextFrame(font, finalTooltip.stream().map(Component::getVisualOrderText).toList(), mouseX, mouseY);
+        if (!tooltip.isEmpty() && mouseX > x && mouseX < x + 16 - 1 && mouseY > y && mouseY < y + 16 - 1) {
+            guiGraphics.setTooltipForNextFrame(font, tooltip.stream().map(Component::getVisualOrderText).toList(), mouseX, mouseY);
         }
     }
 

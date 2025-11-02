@@ -62,19 +62,9 @@ public class TaskDetailsScreen extends BaseScreen {
         top += 14;
         taskRenderer.renderIndentedBox(guiGraphics, left, right, top, top + 70, fillColor);
 
-        int reqPanelX;
-        int reqPanelY = top + 5;
-        int reqPanelMaxWidth;
-
-        if (reqs.size() == 1) {
-            // render layout for single objective
-            reqPanelMaxWidth = 240;
-            reqPanelX = left + 5;
-        } else {
-            // render layout for multiple objectives
-            reqPanelMaxWidth = 180;
-            reqPanelX = left + 60;
-        }
+        var reqPanelX = left + 5;
+        var reqPanelY = top + 5;
+        var reqPanelMaxWidth = 240;
 
         taskRenderer.collect.renderPanel(guiGraphics, reqPanelX, reqPanelY, reqPanelMaxWidth, mouseX, mouseY);
 

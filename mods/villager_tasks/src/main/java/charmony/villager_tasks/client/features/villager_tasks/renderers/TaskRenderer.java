@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class TaskRenderer extends BaseRenderer {
+public final class TaskRenderer extends BaseRenderer {
     public static final int SCROLL_WIDTH = 16;
     public static final int SCROLL_HEIGHT = 16;
 
@@ -98,8 +98,7 @@ public class TaskRenderer extends BaseRenderer {
         guiGraphics.drawString(font, title, tx, ty, textColor.getArgbColor(), false);
 
         // Mouse over title shows requirements of the task.
-        if (mouseX >= tx && mouseX <= right - 44
-            && mouseY >= top + 1 && mouseY <= top + 20) {
+        if (mouseX >= tx && mouseX <= right - 44 && mouseY >= top + 1 && mouseY <= top + 20) {
             var titleComponent = Component.literal(title.getString());
             guiGraphics.setTooltipForNextFrame(font, List.of(titleComponent), Optional.of(tooltip), mouseX, mouseY);
         }
@@ -171,7 +170,7 @@ public class TaskRenderer extends BaseRenderer {
         }
     }
 
-    protected void renderScrollTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY, boolean villagerOwnsTask) {
+    private void renderScrollTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY, boolean villagerOwnsTask) {
         List<Component> components = new ArrayList<>();
         components.add(Component.translatable("gui.charmony.villager_tasks.level_info", task.level));
 

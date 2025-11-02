@@ -84,26 +84,30 @@ public final class RewardsRenderer extends BaseRenderer {
         var fillColor = new Color(0x4090c0);
         var text = "" + rewardItem.total();
         var box = renderRequirementBox(guiGraphics, Component.literal(text), x, y, fillColor);
+        var width = box.getFirst();
+        var height = box.getSecond();
 
         // Item x and y
         var ix = x + 2;
         var iy = y + 1;
 
-        var itemTooltip = Screen.getTooltipFromItem(Minecraft.getInstance(), rewardItem.stack());
-        var itemName = itemTooltip.getFirst();
-
-        List<Component> tooltip = new ArrayList<>();
-        tooltip.add(itemName);
-        tooltip.add(Resources.YOU_RECEIVE);
-        tooltip.add(Component.literal(itemName + ": " + text));
-
-        renderItemStack(guiGraphics, rewardItem.stack(), tooltip, ix, iy, mouseX, mouseY);
+        renderItemStack(guiGraphics, rewardItem.stack(), List.of(), ix, iy, mouseX, mouseY);
 
         // Text x and y
         var tx = ix + 18;
         var ty = iy + 5;
 
         guiGraphics.drawString(font, text, tx, ty, DEFAULT_TEXT_COLOR.getArgbColor());
+
+        var itemTooltip = Screen.getTooltipFromItem(Minecraft.getInstance(), rewardItem.stack());
+        var tooltip = new ArrayList<Component>();
+        tooltip.add(Resources.YOU_RECEIVE);
+        tooltip.add(Component.translatable("gui.charmony.villager_tasks.name_and_number", itemTooltip.getFirst(), text));
+
+        if (mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height) {
+            guiGraphics.setTooltipForNextFrame(font, tooltip.stream().map(Component::getVisualOrderText).toList(), mouseX, mouseY);
+        }
+
         return box;
     }
 
@@ -111,22 +115,29 @@ public final class RewardsRenderer extends BaseRenderer {
         var fillColor = new Color(0x40b0b0);
         var text = "" + experience;
         var box = renderRequirementBox(guiGraphics, Component.literal(text), x, y, fillColor);
+        var width = box.getFirst();
+        var height = box.getSecond();
 
         // Item x and y
         var ix = x + 2;
         var iy = y + 1;
 
-        List<Component> tooltip = new ArrayList<>();
-        tooltip.add(Resources.YOU_RECEIVE);
-        tooltip.add(Component.translatable("gui.charmony.villager_tasks.experience_levels", experience));
-
-        renderItemStack(guiGraphics, new ItemStack(Items.EXPERIENCE_BOTTLE), tooltip, ix, iy, mouseX, mouseY);
+        renderItemStack(guiGraphics, new ItemStack(Items.EXPERIENCE_BOTTLE), List.of(), ix, iy, mouseX, mouseY);
 
         // Text x and y
         var tx = ix + 18;
         var ty = iy + 5;
 
         guiGraphics.drawString(font, text, tx, ty, DEFAULT_TEXT_COLOR.getArgbColor(), false);
+
+        List<Component> tooltip = new ArrayList<>();
+        tooltip.add(Resources.YOU_RECEIVE);
+        tooltip.add(Component.translatable("gui.charmony.villager_tasks.experience_levels", experience));
+
+        if (mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height) {
+            guiGraphics.setTooltipForNextFrame(font, tooltip.stream().map(Component::getVisualOrderText).toList(), mouseX, mouseY);
+        }
+
         return box;
     }
 }

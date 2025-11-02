@@ -25,18 +25,21 @@ public final class CollectRenderer extends BaseRenderer {
         var calcHeight = 0;
         var calcWidth = 0;
 
-        guiGraphics.drawString(font, Resources.COLLECT_ASPECT, x, y + calcHeight, new Color(0xffffff).getArgbColor(), false);
-        calcHeight += 10;
-
         var items = task.collect.items();
         var rows = items.size();
 
-        for (var i = 0; i < Math.min(3, items.size()); i++) {
-            var item = items.get(i);
-            calcWidth = Math.max(calcWidth, renderItemTooltip(guiGraphics, item.stack(), Component.literal("" + item.total()), x, y + calcHeight + (i * 15)));
+        if (!items.isEmpty()) {
+            guiGraphics.drawString(font, Resources.COLLECT_ASPECT, x, y + calcHeight, new Color(0xffffff).getArgbColor(), false);
+            calcHeight += 10;
+
+            for (var i = 0; i < Math.min(3, items.size()); i++) {
+                var item = items.get(i);
+                calcWidth = Math.max(calcWidth, renderItemTooltip(guiGraphics, item.stack(), Component.literal("" + item.total()), x, y + calcHeight + (i * 15)));
+            }
+
+            calcHeight += (rows * 15) + 10;
         }
 
-        calcHeight += (rows * 15) + 10;
         return Pair.of(calcWidth, calcHeight);
     }
 
@@ -71,26 +74,31 @@ public final class CollectRenderer extends BaseRenderer {
         var fillColor = fillColor(collectItem);
         var text = showProgress ? (collectItem.total() - collectItem.remaining()) + "/" + collectItem.total() : "" + collectItem.total();
         var box = renderRequirementBox(guiGraphics, Component.literal(text), x, y, fillColor);
+        var width = box.getFirst();
+        var height = box.getSecond();
 
         // Item x and y
         var ix = x + 2;
         var iy = y + 1;
 
-        var itemTooltip = Screen.getTooltipFromItem(Minecraft.getInstance(), collectItem.stack());
-        var itemName = itemTooltip.getFirst();
-
-        List<Component> tooltip = new ArrayList<>();
-        tooltip.add(itemName);
-        tooltip.add(collectItem.isSatisfied() ? Resources.YOU_COLLECTED : Resources.YOU_COLLECT);
-        tooltip.add(Component.literal(itemName + ": " + text));
-
-        renderItemStack(guiGraphics, collectItem.stack(), tooltip, ix, iy, mouseX, mouseY);
+        renderItemStack(guiGraphics, collectItem.stack(), List.of(), ix, iy, mouseX, mouseY);
 
         // Text x and y
         var tx = ix + 18;
         var ty = iy + 5;
 
         guiGraphics.drawString(font, text, tx, ty, textColor.getArgbColor());
+
+        // Tooptip on item box hover
+        var itemTooltip = Screen.getTooltipFromItem(Minecraft.getInstance(), collectItem.stack());
+        var tooltip = new ArrayList<Component>();
+        tooltip.add(collectItem.isSatisfied() ? Resources.YOU_COLLECTED : Resources.YOU_COLLECT);
+        tooltip.add(Component.translatable("gui.charmony.villager_tasks.name_and_number", itemTooltip.getFirst(), text));
+
+        if (mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height) {
+            guiGraphics.setTooltipForNextFrame(font, tooltip.stream().map(Component::getVisualOrderText).toList(), mouseX, mouseY);
+        }
+
         return box;
     }
 }

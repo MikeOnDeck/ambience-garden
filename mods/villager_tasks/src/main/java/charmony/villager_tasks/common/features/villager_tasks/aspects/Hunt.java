@@ -1,9 +1,6 @@
 package charmony.villager_tasks.common.features.villager_tasks.aspects;
 
-import charmony.villager_tasks.common.features.villager_tasks.Aspect;
-import charmony.villager_tasks.common.features.villager_tasks.Helpers;
-import charmony.villager_tasks.common.features.villager_tasks.Resources;
-import charmony.villager_tasks.common.features.villager_tasks.Task;
+import charmony.villager_tasks.common.features.villager_tasks.*;
 import charmony.villager_tasks.common.features.villager_tasks.interfaces.Satisfiable;
 import charmony.villager_tasks.common.features.villager_tasks.requirements.HuntMob;
 import com.mojang.serialization.Codec;
@@ -57,7 +54,7 @@ public class Hunt extends Aspect implements Satisfiable {
         for (var i = 0; i < mobs.size(); i++) {
             try {
                 var mobMap = mobs.get(i);
-                var mobStr = (String) mobMap.get("mob");
+                var mobStr = (String) mobMap.get("entity");
                 var mobId = ResourceLocation.tryParse(mobStr);
                 if (mobId == null) {
                     throw new IllegalStateException("Invalid ID: " + mobStr);
@@ -67,7 +64,7 @@ public class Hunt extends Aspect implements Satisfiable {
 
                 criteria.add(new HuntMob(mobId, mobCount, 0, (int)mobWeight));
             } catch (Exception e) {
-                throw new IllegalStateException("Failed to parse mob at index " + i, e);
+                VillagerTasks.feature().log().error("Failed to parse hunt mob at index " + i, e);
             }
         }
 
