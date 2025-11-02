@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.48.2
+
+- Add base SpriteRenderer.
+
 ## 1.48.1
 
 - Add MobSpriteRenderer.
