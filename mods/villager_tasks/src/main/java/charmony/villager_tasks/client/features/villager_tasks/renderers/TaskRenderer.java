@@ -20,9 +20,10 @@ public final class TaskRenderer extends BaseRenderer {
     public static final int SCROLL_WIDTH = 16;
     public static final int SCROLL_HEIGHT = 16;
 
-    protected final Font font;
+    private final Font font;
 
     public final CollectRenderer collect;
+    public final HuntRenderer hunt;
     public final RewardsRenderer rewards;
 
     public Color titleColor;
@@ -38,6 +39,7 @@ public final class TaskRenderer extends BaseRenderer {
     public TaskRenderer(Task task) {
         super(task);
         this.collect = new CollectRenderer(task);
+        this.hunt = new HuntRenderer(task);
         this.rewards = new RewardsRenderer(task);
         this.task = task;
         this.font = Minecraft.getInstance().font;

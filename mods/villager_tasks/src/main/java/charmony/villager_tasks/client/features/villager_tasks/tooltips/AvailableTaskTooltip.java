@@ -15,14 +15,19 @@ public class AvailableTaskTooltip extends BaseTooltip {
     @Override
     public void renderImage(Font font, int x, int y, int xx, int yy, GuiGraphics guiGraphics) {
         var calcWidth = 0;
-        var calcHeight = 12;
+        var calcHeight = 6;
         var xy = Pair.of(0, 0);
         startScaling(guiGraphics, x, y);
 
         // Collect items
         xy = renderer.collect.renderTaskHoverTooltip(guiGraphics, x, y + calcHeight);
         calcWidth = Math.max(calcWidth, xy.getFirst());
-        calcHeight += xy.getSecond() + 5;
+        calcHeight += xy.getSecond();
+
+        // Hunt mobs
+        xy = renderer.hunt.renderTaskHoverTooltip(guiGraphics, x, y + calcHeight);
+        calcWidth = Math.max(calcWidth, xy.getFirst());
+        calcHeight += xy.getSecond();
 
         // Rewards
         xy = renderer.rewards.renderTaskHoverTooltip(guiGraphics, x, y + calcHeight);

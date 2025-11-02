@@ -37,7 +37,7 @@ public final class CollectRenderer extends BaseRenderer {
                 calcWidth = Math.max(calcWidth, renderItemTooltip(guiGraphics, item.stack(), Component.literal("" + item.total()), x, y + calcHeight + (i * 15)));
             }
 
-            calcHeight += (rows * 15) + 10;
+            calcHeight += (rows * 15) + 15;
         }
 
         return Pair.of(calcWidth, calcHeight);

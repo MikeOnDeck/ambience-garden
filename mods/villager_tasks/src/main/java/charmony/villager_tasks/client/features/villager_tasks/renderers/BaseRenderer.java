@@ -2,6 +2,7 @@ package charmony.villager_tasks.client.features.villager_tasks.renderers;
 
 import charmony.api.core.Color;
 import charmony.core.client.MobSpriteRenderer;
+import charmony.core.client.renderers.SpriteRenderer;
 import charmony.villager_tasks.client.features.villager_tasks.Handlers;
 import charmony.villager_tasks.client.features.villager_tasks.VillagerTasks;
 import charmony.villager_tasks.common.features.villager_tasks.Task;
@@ -99,14 +100,14 @@ public abstract class BaseRenderer {
         return renderItemTooltip(guiGraphics, stack, component, x, y, true);
     }
 
-    public int renderItemTooltip(GuiGraphics guiGraphics, ItemStack stack, Component component, int x, int y, boolean showItemName) {
+    public int renderItemTooltip(GuiGraphics guiGraphics, ItemStack stack, Component component, int x, int y, boolean showName) {
         var minecraft = Minecraft.getInstance();
         var font = minecraft.font;
         var itemTooltip = Screen.getTooltipFromItem(minecraft, stack);
 
-        if (showItemName) {
-            var itemName = itemTooltip.getFirst();
-            component = Component.translatable("gui.charmony.villager_tasks.name_and_number", itemName, component);
+        if (showName) {
+            var name = itemTooltip.getFirst();
+            component = Component.translatable("gui.charmony.villager_tasks.name_and_number", name, component);
         }
 
         guiGraphics.renderFakeItem(stack, x, y);
@@ -115,12 +116,14 @@ public abstract class BaseRenderer {
         return font.width(component) + 24;
     }
 
-    public int renderMobTooltip(GuiGraphics guiGraphics, ResourceLocation mob, Component component, int x, int y) {
+    public int renderSpriteTooltip(GuiGraphics guiGraphics, SpriteRenderer spriteRenderer, Component component, int x, int y) {
         var minecraft = Minecraft.getInstance();
         var font = minecraft.font;
-        var spriteRenderer = CACHED_MOB_SPRITE_RENDERERS.computeIfAbsent(mob, r -> new MobSpriteRenderer(mob));
 
-        spriteRenderer.render(guiGraphics, x, y, 16, 16);
+        var name = spriteRenderer.getName();
+        component = Component.translatable("gui.charmony.villager_tasks.name_and_number", name, component);
+
+        spriteRenderer.render(guiGraphics, x, y);
         guiGraphics.drawString(font, component, x + 20, y + 4, new Color(0xffffff).getArgbColor(), false);
 
         return font.width(component) + 24;
