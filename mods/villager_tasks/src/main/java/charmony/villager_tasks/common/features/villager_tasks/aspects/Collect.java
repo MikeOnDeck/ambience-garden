@@ -21,19 +21,13 @@ public final class Collect extends Aspect implements Satisfiable {
 
     private final List<CollectItem> items;
 
-    public static final Codec<Collect> CODEC = CollectItem.CODEC.listOf().fieldOf("items").xmap(
-        Collect::new, collect -> collect.items
-    ).codec();
+    public static final Codec<Collect> CODEC = CollectItem.CODEC.listOf().fieldOf("items")
+        .xmap(Collect::new, collect -> collect.items).codec();
 
     public static final Collect EMPTY = new Collect(List.of());
 
     public Collect(List<CollectItem> items) {
         this.items = items;
-    }
-
-    @Override
-    public Collect copy() {
-        return new Collect(items.stream().map(CollectItem::copy).toList());
     }
 
     @SuppressWarnings("unchecked")
@@ -72,6 +66,11 @@ public final class Collect extends Aspect implements Satisfiable {
     }
 
     @Override
+    public Collect copy() {
+        return new Collect(items.stream().map(CollectItem::copy).toList());
+    }
+
+    @Override
     public String getId() {
         return ID;
     }
@@ -87,16 +86,6 @@ public final class Collect extends Aspect implements Satisfiable {
     }
 
     @Override
-    public void onTick(Task task, Player player) {
-        super.onTick(task, player);
-
-        // Pass player down to each item requirement on tick.
-        for (var item : items()) {
-            item.setPlayer(player);
-        }
-    }
-
-    @Override
     public boolean isSatisfied() {
         return remaining() == 0;
     }
@@ -109,6 +98,16 @@ public final class Collect extends Aspect implements Satisfiable {
     @Override
     public int total() {
         return items().stream().mapToInt(CollectItem::total).sum();
+    }
+
+    @Override
+    public void onTick(Task task, Player player) {
+        super.onTick(task, player);
+
+        // Pass player down to each item requirement on tick.
+        for (var item : items()) {
+            item.setPlayer(player);
+        }
     }
 
     @Override

@@ -14,24 +14,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class Hunt extends Aspect implements Satisfiable {
+public final class Hunt extends Aspect implements Satisfiable {
     public static final String ID = "hunt";
 
     private final List<HuntMob> mobs;
 
-    public static final Codec<Hunt> CODEC = HuntMob.CODEC.listOf().fieldOf("mobs").xmap(
-        Hunt::new, hunt -> hunt.mobs
-    ).codec();
+    public static final Codec<Hunt> CODEC = HuntMob.CODEC.listOf().fieldOf("mobs")
+        .xmap(Hunt::new, hunt -> hunt.mobs).codec();
 
     public static final Hunt EMPTY = new Hunt(List.of());
 
     public Hunt(List<HuntMob> mobs) {
         this.mobs = mobs;
-    }
-
-    @Override
-    public Hunt copy() {
-        return new Hunt(mobs.stream().map(HuntMob::copy).toList());
     }
 
     @SuppressWarnings("unchecked")
@@ -70,6 +64,11 @@ public class Hunt extends Aspect implements Satisfiable {
 
         var huntMobs = Helpers.getRandomlyByWeight(criteria, count, random);
         return new Hunt(huntMobs);
+    }
+
+    @Override
+    public Hunt copy() {
+        return new Hunt(mobs.stream().map(HuntMob::copy).toList());
     }
 
     @Override
