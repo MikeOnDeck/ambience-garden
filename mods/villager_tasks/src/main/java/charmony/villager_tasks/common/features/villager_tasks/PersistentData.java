@@ -14,27 +14,27 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public class VillagerTasksSavedData extends SavedData {
+public class PersistentData extends SavedData {
     private List<Tasks> tasks = new ArrayList<>();
     private List<Loyalty> loyalties = new ArrayList<>();
 
-    public static final Codec<VillagerTasksSavedData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+    public static final Codec<PersistentData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         Tasks.CODEC.listOf().fieldOf("tasks").forGetter(data -> data.tasks),
         Loyalty.CODEC.listOf().fieldOf("loyalty").forGetter(data -> data.loyalties)
-    ).apply(instance, VillagerTasksSavedData::new));
+    ).apply(instance, PersistentData::new));
 
-    public static final SavedDataType<VillagerTasksSavedData> TYPE = new SavedDataType<>(
+    public static final SavedDataType<PersistentData> TYPE = new SavedDataType<>(
         VillagerTasksMod.ID,
-        VillagerTasksSavedData::new,
+        PersistentData::new,
         CODEC,
         null
     );
 
-    public VillagerTasksSavedData() {
+    public PersistentData() {
         setDirty();
     }
 
-    private VillagerTasksSavedData(List<Tasks> tasks, List<Loyalty> loyalties) {
+    private PersistentData(List<Tasks> tasks, List<Loyalty> loyalties) {
         this.tasks = new ArrayList<>(tasks);
         this.loyalties = new ArrayList<>(loyalties);
     }
@@ -93,7 +93,7 @@ public class VillagerTasksSavedData extends SavedData {
      * @param server Server instance.
      * @return Saved data.
      */
-    public static VillagerTasksSavedData getServerState(MinecraftServer server) {
+    public static PersistentData getServerState(MinecraftServer server) {
         var level = server.getLevel(Level.OVERWORLD);
         if (level == null) {
             throw new RuntimeException("Level not available");
