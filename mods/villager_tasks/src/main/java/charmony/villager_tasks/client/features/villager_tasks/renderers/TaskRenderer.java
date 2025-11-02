@@ -60,6 +60,7 @@ public final class TaskRenderer extends BaseRenderer {
         super.updateTask(task);
         this.task = task;
         this.collect.updateTask(task);
+        this.hunt.updateTask(task);
         this.rewards.updateTask(task);
         this.villagerOwnsTask = task.belongsTo(handlers.getLastVillagerInteraction());
     }

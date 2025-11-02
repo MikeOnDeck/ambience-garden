@@ -1,7 +1,6 @@
 package charmony.villager_tasks.client.features.villager_tasks.renderers;
 
 import charmony.api.core.Color;
-import charmony.core.client.MobSpriteRenderer;
 import charmony.core.client.renderers.SpriteRenderer;
 import charmony.villager_tasks.client.features.villager_tasks.Handlers;
 import charmony.villager_tasks.client.features.villager_tasks.VillagerTasks;
@@ -14,21 +13,18 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
 
 public abstract class BaseRenderer {
     protected static final Color DEFAULT_FILL_COLOR = new Color(0x808080);
     protected static final Color DEFAULT_TEXT_COLOR = new Color(0xffffff);
     protected static final Color INDENT_COLOR = new Color(0xffffff);
     protected static final Color OUTDENT_COLOR = new Color(0x000000);
-
-    protected static final Map<ResourceLocation, MobSpriteRenderer> CACHED_MOB_SPRITE_RENDERERS = new WeakHashMap<>();
 
     protected final Font font;
     protected final Handlers handlers;
@@ -89,6 +85,96 @@ public abstract class BaseRenderer {
         return Pair.of(width, height);
     }
 
+    public Pair<Integer, Integer> renderItemBox(GuiGraphics guiGraphics, Satisfiable req, ItemStack stack, MutableComponent title, int x, int y, int mouseX, int mouseY, boolean showProgress) {
+        var textColor = textColor(req);
+        var fillColor = fillColor(req);
+        var text = showProgress ? (req.total() - req.remaining()) + "/" + req.total() : "" + req.total();
+        var box = renderRequirementBox(guiGraphics, Component.literal(text), x, y, fillColor);
+        var width = box.getFirst();
+        var height = box.getSecond();
+
+        // Item x and y
+        var ix = x + 2;
+        var iy = y + 1;
+
+        renderItemStack(guiGraphics, stack, List.of(), ix, iy, mouseX, mouseY);
+
+        // Text x and y
+        var tx = ix + 19;
+        var ty = iy + 5;
+
+        guiGraphics.drawString(font, text, tx, ty, textColor.getArgbColor());
+
+        // Tooltip on item box hover
+        var itemTooltip = Screen.getTooltipFromItem(Minecraft.getInstance(), stack);
+        var tooltip = new ArrayList<Component>();
+        tooltip.add(title);
+        tooltip.add(Component.translatable("gui.charmony.villager_tasks.name_and_number", itemTooltip.getFirst(), req.total()));
+
+        if (mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height) {
+            guiGraphics.setTooltipForNextFrame(font, tooltip.stream().map(Component::getVisualOrderText).toList(), mouseX, mouseY);
+        }
+
+        return box;
+    }
+
+    public Pair<Integer, Integer> renderCustomItemBox(GuiGraphics guiGraphics, ItemStack stack, Component text, List<Component> tooltip, int x, int y, int mouseX, int mouseY) {
+        var box = renderRequirementBox(guiGraphics, text, x, y, fillColor());
+        var width = box.getFirst();
+        var height = box.getSecond();
+
+        // Item x and y
+        var ix = x + 2;
+        var iy = y + 1;
+
+        renderItemStack(guiGraphics, stack, List.of(), ix, iy, mouseX, mouseY);
+
+        // Text x and y
+        var tx = ix + 19;
+        var ty = iy + 5;
+
+        guiGraphics.drawString(font, text, tx, ty, textColor().getArgbColor(), false);
+
+        if (mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height) {
+            guiGraphics.setTooltipForNextFrame(font, tooltip.stream().map(Component::getVisualOrderText).toList(), mouseX, mouseY);
+        }
+
+        return box;
+    }
+
+    public Pair<Integer, Integer> renderSpriteBox(GuiGraphics guiGraphics, Satisfiable req, SpriteRenderer spriteRenderer, MutableComponent title, int x, int y, int mouseX, int mouseY, boolean showProgress) {
+        var textColor = textColor(req);
+        var fillColor = fillColor(req);
+        var text = showProgress ? (req.total() - req.remaining()) + "/" + req.total() : "" + req.total();
+        var box = renderRequirementBox(guiGraphics, Component.literal(text), x, y, fillColor);
+        var width = box.getFirst();
+        var height = box.getSecond();
+
+        // Sprite x and y
+        var sx = x + 2;
+        var sy = y + 2;
+
+        spriteRenderer.render(guiGraphics, sx, sy);
+
+        // Text x and y
+        var tx = sx + 20;
+        var ty = sy + 4;
+
+        guiGraphics.drawString(font, text, tx, ty, textColor.getArgbColor());
+
+        // Tooltip on sprite box hover
+        var name = spriteRenderer.getName();
+        var tooltip = new ArrayList<Component>();
+        tooltip.add(title);
+        tooltip.add(Component.translatable("gui.charmony.villager_tasks.name_and_number", name, req.total()));
+
+        if (mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height) {
+            guiGraphics.setTooltipForNextFrame(font, tooltip.stream().map(Component::getVisualOrderText).toList(), mouseX, mouseY);
+        }
+
+        return box;
+    }
+
     public void renderItemStack(GuiGraphics guiGraphics, ItemStack itemStack, List<Component> tooltip, int x, int y, int mouseX, int mouseY) {
         guiGraphics.renderFakeItem(itemStack, x, y);
         if (!tooltip.isEmpty() && mouseX > x && mouseX < x + 16 - 1 && mouseY > y && mouseY < y + 16 - 1) {
@@ -102,7 +188,6 @@ public abstract class BaseRenderer {
 
     public int renderItemTooltip(GuiGraphics guiGraphics, ItemStack stack, Component component, int x, int y, boolean showName) {
         var minecraft = Minecraft.getInstance();
-        var font = minecraft.font;
         var itemTooltip = Screen.getTooltipFromItem(minecraft, stack);
 
         if (showName) {
@@ -129,6 +214,10 @@ public abstract class BaseRenderer {
         return font.width(component) + 24;
     }
 
+    public Color fillColor() {
+        return DEFAULT_FILL_COLOR;
+    }
+
     public Color fillColor(Satisfiable item) {
         var satisfied = item.isSatisfied();
         var none = item.remaining() == item.total();
@@ -143,6 +232,10 @@ public abstract class BaseRenderer {
         } else {
             return DEFAULT_FILL_COLOR;
         }
+    }
+
+    public Color textColor() {
+        return DEFAULT_TEXT_COLOR;
     }
 
     public Color textColor(Satisfiable item) {
