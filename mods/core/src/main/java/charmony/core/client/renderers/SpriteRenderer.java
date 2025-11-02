@@ -15,6 +15,10 @@ public abstract class SpriteRenderer {
         this.id = id;
     }
 
+    public void render(GuiGraphics guiGraphics, int x, int y) {
+        render(guiGraphics, x, y, -1, -1);
+    }
+
     public void render(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY) {
         if (texture == null) {
             texture = getTexture();

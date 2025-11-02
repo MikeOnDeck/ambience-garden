@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.48.2
+## 1.48.3
 
 - Add base SpriteRenderer.
 
