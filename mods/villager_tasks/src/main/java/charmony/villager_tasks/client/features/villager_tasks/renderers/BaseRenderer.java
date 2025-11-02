@@ -77,8 +77,8 @@ public abstract class BaseRenderer {
     }
 
     public Pair<Integer, Integer> renderRequirementBox(GuiGraphics guiGraphics, Component text, int x, int y, Color fillColor) {
-        var width = font.width(text) + 24;
-        var height = 18;
+        var width = font.width(text) + 25;
+        var height = 19;
         var alpha = 120;
 
         var x1 = x + width;

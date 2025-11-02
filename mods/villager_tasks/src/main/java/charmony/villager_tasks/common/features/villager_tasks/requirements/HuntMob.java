@@ -29,6 +29,10 @@ public class HuntMob implements Satisfiable, HasWeight {
         this.weight = weight;
     }
 
+    public HuntMob copy() {
+        return new HuntMob(mob, total, hunted, weight);
+    }
+
     @Override
     public int weight() {
         return weight;

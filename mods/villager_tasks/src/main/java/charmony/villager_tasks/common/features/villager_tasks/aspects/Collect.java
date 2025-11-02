@@ -7,7 +7,6 @@ import charmony.villager_tasks.common.features.villager_tasks.Task;
 import charmony.villager_tasks.common.features.villager_tasks.interfaces.Satisfiable;
 import charmony.villager_tasks.common.features.villager_tasks.requirements.CollectItem;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -22,14 +21,9 @@ public final class Collect extends Aspect implements Satisfiable {
 
     private final List<CollectItem> items;
 
-//    public static final Codec<Collect> CODEC = CollectItem.CODEC.listOf().fieldOf("items").xmap(
-//        Collect::new,
-//        collect -> collect.items
-//    ).codec();
-
-    public static final Codec<Collect> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-        CollectItem.CODEC.listOf().fieldOf("items").forGetter(collect -> collect.items)
-    ).apply(instance, Collect::new));
+    public static final Codec<Collect> CODEC = CollectItem.CODEC.listOf().fieldOf("items").xmap(
+        Collect::new, collect -> collect.items
+    ).codec();
 
     public static final Collect EMPTY = new Collect(List.of());
 
@@ -37,8 +31,9 @@ public final class Collect extends Aspect implements Satisfiable {
         this.items = items;
     }
 
+    @Override
     public Collect copy() {
-        return new Collect(new ArrayList<>(items));
+        return new Collect(items.stream().map(CollectItem::copy).toList());
     }
 
     @SuppressWarnings("unchecked")

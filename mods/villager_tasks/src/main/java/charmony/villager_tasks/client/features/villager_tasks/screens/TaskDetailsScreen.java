@@ -4,6 +4,7 @@ import charmony.villager_tasks.client.features.villager_tasks.Buttons;
 import charmony.villager_tasks.client.features.villager_tasks.renderers.TaskRenderer;
 import charmony.villager_tasks.common.features.villager_tasks.Resources;
 import charmony.villager_tasks.common.features.villager_tasks.Task;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 
@@ -62,11 +63,13 @@ public class TaskDetailsScreen extends BaseScreen {
         top += 14;
         taskRenderer.renderIndentedBox(guiGraphics, left, right, top, top + 70, fillColor);
 
-        var reqPanelX = left + 5;
-        var reqPanelY = top + 5;
-        var reqPanelMaxWidth = 240;
+        var px = left + 5;
+        var py = top + 5;
+        var maxWidth = 240;
+        Pair<Integer, Integer> box = Pair.of(0, 0);
 
-        taskRenderer.collect.renderPanel(guiGraphics, reqPanelX, reqPanelY, reqPanelMaxWidth, mouseX, mouseY);
+        box = taskRenderer.collect.renderPanel(guiGraphics, px, py, box.getFirst(), box.getSecond(), maxWidth, mouseX, mouseY);
+        box = taskRenderer.hunt.renderPanel(guiGraphics, px, py, box.getFirst(), box.getSecond(), maxWidth, mouseX, mouseY);
 
         top += 70;
         if (rewards.isEmpty()) {
@@ -81,10 +84,9 @@ public class TaskDetailsScreen extends BaseScreen {
         top += 14;
         taskRenderer.renderIndentedBox(guiGraphics, left, right, top, top + 49, fillColor);
 
-        var rewardsPanelX = left + 5;
-        var rewardsPanelY = top + 5;
-        var rewardsPanelMaxWidth = 240;
+        px = left + 5;
+        py = top + 5;
 
-        taskRenderer.rewards.renderPanel(guiGraphics, rewardsPanelX, rewardsPanelY, rewardsPanelMaxWidth, mouseX, mouseY);
+        taskRenderer.rewards.renderPanel(guiGraphics, px, py, maxWidth, mouseX, mouseY);
     }
 }

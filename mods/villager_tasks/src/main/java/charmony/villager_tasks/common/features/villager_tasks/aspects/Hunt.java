@@ -20,8 +20,7 @@ public class Hunt extends Aspect implements Satisfiable {
     private final List<HuntMob> mobs;
 
     public static final Codec<Hunt> CODEC = HuntMob.CODEC.listOf().fieldOf("mobs").xmap(
-        Hunt::new,
-        hunt -> hunt.mobs
+        Hunt::new, hunt -> hunt.mobs
     ).codec();
 
     public static final Hunt EMPTY = new Hunt(List.of());
@@ -30,8 +29,9 @@ public class Hunt extends Aspect implements Satisfiable {
         this.mobs = mobs;
     }
 
+    @Override
     public Hunt copy() {
-        return new Hunt(new ArrayList<>(mobs));
+        return new Hunt(mobs.stream().map(HuntMob::copy).toList());
     }
 
     @SuppressWarnings("unchecked")
@@ -115,7 +115,7 @@ public class Hunt extends Aspect implements Satisfiable {
                 .map(type -> type.equals(entity.getType()))
                 .orElse(false);
 
-            if (isValidMob) {
+            if (isValidMob && !req.isSatisfied()) {
                 req.addHunted();
                 return true;
             }

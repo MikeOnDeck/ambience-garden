@@ -21,6 +21,8 @@ public abstract class Aspect implements EventListener, PlayerHolder {
         return Optional.ofNullable(this.player);
     }
 
+    public abstract Aspect copy();
+
     public abstract String getId();
 
     public abstract Component getName();

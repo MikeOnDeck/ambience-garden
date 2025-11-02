@@ -92,13 +92,13 @@ public final class RewardsRenderer extends BaseRenderer {
         var height = box.getSecond();
 
         // Item x and y
-        var ix = x + 2;
+        var ix = x + 3;
         var iy = y + 1;
 
         renderItemStack(guiGraphics, rewardItem.stack(), List.of(), ix, iy, mouseX, mouseY);
 
         // Text x and y
-        var tx = ix + 18;
+        var tx = ix + 19;
         var ty = iy + 5;
 
         guiGraphics.drawString(font, text, tx, ty, DEFAULT_TEXT_COLOR.getArgbColor());
@@ -129,7 +129,7 @@ public final class RewardsRenderer extends BaseRenderer {
         renderItemStack(guiGraphics, new ItemStack(Items.EXPERIENCE_BOTTLE), List.of(), ix, iy, mouseX, mouseY);
 
         // Text x and y
-        var tx = ix + 18;
+        var tx = ix + 19;
         var ty = iy + 5;
 
         guiGraphics.drawString(font, text, tx, ty, DEFAULT_TEXT_COLOR.getArgbColor(), false);

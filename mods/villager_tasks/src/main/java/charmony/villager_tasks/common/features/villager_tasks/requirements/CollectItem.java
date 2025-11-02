@@ -31,6 +31,10 @@ public class CollectItem implements Satisfiable, PlayerHolder, HasWeight {
         this.weight = weight;
     }
 
+    public CollectItem copy() {
+        return new CollectItem(stack.copy(), total, weight);
+    }
+
     public void setPlayer(Player player) {
         this.player = player;
     }
