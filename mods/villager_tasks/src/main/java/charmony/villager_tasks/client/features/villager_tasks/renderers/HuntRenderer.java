@@ -13,24 +13,36 @@ public final class HuntRenderer extends BaseRenderer {
         super(task);
     }
 
+    /**
+     * Render tooltip when hovering over the task name in a task row.
+     */
     public Pair<Integer, Integer> renderTaskHoverTooltip(GuiGraphics guiGraphics, int x, int y) {
         var calcHeight = 0;
         var calcWidth = 0;
+        var maxShown = 3;
+        var rowHeight = 17;
+        var margin = 11;
 
         var mobs = task.hunt.mobs();
-        var rows = mobs.size();
+        var rows = Math.min(maxShown, mobs.size());
+        var showEllipsis = mobs.size() > maxShown;
 
         if (!mobs.isEmpty()) {
             guiGraphics.drawString(font, Resources.HUNT_ASPECT, x, y + calcHeight, new Color(0xffffff).getArgbColor(), false);
-            calcHeight += 10;
+            calcHeight += margin;
 
-            for (var i = 0; i < Math.min(3, mobs.size()); i++) {
+            for (var i = 0; i < rows; i++) {
                 var mob = mobs.get(i);
                 var spriteRenderer = new MobSpriteRenderer(mob.mob());
-                calcWidth = Math.max(calcWidth, renderSpriteTooltip(guiGraphics, spriteRenderer, Component.literal("" + mob.total()), x, y + calcHeight + (i * 15)));
+                calcWidth = Math.max(calcWidth, renderSpriteInTooltip(guiGraphics, spriteRenderer, Component.literal("" + mob.total()), x, y + calcHeight + (i * rowHeight)));
             }
 
-            calcHeight += (rows * 15) + 15;
+            if (showEllipsis) {
+                renderEllipsisInTooltip(guiGraphics, mobs.size() - maxShown, x, y + calcHeight + (rows * rowHeight));
+                rows += 1;
+            }
+
+            calcHeight += (rows * rowHeight) + margin;
         }
 
         return Pair.of(calcWidth, calcHeight);

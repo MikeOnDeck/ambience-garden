@@ -18,20 +18,29 @@ public final class CollectRenderer extends BaseRenderer {
     public Pair<Integer, Integer> renderTaskHoverTooltip(GuiGraphics guiGraphics, int x, int y) {
         var calcHeight = 0;
         var calcWidth = 0;
+        var maxShown = 3;
+        var rowHeight = 16;
+        var margin = 11;
 
         var items = task.collect.items();
-        var rows = items.size();
+        var rows = Math.min(maxShown, items.size());
+        var showEllipsis = items.size() > maxShown;
 
         if (!items.isEmpty()) {
             guiGraphics.drawString(font, Resources.COLLECT_ASPECT, x, y + calcHeight, new Color(0xffffff).getArgbColor(), false);
-            calcHeight += 10;
+            calcHeight += margin;
 
-            for (var i = 0; i < Math.min(3, items.size()); i++) {
+            for (var i = 0; i < rows; i++) {
                 var item = items.get(i);
-                calcWidth = Math.max(calcWidth, renderItemTooltip(guiGraphics, item.stack(), Component.literal("" + item.total()), x, y + calcHeight + (i * 15)));
+                calcWidth = Math.max(calcWidth, renderItemInTooltip(guiGraphics, item.stack(), Component.literal("" + item.total()), x, y + calcHeight + (i * rowHeight)));
             }
 
-            calcHeight += (rows * 15) + 15;
+            if (showEllipsis) {
+                renderEllipsisInTooltip(guiGraphics, items.size() - maxShown, x, y + calcHeight + (rows * rowHeight));
+                rows += 1;
+            }
+
+            calcHeight += (rows * rowHeight) + margin;
         }
 
         return Pair.of(calcWidth, calcHeight);

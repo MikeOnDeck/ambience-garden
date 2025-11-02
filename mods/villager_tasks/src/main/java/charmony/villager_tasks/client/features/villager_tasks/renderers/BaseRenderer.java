@@ -182,11 +182,19 @@ public abstract class BaseRenderer {
         }
     }
 
-    public int renderItemTooltip(GuiGraphics guiGraphics, ItemStack stack, Component component, int x, int y) {
-        return renderItemTooltip(guiGraphics, stack, component, x, y, true);
+    public void renderEllipsisInTooltip(GuiGraphics guiGraphics, int extraCount, int x, int y) {
+        var minecraft = Minecraft.getInstance();
+        var font = minecraft.font;
+        var ellipsis = Component.literal("+ " + extraCount + " more");
+
+        guiGraphics.drawString(font, ellipsis, x + 1, y + 4, new Color(0x909090).getArgbColor(), false);
     }
 
-    public int renderItemTooltip(GuiGraphics guiGraphics, ItemStack stack, Component component, int x, int y, boolean showName) {
+    public int renderItemInTooltip(GuiGraphics guiGraphics, ItemStack stack, Component component, int x, int y) {
+        return renderItemInTooltip(guiGraphics, stack, component, x, y, true);
+    }
+
+    public int renderItemInTooltip(GuiGraphics guiGraphics, ItemStack stack, Component component, int x, int y, boolean showName) {
         var minecraft = Minecraft.getInstance();
         var itemTooltip = Screen.getTooltipFromItem(minecraft, stack);
 
@@ -201,7 +209,7 @@ public abstract class BaseRenderer {
         return font.width(component) + 24;
     }
 
-    public int renderSpriteTooltip(GuiGraphics guiGraphics, SpriteRenderer spriteRenderer, Component component, int x, int y) {
+    public int renderSpriteInTooltip(GuiGraphics guiGraphics, SpriteRenderer spriteRenderer, Component component, int x, int y) {
         var minecraft = Minecraft.getInstance();
         var font = minecraft.font;
 

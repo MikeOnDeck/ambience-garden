@@ -23,29 +23,38 @@ public final class RewardsRenderer extends BaseRenderer {
     public Pair<Integer, Integer> renderTaskHoverTooltip(GuiGraphics guiGraphics, int x, int y) {
         var calcHeight = 0;
         var calcWidth = 0;
+        var maxShown = 3;
+        var rowHeight = 16;
+        var margin = 10;
 
         var xp = task.rewards.experience;
         var items = task.rewards.items;
-        var rows = items.size();
+        var rows = Math.min(maxShown, items.size());
+        var showEllipsis = items.size() > maxShown;
 
         if (xp > 0 || !items.isEmpty()) {
             guiGraphics.drawString(font, Resources.REWARD_ASPECT, x, y + calcHeight, new Color(0xffffff).getArgbColor(), false);
-            calcHeight += 10;
+            calcHeight += margin;
 
             // Items
-            for (var i = 0; i < Math.min(3, items.size()); i++) {
+            for (var i = 0; i < rows; i++) {
                 var item = items.get(i);
-                calcWidth = renderItemTooltip(guiGraphics, item.stack(), Component.literal("" + item.total()), x, y + calcHeight + (i * 15));
+                calcWidth = renderItemInTooltip(guiGraphics, item.stack(), Component.literal("" + item.total()), x, y + calcHeight + (i * rowHeight));
+            }
+
+            if (showEllipsis) {
+                renderEllipsisInTooltip(guiGraphics, items.size() - maxShown, x, y + calcHeight + (rows * rowHeight));
+                rows += 1;
             }
 
             // XP
             if (xp > 0) {
                 var component = Component.translatable("gui.charmony.villager_tasks.experience_levels", task.rewards.experience);
-                calcWidth = renderItemTooltip(guiGraphics, new ItemStack(Items.EXPERIENCE_BOTTLE), component, x, y + calcHeight + (rows * 15), false);
+                calcWidth = renderItemInTooltip(guiGraphics, new ItemStack(Items.EXPERIENCE_BOTTLE), component, x, y + calcHeight + (rows * rowHeight), false);
                 rows += 1;
             }
 
-            calcHeight += (rows * 15) + 15;
+            calcHeight += (rows * rowHeight) + margin;
         }
 
         return Pair.of(calcWidth, calcHeight);

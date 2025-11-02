@@ -1,0 +1,68 @@
+{
+  "title": "Testing both collect and hunt",
+  "level": 1,
+  "expiry": 0,
+  "collect": {
+    "min": 4,
+    "max": 6,
+    "items": [
+      {
+        "item": "minecraft:carrot",
+        "exactly": 5,
+        "weight": 1
+      },
+      {
+        "item": "minecraft:potato",
+        "exactly": 5,
+        "weight": 3
+      },
+      {
+        "item": "minecraft:wheat_seeds",
+        "exactly": 5,
+        "weight": 3
+      },
+      {
+        "item": "minecraft:melon_seeds",
+        "exactly": 5,
+        "weight": 3
+      }
+    ]
+  },
+  "hunt": {
+    "min": 4,
+    "max": 6,
+    "mobs": [
+      {
+        "entity": "minecraft:zombie",
+        "min": 1,
+        "max": 2
+      },
+      {
+        "entity": "minecraft:skeleton",
+        "min": 1,
+        "max": 2
+      },
+      {
+        "entity": "minecraft:pig",
+        "min": 1,
+        "max": 2
+      },
+      {
+        "entity": "minecraft:chicken",
+        "min": 1,
+        "max": 2
+      }
+    ]
+  },
+  "rewards": {
+    "min": 2,
+    "max": 2,
+    "experience": 5,
+    "items": [
+      {
+        "item": "minecraft:diamond_leggings",
+        "exactly": 1
+      }
+    ]
+  }
+}
