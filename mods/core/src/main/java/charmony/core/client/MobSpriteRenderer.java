@@ -2,6 +2,7 @@ package charmony.core.client;
 
 import charmony.core.Charmony;
 import charmony.core.client.renderers.SpriteRenderer;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 @SuppressWarnings("unused")
@@ -25,5 +26,10 @@ public class MobSpriteRenderer extends SpriteRenderer {
 
     public ResourceLocation getTexture() {
         return Charmony.id("mob/" + id.getNamespace() + "/" + id.getPath());
+    }
+
+    @Override
+    public Component getName() {
+        return Component.literal("entity." + id.getNamespace() + "." + id.getPath());
     }
 }
