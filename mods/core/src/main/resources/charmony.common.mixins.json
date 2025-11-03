@@ -22,6 +22,7 @@
     "grindstone.GrindstoneMenuMixin",
     "grindstone.GrindstoneMenuOutputMixin",
     "item_drag_drop_callback.ItemMixin",
+    "item_pickup_callback.PlayerMixin",
     "player_killed_drop_callback.PlayerMixin",
     "player_tick_callback.ServerPlayerMixin",
     "smithing_table.SmithingMenuMixin"

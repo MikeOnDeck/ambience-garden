@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.49.0
+
+- Add backing for ItemPickupEvent.
+
 ## 1.48.4
 
 - Add base SpriteRenderer.
