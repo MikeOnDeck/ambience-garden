@@ -4,21 +4,27 @@ import charmony.core.helpers.UuidHelper;
 import charmony.villager_tasks.common.features.villager_tasks.aspects.Collect;
 import charmony.villager_tasks.common.features.villager_tasks.aspects.Hunt;
 import charmony.villager_tasks.common.features.villager_tasks.aspects.Rewards;
+import charmony.villager_tasks.common.features.villager_tasks.aspects.Treasure;
 import charmony.villager_tasks.common.features.villager_tasks.enums.TaskModifier;
 import charmony.villager_tasks.common.features.villager_tasks.enums.TaskStatus;
 import charmony.villager_tasks.common.features.villager_tasks.interfaces.EventListener;
 import charmony.villager_tasks.common.features.villager_tasks.interfaces.Satisfiable;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.fabricmc.fabric.api.loot.v3.LootTableSource;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.loot.LootTable;
 
 import java.util.List;
 import java.util.UUID;
@@ -35,6 +41,7 @@ public class Task implements EventListener, Satisfiable {
 
     public final Collect collect;
     public final Hunt hunt;
+    public final Treasure treasure;
     public final Rewards rewards;
 
     private TaskStatus status;
@@ -51,16 +58,17 @@ public class Task implements EventListener, Satisfiable {
         Codec.INT.fieldOf("level").forGetter(task -> task.level),
         Collect.CODEC.fieldOf("collect").forGetter(task -> task.collect),
         Hunt.CODEC.fieldOf("hunt").forGetter(task -> task.hunt),
+        Treasure.CODEC.fieldOf("treasure").forGetter(task -> task.treasure),
         Rewards.CODEC.fieldOf("rewards").forGetter(task -> task.rewards)
     ).apply(instance, Task::new));
 
     public static final Task EMPTY = new Task(
         UUID.randomUUID(), UUID.randomUUID(), ResourceLocation.parse("minecraft:empty"), TaskStatus.Unspecified, TaskModifier.Unspecified, "", 0L, 0L, 0,
-        Collect.EMPTY, Hunt.EMPTY, Rewards.EMPTY
+        Collect.EMPTY, Hunt.EMPTY, Treasure.EMPTY, Rewards.EMPTY
     );
 
     private Task(UUID id, UUID villager, ResourceLocation definitionId, TaskStatus status, TaskModifier modifier, String titleKey, long seed, long created, int level,
-                 Collect collect, Hunt hunt, Rewards reward
+                 Collect collect, Hunt hunt, Treasure treasure, Rewards reward
     ) {
         this.id = id;
         this.status = status;
@@ -74,6 +82,7 @@ public class Task implements EventListener, Satisfiable {
 
         this.collect = collect;
         this.hunt = hunt;
+        this.treasure = treasure;
         this.rewards = reward;
     }
 
@@ -84,7 +93,7 @@ public class Task implements EventListener, Satisfiable {
     public Task copyWithTime(long created) {
         return new Task(
             id, villager, definitionId, status, modifier, titleKey, seed, created, level,
-            collect.copy(), hunt.copy(), rewards.copy()
+            collect.copy(), hunt.copy(), treasure.copy(), rewards.copy()
         );
     }
 
@@ -106,6 +115,7 @@ public class Task implements EventListener, Satisfiable {
             task = new Task(id, uuid, definition.id, TaskStatus.NotStarted, modifier, titleKey, seed, created, level,
                 Collect.make(builder),
                 Hunt.make(builder),
+                Treasure.make(builder),
                 Rewards.make(builder)
             );
         } catch (Exception e) {
@@ -118,12 +128,12 @@ public class Task implements EventListener, Satisfiable {
 
     // Define all aspects here or they won't be ticked.
     public List<? extends Aspect> aspects() {
-        return List.of(collect, hunt, rewards);
+        return List.of(collect, hunt, treasure, rewards);
     }
 
     // Define the aspects that are also requirements for completing the task or they won't be calculated when checking completion.
     public List<? extends Satisfiable> requirements() {
-        return List.of(collect, hunt);
+        return List.of(collect, hunt, treasure);
     }
 
     public Rewards rewards() {
@@ -175,12 +185,12 @@ public class Task implements EventListener, Satisfiable {
 
     @Override
     public void onAbandon(Task task, ServerPlayer player) {
-        aspects().forEach(b -> b.onAbandon(this, player));
+        aspects().forEach(a -> a.onAbandon(this, player));
     }
 
     @Override
     public void onComplete(Task task, ServerPlayer player) {
-        aspects().forEach(b -> b.onComplete(this, player));
+        aspects().forEach(a -> a.onComplete(this, player));
     }
 
     @Override
@@ -191,6 +201,16 @@ public class Task implements EventListener, Satisfiable {
             }
         }
         return false;
+    }
+
+    @Override
+    public void onItemPickup(Task task, Player player, ItemStack itemStack) {
+        aspects().forEach(a -> a.onItemPickup(this, player, itemStack));
+    }
+
+    @Override
+    public void onLootTableModify(Task task, ResourceKey<LootTable> key, LootTable.Builder builder, LootTableSource source, HolderLookup.Provider provider) {
+        aspects().forEach(a -> a.onLootTableModify(this, key, builder, source, provider));
     }
 
     public boolean isNotStarted() {

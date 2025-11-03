@@ -2,9 +2,13 @@ package charmony.villager_tasks.common.features.villager_tasks;
 
 import charmony.core.helpers.TagHelper;
 import charmony.villager_tasks.common.features.villager_tasks.interfaces.HasWeight;
+import charmony.villager_tasks.common.features.villager_tasks.requirements.TreasureItem;
 import net.minecraft.Util;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
@@ -13,6 +17,7 @@ import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.phys.AABB;
 
 import java.util.*;
@@ -95,6 +100,24 @@ public final class Helpers {
         }
 
         return item;
+    }
+
+    public static ItemStack createTreasureItemStack(RegistryAccess registryAccess, String itemId, UUID uniqueId, RandomSource random) {
+        var stack = new ItemStack(resolveItem(registryAccess, itemId, random));
+        var registry = registryAccess.lookupOrThrow(Registries.ENCHANTMENT);
+
+        var enchantment = registry.getRandom(random).orElseThrow();
+        stack.enchant(enchantment, 1);
+
+        // TODO: generate a random name.
+        var component = Component.literal("The Treasure");
+
+        var tag = new CompoundTag();
+        tag.putString(TreasureItem.TREASURE_TAG, uniqueId.toString());
+        stack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
+        stack.set(DataComponents.CUSTOM_NAME, component);
+
+        return stack;
     }
 
     public static Optional<AbstractVillager> getNearbyTaskOwner(Player player, UUID uuid) {

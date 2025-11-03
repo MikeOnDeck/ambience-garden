@@ -2,8 +2,11 @@ package charmony.villager_tasks.common.features.villager_tasks;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
@@ -22,14 +25,14 @@ public record Tasks(UUID uuid, String name, List<Task> tasks) {
 
     public static final Tasks EMPTY = new Tasks(UUID.randomUUID(), "empty", List.of());
 
-    public CompoundTag save() {
+    public CompoundTag save(RegistryAccess registryAccess) {
         var tag = new CompoundTag();
-        tag.store(TASKS_TAG, Tasks.CODEC, this);
+        tag.store(TASKS_TAG, Tasks.CODEC, RegistryOps.create(NbtOps.INSTANCE, registryAccess), this);
         return tag;
     }
 
-    public static Tasks load(CompoundTag tag) {
-        return tag.read(TASKS_TAG, Tasks.CODEC).orElseThrow();
+    public static Tasks load(CompoundTag tag, RegistryAccess registryAccess) {
+        return tag.read(TASKS_TAG, Tasks.CODEC, RegistryOps.create(NbtOps.INSTANCE, registryAccess)).orElseThrow();
     }
 
     public Tasks copy() {

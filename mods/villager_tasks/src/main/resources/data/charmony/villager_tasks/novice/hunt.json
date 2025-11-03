@@ -1,7 +1,6 @@
 {
   "title": "A hunt task",
   "level": 1,
-  "expiry": 0,
   "hunt": {
     "min": 1,
     "max": 2,

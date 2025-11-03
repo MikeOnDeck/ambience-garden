@@ -1,6 +1,7 @@
 package charmony.villager_tasks.common.features.villager_tasks;
 
 import charmony.api.core.Side;
+import charmony.api.events.ItemPickupCallback;
 import charmony.api.events.PlayerTickCallback;
 import charmony.core.base.Setup;
 import charmony.core.common.CommonRegistry;
@@ -8,6 +9,7 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
+import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
 import net.minecraft.sounds.SoundEvent;
 
 import java.util.function.Supplier;
@@ -52,6 +54,8 @@ public class Registers extends Setup<VillagerTasks> {
             ServerEntityEvents.ENTITY_LOAD.register(feature().handlers::entityJoin);
             UseEntityCallback.EVENT.register(feature().handlers::useEntity);
             ServerLivingEntityEvents.AFTER_DEATH.register(feature().handlers::afterEntityDeath);
+            ItemPickupCallback.EVENT.register(feature().handlers::itemPickup);
+            LootTableEvents.MODIFY.register(feature().handlers::lootTableModify);
         };
     }
 }

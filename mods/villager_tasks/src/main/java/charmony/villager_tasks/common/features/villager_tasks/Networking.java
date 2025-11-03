@@ -6,6 +6,7 @@ import charmony.villager_tasks.common.features.villager_tasks.enums.TaskQuery;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
@@ -43,7 +44,7 @@ public class Networking extends Setup<VillagerTasks> {
 
     public record S2CSendAvailableTasks(Tasks tasks) implements CustomPacketPayload {
         public static Type<S2CSendAvailableTasks> TYPE = new Type<>(VillagerTasksMod.id("send_available_tasks"));
-        public static StreamCodec<FriendlyByteBuf, S2CSendAvailableTasks> CODEC =
+        public static StreamCodec<RegistryFriendlyByteBuf, S2CSendAvailableTasks> CODEC =
             StreamCodec.of(S2CSendAvailableTasks::encode, S2CSendAvailableTasks::decode);
 
         public static void send(ServerPlayer player, Tasks tasks) {
@@ -55,15 +56,15 @@ public class Networking extends Setup<VillagerTasks> {
             return TYPE;
         }
 
-        private static void encode(FriendlyByteBuf buf, S2CSendAvailableTasks self) {
-            buf.writeNbt(self.tasks.save());
+        private static void encode(RegistryFriendlyByteBuf buf, S2CSendAvailableTasks self) {
+            buf.writeNbt(self.tasks.save(buf.registryAccess()));
         }
 
-        private static S2CSendAvailableTasks decode(FriendlyByteBuf buf) {
+        private static S2CSendAvailableTasks decode(RegistryFriendlyByteBuf buf) {
             var nbt = buf.readNbt();
 
             if (nbt != null) {
-                return new S2CSendAvailableTasks(Tasks.load(nbt));
+                return new S2CSendAvailableTasks(Tasks.load(nbt, buf.registryAccess()));
             }
 
             throw new RuntimeException("Missing S2CSendAvailableTasks NBT data");
@@ -72,7 +73,7 @@ public class Networking extends Setup<VillagerTasks> {
 
     public record S2CSendActiveTasks(Tasks tasks) implements CustomPacketPayload {
         public static Type<S2CSendActiveTasks> TYPE = new Type<>(VillagerTasksMod.id("send_active_tasks"));
-        public static StreamCodec<FriendlyByteBuf, S2CSendActiveTasks> CODEC =
+        public static StreamCodec<RegistryFriendlyByteBuf, S2CSendActiveTasks> CODEC =
             StreamCodec.of(S2CSendActiveTasks::encode, S2CSendActiveTasks::decode);
 
         public static void send(ServerPlayer player, Tasks tasks) {
@@ -84,14 +85,14 @@ public class Networking extends Setup<VillagerTasks> {
             return TYPE;
         }
 
-        private static void encode(FriendlyByteBuf buf, S2CSendActiveTasks self) {
-            buf.writeNbt(self.tasks.save());
+        private static void encode(RegistryFriendlyByteBuf buf, S2CSendActiveTasks self) {
+            buf.writeNbt(self.tasks.save(buf.registryAccess()));
         }
 
-        private static S2CSendActiveTasks decode(FriendlyByteBuf buf) {
+        private static S2CSendActiveTasks decode(RegistryFriendlyByteBuf buf) {
             var nbt = buf.readNbt();
             if (nbt != null) {
-                return new S2CSendActiveTasks(Tasks.load(nbt));
+                return new S2CSendActiveTasks(Tasks.load(nbt, buf.registryAccess()));
             }
 
             throw new RuntimeException("Missing S2CSendActiveTasks NBT data");

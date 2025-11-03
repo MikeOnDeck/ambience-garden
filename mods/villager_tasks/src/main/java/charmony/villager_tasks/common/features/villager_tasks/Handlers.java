@@ -3,8 +3,11 @@ package charmony.villager_tasks.common.features.villager_tasks;
 import charmony.core.base.Setup;
 import charmony.villager_tasks.common.features.villager_tasks.enums.TaskModifier;
 import charmony.villager_tasks.common.features.villager_tasks.enums.TaskQuery;
+import net.fabricmc.fabric.api.loot.v3.LootTableSource;
 import net.minecraft.Util;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -17,10 +20,12 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.phys.EntityHitResult;
 import org.jetbrains.annotations.Nullable;
 
@@ -80,14 +85,32 @@ public class Handlers extends Setup<VillagerTasks> {
         return InteractionResult.PASS;
     }
 
+    public InteractionResult itemPickup(Player player, ItemEntity itemEntity) {
+        if (!(player instanceof ServerPlayer serverPlayer)) {
+            return InteractionResult.PASS;
+        }
+
+        var tasks = PLAYER_TASKS.getOrDefault(serverPlayer, Tasks.EMPTY);
+        for (var task : tasks.tasks()) {
+            task.onItemPickup(task, serverPlayer, itemEntity.getItem());
+        }
+
+        return InteractionResult.PASS;
+    }
+
+    public void lootTableModify(ResourceKey<LootTable> lootTable, LootTable.Builder builder, LootTableSource source, HolderLookup.Provider provider) {
+        if (!source.isBuiltin()) return;
+
+        PLAYER_TASKS.values().stream().flatMap(tasks -> tasks.tasks().stream()).forEach(
+            task -> task.onLootTableModify(task, lootTable, builder, source, provider));
+    }
+
     public void afterEntityDeath(LivingEntity entity, DamageSource damageSource) {
         if (entity.level() instanceof ServerLevel && damageSource.getEntity() instanceof ServerPlayer player) {
             var tasks = PLAYER_TASKS.getOrDefault(player, Tasks.EMPTY);
             for (var task : tasks.tasks()) {
                 var result = task.onEntityKilled(task, entity, damageSource);
-                if (result) {
-                    return; // Stop processing if the event was handled.
-                }
+                if (result) return; // Stop processing if the event was handled.
             }
         }
     }

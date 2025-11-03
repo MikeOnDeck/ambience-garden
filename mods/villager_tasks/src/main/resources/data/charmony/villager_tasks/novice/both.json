@@ -1,7 +1,6 @@
 {
   "title": "Testing both collect and hunt",
   "level": 1,
-  "expiry": 0,
   "collect": {
     "min": 4,
     "max": 6,

@@ -1,7 +1,6 @@
 {
   "title": "A collect task",
   "level": 1,
-  "expiry": 0,
   "collect": {
     "min": 2,
     "max": 3,

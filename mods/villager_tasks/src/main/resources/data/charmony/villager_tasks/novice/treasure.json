@@ -1,0 +1,26 @@
+{
+  "title": "Treasure hunt",
+  "level": 1,
+  "treasure": {
+    "min": 1,
+    "max": 2,
+    "items": [
+      {
+        "item": "minecraft:apple",
+        "loot_table": "minecraft:chests/desert_pyramid",
+        "chance": 0.75
+      }
+    ]
+  },
+  "rewards": {
+    "min": 1,
+    "max": 2,
+    "experience": 10,
+    "items": [
+      {
+        "item": "minecraft:netherite_ingot",
+        "exactly": 1
+      }
+    ]
+  }
+}
