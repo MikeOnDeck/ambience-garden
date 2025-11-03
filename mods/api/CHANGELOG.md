@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.29.0
+
+- Add ItemPickupEvent.
+
+## 1.28.0
+
+- Bump for 1.21.10.
+
 ## 1.27.0
 
 - Bump for 1.21.9 snapshot.
