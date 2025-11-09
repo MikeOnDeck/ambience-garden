@@ -8,6 +8,7 @@
     "defaultRequire": 1
   },
   "mixins": [
+    "villager_tasks.BrushableBlockEntityMixin",
     "villager_tasks.VillagerMixin",
     "villager_tasks.WanderingTraderMixin"
   ]
