@@ -6,7 +6,7 @@
     "max": 2,
     "items": [
       {
-        "item": "minecraft:creeper_skull",
+        "item": "minecraft:creeper_head",
         "loot_table": "minecraft:archaeology/desert_pyramid",
         "chance": 0.75
       },
