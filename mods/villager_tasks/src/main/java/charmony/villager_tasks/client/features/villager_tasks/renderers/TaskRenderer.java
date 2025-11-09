@@ -13,6 +13,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,9 +23,9 @@ public final class TaskRenderer extends BaseRenderer {
 
     private final Font font;
 
-    public final CollectRenderer collect;
-    public final HuntRenderer hunt;
-    public final RewardsRenderer rewards;
+    public final List<BaseRenderer> aspectRenderers = new LinkedList<>();
+    public final List<BaseRenderer> requirementRenderers = new LinkedList<>();
+    public final List<BaseRenderer> rewardRenderers = new LinkedList<>();
 
     public Color titleColor;
     public Color textColor;
@@ -38,9 +39,18 @@ public final class TaskRenderer extends BaseRenderer {
 
     public TaskRenderer(Task task) {
         super(task);
-        this.collect = new CollectRenderer(task);
-        this.hunt = new HuntRenderer(task);
-        this.rewards = new RewardsRenderer(task);
+
+        // Register all aspect renderers here.
+        this.aspectRenderers.addAll(List.of(
+            new CollectRenderer(task),
+            new HuntRenderer(task),
+            new TreasureRenderer(task),
+            new RewardsRenderer(task)
+        ));
+
+        this.requirementRenderers.addAll(aspectRenderers.stream().filter(a -> !(a instanceof RewardsRenderer)).toList());
+        this.rewardRenderers.addAll(aspectRenderers.stream().filter(a -> a instanceof RewardsRenderer).toList());
+
         this.task = task;
         this.font = Minecraft.getInstance().font;
 
@@ -59,9 +69,7 @@ public final class TaskRenderer extends BaseRenderer {
     public void updateTask(Task task) {
         super.updateTask(task);
         this.task = task;
-        this.collect.updateTask(task);
-        this.hunt.updateTask(task);
-        this.rewards.updateTask(task);
+        this.aspectRenderers.forEach(aspect -> aspect.updateTask(task));
         this.villagerOwnsTask = task.belongsTo(handlers.getLastVillagerInteraction());
     }
 

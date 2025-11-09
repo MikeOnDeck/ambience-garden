@@ -20,6 +20,7 @@ public final class RewardsRenderer extends BaseRenderer {
         super(task);
     }
 
+    @Override
     public Pair<Integer, Integer> renderTaskHoverTooltip(GuiGraphics guiGraphics, int x, int y) {
         var calcHeight = 0;
         var calcWidth = 0;
@@ -60,14 +61,13 @@ public final class RewardsRenderer extends BaseRenderer {
         return Pair.of(calcWidth, calcHeight);
     }
 
-    public void renderPanel(GuiGraphics guiGraphics, int x, int y, int maxWidth, int mouseX, int mouseY) {
+    @Override
+    public Pair<Integer, Integer> renderPanel(GuiGraphics guiGraphics, int x, int y, int xx, int yy, int maxWidth, int mouseX, int mouseY) {
         var rewards = task.rewards;
         if (rewards.isEmpty()) {
-            return;
+            return Pair.of(xx, yy);
         }
 
-        var xx = 0;
-        var yy = 0;
         var boxMargin = 3;
 
         // Reward XP
@@ -113,6 +113,8 @@ public final class RewardsRenderer extends BaseRenderer {
                 }
             }
         }
+
+        return Pair.of(xx, yy);
     }
 
     @Override

@@ -6,10 +6,10 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 
 public class AvailableTaskTooltip extends BaseTooltip {
-    private final TaskRenderer renderer;
+    private final TaskRenderer taskRenderer;
 
-    public AvailableTaskTooltip(TaskRenderer renderer) {
-        this.renderer = renderer;
+    public AvailableTaskTooltip(TaskRenderer taskRenderer) {
+        this.taskRenderer = taskRenderer;
     }
 
     @Override
@@ -19,20 +19,11 @@ public class AvailableTaskTooltip extends BaseTooltip {
         var xy = Pair.of(0, 0);
         startScaling(guiGraphics, x, y);
 
-        // Collect items
-        xy = renderer.collect.renderTaskHoverTooltip(guiGraphics, x, y + calcHeight);
-        calcWidth = Math.max(calcWidth, xy.getFirst());
-        calcHeight += xy.getSecond();
-
-        // Hunt mobs
-        xy = renderer.hunt.renderTaskHoverTooltip(guiGraphics, x, y + calcHeight);
-        calcWidth = Math.max(calcWidth, xy.getFirst());
-        calcHeight += xy.getSecond();
-
-        // Rewards
-        xy = renderer.rewards.renderTaskHoverTooltip(guiGraphics, x, y + calcHeight);
-        calcWidth = Math.max(calcWidth, xy.getFirst());
-        calcHeight += xy.getSecond();
+        for (var renderer : taskRenderer.aspectRenderers) {
+            xy = renderer.renderTaskHoverTooltip(guiGraphics, x, y + calcHeight);
+            calcWidth = Math.max(calcWidth, xy.getFirst());
+            calcHeight += xy.getSecond();
+        }
 
         calcHeight -= 5; // Remove last padding
         recalculateDimensions(calcWidth, calcHeight);

@@ -17,6 +17,7 @@ import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.phys.AABB;
 
@@ -116,6 +117,7 @@ public final class Helpers {
         tag.putString(TreasureItem.TREASURE_TAG, uniqueId.toString());
         stack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
         stack.set(DataComponents.CUSTOM_NAME, component);
+        stack.set(DataComponents.RARITY, Rarity.RARE);
 
         return stack;
     }

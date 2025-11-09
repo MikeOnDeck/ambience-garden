@@ -13,9 +13,7 @@ public final class HuntRenderer extends BaseRenderer {
         super(task);
     }
 
-    /**
-     * Render tooltip when hovering over the task name in a task row.
-     */
+    @Override
     public Pair<Integer, Integer> renderTaskHoverTooltip(GuiGraphics guiGraphics, int x, int y) {
         var calcHeight = 0;
         var calcWidth = 0;
@@ -48,6 +46,7 @@ public final class HuntRenderer extends BaseRenderer {
         return Pair.of(calcWidth, calcHeight);
     }
 
+    @Override
     public Pair<Integer, Integer> renderPanel(GuiGraphics guiGraphics, int x, int y, int xx, int yy, int maxWidth, int mouseX, int mouseY) {
         var hunt = task.hunt;
 

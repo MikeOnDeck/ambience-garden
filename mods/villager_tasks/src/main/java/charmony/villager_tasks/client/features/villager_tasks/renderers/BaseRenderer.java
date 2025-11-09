@@ -72,8 +72,8 @@ public abstract class BaseRenderer {
         guiGraphics.fill(RenderPipelines.GUI, bx0, by0, bx1, by1, bgColor);
     }
 
-    public Pair<Integer, Integer> renderRequirementBox(GuiGraphics guiGraphics, Component text, int x, int y, Color fillColor) {
-        var width = font.width(text) + 25;
+    public Pair<Integer, Integer> renderRequirementBox(GuiGraphics guiGraphics, Component text, int x, int y, int width, Color fillColor) {
+        width += font.width(text);
         var height = 19;
         var alpha = 120;
 
@@ -89,7 +89,7 @@ public abstract class BaseRenderer {
         var textColor = textColor(req);
         var fillColor = fillColor(req);
         var text = showProgress ? (req.total() - req.remaining()) + "/" + req.total() : "" + req.total();
-        var box = renderRequirementBox(guiGraphics, Component.literal(text), x, y, fillColor);
+        var box = renderRequirementBox(guiGraphics, Component.literal(text), x, y, 25, fillColor);
         var width = box.getFirst();
         var height = box.getSecond();
 
@@ -119,7 +119,7 @@ public abstract class BaseRenderer {
     }
 
     public Pair<Integer, Integer> renderCustomItemBox(GuiGraphics guiGraphics, ItemStack stack, Component text, List<Component> tooltip, int x, int y, int mouseX, int mouseY) {
-        var box = renderRequirementBox(guiGraphics, text, x, y, fillColor());
+        var box = renderRequirementBox(guiGraphics, text, x, y, 25, fillColor());
         var width = box.getFirst();
         var height = box.getSecond();
 
@@ -146,7 +146,7 @@ public abstract class BaseRenderer {
         var textColor = textColor(req);
         var fillColor = fillColor(req);
         var text = showProgress ? (req.total() - req.remaining()) + "/" + req.total() : "" + req.total();
-        var box = renderRequirementBox(guiGraphics, Component.literal(text), x, y, fillColor);
+        var box = renderRequirementBox(guiGraphics, Component.literal(text), x, y, 25, fillColor);
         var width = box.getFirst();
         var height = box.getSecond();
 
@@ -175,6 +175,46 @@ public abstract class BaseRenderer {
         return box;
     }
 
+    public Pair<Integer, Integer> renderItemAndSpriteBox(GuiGraphics guiGraphics, Satisfiable req, ItemStack stack, SpriteRenderer spriteRenderer, MutableComponent title, int x, int y, int mouseX, int mouseY, boolean showProgress) {
+        var textColor = textColor(req);
+        var fillColor = fillColor(req);
+        var text = showProgress ? (req.total() - req.remaining()) + "/" + req.total() : "" + req.total();
+        var box = renderRequirementBox(guiGraphics, Component.literal(text), x, y, 46, fillColor);
+        var width = box.getFirst();
+        var height = box.getSecond();
+
+        // Item x and y
+        var ix = x + 2;
+        var iy = y + 2;
+
+        renderItemStack(guiGraphics, stack, List.of(), ix, iy, mouseX, mouseY);
+
+        // Sprite x and y
+        var sx = ix + 18;
+        var sy = iy - 1;
+
+        spriteRenderer.render(guiGraphics, sx, sy);
+
+        // Text x and y
+        var tx = sx + 22;
+        var ty = sy + 5;
+
+        guiGraphics.drawString(font, text, tx, ty, textColor.getArgbColor());
+
+        // Tooltip on box hover
+        var itemTooltip = Screen.getTooltipFromItem(Minecraft.getInstance(), stack);
+        var tooltip = new ArrayList<Component>();
+        tooltip.add(title);
+        tooltip.add(Component.translatable("gui.charmony.villager_tasks.name_and_number", itemTooltip.getFirst(), req.total()));
+        tooltip.add(spriteRenderer.getDescription());
+
+        if (mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height) {
+            guiGraphics.setTooltipForNextFrame(font, tooltip.stream().map(Component::getVisualOrderText).toList(), mouseX, mouseY);
+        }
+
+        return box;
+    }
+
     public void renderItemStack(GuiGraphics guiGraphics, ItemStack itemStack, List<Component> tooltip, int x, int y, int mouseX, int mouseY) {
         guiGraphics.renderFakeItem(itemStack, x, y);
         if (!tooltip.isEmpty() && mouseX > x && mouseX < x + 16 - 1 && mouseY > y && mouseY < y + 16 - 1) {
@@ -185,7 +225,7 @@ public abstract class BaseRenderer {
     public void renderEllipsisInTooltip(GuiGraphics guiGraphics, int extraCount, int x, int y) {
         var minecraft = Minecraft.getInstance();
         var font = minecraft.font;
-        var ellipsis = Component.literal("+ " + extraCount + " more");
+        var ellipsis = Component.translatable("gui.charmony.villager_tasks.ellipsis", extraCount);
 
         guiGraphics.drawString(font, ellipsis, x + 1, y + 4, new Color(0x909090).getArgbColor(), false);
     }
@@ -194,11 +234,11 @@ public abstract class BaseRenderer {
         return renderItemInTooltip(guiGraphics, stack, component, x, y, true);
     }
 
-    public int renderItemInTooltip(GuiGraphics guiGraphics, ItemStack stack, Component component, int x, int y, boolean showName) {
+    public int renderItemInTooltip(GuiGraphics guiGraphics, ItemStack stack, Component component, int x, int y, boolean showItemName) {
         var minecraft = Minecraft.getInstance();
         var itemTooltip = Screen.getTooltipFromItem(minecraft, stack);
 
-        if (showName) {
+        if (showItemName) {
             var name = itemTooltip.getFirst();
             component = Component.translatable("gui.charmony.villager_tasks.name_and_number", name, component);
         }
@@ -207,6 +247,23 @@ public abstract class BaseRenderer {
         guiGraphics.drawString(font, component, x + 20, y + 4, new Color(0xffffff).getArgbColor(), false);
 
         return font.width(component) + 24;
+    }
+
+    public int renderItemAndSpriteInTooltip(GuiGraphics guiGraphics, ItemStack stack, SpriteRenderer spriteRenderer, Component component, int x, int y, boolean showItemName) {
+        var minecraft = Minecraft.getInstance();
+        var font = minecraft.font;
+        var itemTooltip = Screen.getTooltipFromItem(minecraft, stack);
+
+        if (showItemName) {
+            var name = itemTooltip.getFirst();
+            component = Component.translatable("gui.charmony.villager_tasks.name_and_number", name, component);
+        }
+
+        guiGraphics.renderFakeItem(stack, x, y);
+        spriteRenderer.render(guiGraphics, x + 18, y - 1);
+        guiGraphics.drawString(font, component, x + 40, y + 4, new Color(0xffffff).getArgbColor(), false);
+
+        return font.width(component) + 44;
     }
 
     public int renderSpriteInTooltip(GuiGraphics guiGraphics, SpriteRenderer spriteRenderer, Component component, int x, int y) {
@@ -220,6 +277,14 @@ public abstract class BaseRenderer {
         guiGraphics.drawString(font, component, x + 20, y + 4, new Color(0xffffff).getArgbColor(), false);
 
         return font.width(component) + 24;
+    }
+
+    public Pair<Integer, Integer> renderPanel(GuiGraphics guiGraphics, int x, int y, int xx, int yy, int maxWidth, int mouseX, int mouseY) {
+        return Pair.of(0, 0); // Hook
+    }
+
+    public Pair<Integer, Integer> renderTaskHoverTooltip(GuiGraphics guiGraphics, int x, int y) {
+        return Pair.of(0, 0);
     }
 
     public Color fillColor() {

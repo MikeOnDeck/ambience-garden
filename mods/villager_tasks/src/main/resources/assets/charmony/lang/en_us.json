@@ -26,6 +26,7 @@
   "gui.charmony.villager_tasks.doing_task": "You are currently working on this task.",
   "gui.charmony.villager_tasks.done_task": "You can now hand this task in to a villager.",
   "gui.charmony.villager_tasks.done_task_with_loyalty": "Handing the task to this villager increases your loyalty.",
+  "gui.charmony.villager_tasks.ellipsis": "+ %s more",
   "gui.charmony.villager_tasks.epic_task.description": "Offers greater rewards but requires more effort to complete.",
   "gui.charmony.villager_tasks.epic_task.title": "Epic Task",
   "gui.charmony.villager_tasks.experience_levels": "Experience levels: %s",

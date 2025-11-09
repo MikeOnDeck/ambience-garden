@@ -68,8 +68,13 @@ public class TaskDetailsScreen extends BaseScreen {
         var maxWidth = 240;
         Pair<Integer, Integer> box = Pair.of(0, 0);
 
-        box = taskRenderer.collect.renderPanel(guiGraphics, px, py, box.getFirst(), box.getSecond(), maxWidth, mouseX, mouseY);
-        box = taskRenderer.hunt.renderPanel(guiGraphics, px, py, box.getFirst(), box.getSecond(), maxWidth, mouseX, mouseY);
+        for (var renderer : taskRenderer.requirementRenderers) {
+            box = renderer.renderPanel(guiGraphics, px, py, box.getFirst(), box.getSecond(), maxWidth, mouseX, mouseY);
+        }
+
+//        box = taskRenderer.collect.renderPanel(guiGraphics, px, py, box.getFirst(), box.getSecond(), maxWidth, mouseX, mouseY);
+//        box = taskRenderer.hunt.renderPanel(guiGraphics, px, py, box.getFirst(), box.getSecond(), maxWidth, mouseX, mouseY);
+//        box = taskRenderer.treasure.renderPanel(guiGraphics, px, py, box.getFirst(), box.getSecond(), maxWidth, mouseX, mouseY);
 
         top += 70;
         if (rewards.isEmpty()) {
@@ -87,6 +92,8 @@ public class TaskDetailsScreen extends BaseScreen {
         px = left + 5;
         py = top + 5;
 
-        taskRenderer.rewards.renderPanel(guiGraphics, px, py, maxWidth, mouseX, mouseY);
+        for (var renderer : taskRenderer.rewardRenderers) {
+            renderer.renderPanel(guiGraphics, px, py, 0, 0, maxWidth, mouseX, mouseY);
+        }
     }
 }

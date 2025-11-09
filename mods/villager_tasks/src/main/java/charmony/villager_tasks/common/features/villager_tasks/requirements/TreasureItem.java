@@ -93,28 +93,20 @@ public class TreasureItem implements Satisfiable, PlayerHolder {
         return Optional.ofNullable(player);
     }
 
-    public void onItemPickup(Task task, Player player, ItemStack itemStack) {
-        if (!discovered && isTreasure(itemStack)) {
-            log().debug("Player has discovered treasure item");
-            discovered = true;
-        }
+    public ItemStack stack() {
+        return stack;
     }
 
-    public Optional<ItemStack> onLootTablePopulate(Task task, Player player, ResourceLocation lootTableId, RandomSource randomSource) {
-        if (!discovered && task.isStarted()) {
-            if (lootTableId.toString().equals(this.lootTable)) {
-                if (randomSource.nextDouble() < chance) {
-                    log().debug("Providing treasure item from loot table {}", lootTableId);
-                    discovered = true;
-                    var treasureStack = stack.copy();
-                    return Optional.of(treasureStack);
-                } else {
-                    log().debug("Treasure item not provided from loot table {} due to chance", lootTableId);
-                }
-            }
-        }
+    public double chance() {
+        return chance;
+    }
 
-        return Optional.empty();
+    public UUID itemId() {
+        return itemId;
+    }
+
+    public ResourceLocation lootTable() {
+        return ResourceLocation.parse(lootTable);
     }
 
     public boolean isTreasure(ItemStack stack) {
@@ -124,10 +116,34 @@ public class TreasureItem implements Satisfiable, PlayerHolder {
 
         if (tag.contains(TREASURE_TAG)) {
             var treasureTag = tag.getString(TREASURE_TAG).orElse("");
-            return treasureTag.equals(this.itemId.toString());
+            return treasureTag.equals(itemId().toString());
         }
 
         return false;
+    }
+
+    public void onItemPickup(Task task, Player player, ItemStack itemStack) {
+        if (!discovered && isTreasure(itemStack)) {
+            log().debug("Player has discovered treasure item");
+            discovered = true;
+        }
+    }
+
+    public Optional<ItemStack> onLootTablePopulate(Task task, Player player, ResourceLocation lootTableId, RandomSource randomSource) {
+        if (!discovered && task.isStarted()) {
+            if (lootTableId.equals(lootTable())) {
+                if (randomSource.nextDouble() < chance()) {
+                    log().debug("Providing treasure item from loot table {}", lootTableId);
+                    discovered = true;
+                    var treasureStack = stack().copy();
+                    return Optional.of(treasureStack);
+                } else {
+                    log().debug("Treasure item not provided from loot table {} due to chance", lootTableId);
+                }
+            }
+        }
+
+        return Optional.empty();
     }
 
     private Log log() {
