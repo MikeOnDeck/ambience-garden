@@ -120,25 +120,7 @@ public final class Collect extends Aspect implements Satisfiable {
 
     @Override
     public void onComplete(Task task, ServerPlayer player) {
-        for (var req : items()) {
-            var remainder = req.total();
-
-            if (remainder > 0) {
-                for (var invItem : player.getInventory().getNonEquipmentItems()) {
-                    if (remainder <= 0) break;
-
-                    // TODO: check enchantments.
-                    if (invItem.is(req.stack().getItem()) && !invItem.isDamaged()) {
-                        var decrement = Math.min(remainder, invItem.getCount());
-                        remainder -= decrement;
-
-                        if (!player.getAbilities().instabuild) {
-                            invItem.shrink(decrement);
-                        }
-                    }
-                }
-            }
-        }
+        items().forEach(item -> item.onComplete(player));
     }
 
     public List<CollectItem> items() {

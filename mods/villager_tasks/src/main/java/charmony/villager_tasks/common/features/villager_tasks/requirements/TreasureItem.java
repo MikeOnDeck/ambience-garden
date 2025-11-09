@@ -4,6 +4,7 @@ import charmony.core.base.Log;
 import charmony.villager_tasks.common.features.villager_tasks.Task;
 import charmony.villager_tasks.common.features.villager_tasks.VillagerTasks;
 import charmony.villager_tasks.common.features.villager_tasks.interfaces.PlayerHolder;
+import charmony.villager_tasks.common.features.villager_tasks.interfaces.RemovesStacksOnCompletion;
 import charmony.villager_tasks.common.features.villager_tasks.interfaces.Satisfiable;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -21,7 +22,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public class TreasureItem implements Satisfiable, PlayerHolder {
+public class TreasureItem implements Satisfiable, PlayerHolder, RemovesStacksOnCompletion {
     public static final String TREASURE_TAG = "charmony_treasure";
 
     private final ItemStack stack;
@@ -93,6 +94,7 @@ public class TreasureItem implements Satisfiable, PlayerHolder {
         return Optional.ofNullable(player);
     }
 
+    @Override
     public ItemStack stack() {
         return stack;
     }
@@ -146,7 +148,7 @@ public class TreasureItem implements Satisfiable, PlayerHolder {
         }
     }
 
-    public Optional<ItemStack> onLootTablePopulate(Task task, Player player, ResourceLocation lootTableId, RandomSource randomSource) {
+    public Optional<ItemStack> onLootTablePopulate(Task task, ResourceLocation lootTableId, RandomSource randomSource) {
         if (!discovered && task.isStarted()) {
             if (lootTableId.equals(lootTable())) {
                 if (randomSource.nextDouble() < chance()) {

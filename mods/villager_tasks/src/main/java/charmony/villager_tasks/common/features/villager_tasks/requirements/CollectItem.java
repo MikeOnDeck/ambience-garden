@@ -2,6 +2,7 @@ package charmony.villager_tasks.common.features.villager_tasks.requirements;
 
 import charmony.villager_tasks.common.features.villager_tasks.interfaces.HasWeight;
 import charmony.villager_tasks.common.features.villager_tasks.interfaces.PlayerHolder;
+import charmony.villager_tasks.common.features.villager_tasks.interfaces.RemovesStacksOnCompletion;
 import charmony.villager_tasks.common.features.villager_tasks.interfaces.Satisfiable;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -13,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class CollectItem implements Satisfiable, PlayerHolder, HasWeight {
+public class CollectItem implements Satisfiable, PlayerHolder, HasWeight, RemovesStacksOnCompletion {
     private final ItemStack stack;
     private final int total;
     private final int weight;
@@ -63,8 +64,16 @@ public class CollectItem implements Satisfiable, PlayerHolder, HasWeight {
             }
 
             for (var invItem : inventory) {
-                // TODO: check enchantments.
-                if (invItem.is(stack().getItem()) && !invItem.isDamaged()) {
+                // Don't seek enchanted items if the required item isn't enchanted.
+                if (!stack().isEnchanted() && invItem.isEnchanted()) continue;
+
+                // Don't seek damaged items.
+                if (invItem.isDamaged()) continue;
+
+                if (invItem.is(stack().getItem())) {
+                    // Must match enchantments if the required item is enchanted.
+                    if (stack().isEnchanted() && !invItem.getEnchantments().equals(stack().getEnchantments())) continue;
+
                     var decrement = Math.min(remainder, invItem.getCount());
                     remainder -= decrement;
                     invItem.shrink(decrement);
@@ -80,6 +89,7 @@ public class CollectItem implements Satisfiable, PlayerHolder, HasWeight {
         return total;
     }
 
+    @Override
     public ItemStack stack() {
         return stack;
     }

@@ -11,6 +11,7 @@ import com.mojang.serialization.Codec;
 import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -129,13 +130,18 @@ public final class Treasure extends Aspect implements Satisfiable {
     }
 
     @Override
+    public void onComplete(Task task, ServerPlayer player) {
+        items().forEach(i -> i.onComplete(player));
+    }
+
+    @Override
     public Optional<ItemStack> onLootTablePopulate(Task task, Player player, ResourceLocation lootTableId, RandomSource random) {
         if (player == null) {
             return Optional.empty();
         }
 
         for (var item : items()) {
-            var stack = item.onLootTablePopulate(task, player, lootTableId, random);
+            var stack = item.onLootTablePopulate(task, lootTableId, random);
             if (stack.isPresent()) {
                 return stack;
             }
