@@ -32,4 +32,9 @@ public class MobSpriteRenderer extends SpriteRenderer {
     public Component getName() {
         return Component.translatable("entity." + id.getNamespace() + "." + id.getPath());
     }
+
+    @Override
+    public Component getDescription() {
+        return getName();
+    }
 }

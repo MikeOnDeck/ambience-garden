@@ -33,6 +33,10 @@ public abstract class SpriteRenderer {
 
     public abstract Component getName();
 
+    public Component getDescription() {
+        return Component.empty();
+    }
+
     public ResourceLocation getId() {
         return id;
     }

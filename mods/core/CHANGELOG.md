@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.51.0
+
+- Fix loot table resource sprite locations.
+- Add loot table translations.
+- Add descriptions for sprite renderers.
+
 ## 1.50.0
 
 - Fix LootFunctionType register.
