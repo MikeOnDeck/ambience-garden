@@ -4,6 +4,7 @@ import charmony.core.base.Setup;
 import charmony.villager_tasks.common.features.villager_tasks.enums.TaskModifier;
 import charmony.villager_tasks.common.features.villager_tasks.enums.TaskQuery;
 import charmony.villager_tasks.common.features.villager_tasks.requirements.TreasureLootFunction;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.fabricmc.fabric.api.loot.v3.LootTableSource;
 import net.minecraft.Util;
 import net.minecraft.core.HolderLookup;
@@ -25,6 +26,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.loot.LootPool;
@@ -101,6 +103,20 @@ public class Handlers extends Setup<VillagerTasks> {
         }
 
         return InteractionResult.PASS;
+    }
+
+    public Optional<ObjectArrayList<ItemStack>> brushableBlockLootCheck(ObjectArrayList<ItemStack> generatedLoot) {
+        // If additional pool added to an archaeology loot table, always use the additional pool.
+        if (generatedLoot.size() == 2) {
+            ItemStack out;
+            if (!generatedLoot.get(1).isEmpty()) {
+                out = generatedLoot.get(1);
+            } else {
+                out = generatedLoot.getFirst();
+            }
+            return Optional.of(ObjectArrayList.of(out));
+        }
+        return Optional.empty();
     }
 
     public void lootTableModify(ResourceKey<LootTable> lootTable, LootTable.Builder builder, LootTableSource source, HolderLookup.Provider provider) {

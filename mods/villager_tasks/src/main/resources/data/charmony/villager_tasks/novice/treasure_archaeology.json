@@ -8,12 +8,12 @@
       {
         "item": "minecraft:creeper_head",
         "loot_table": "minecraft:archaeology/desert_pyramid",
-        "chance": 0.75
+        "chance": 0.25
       },
       {
         "item": "minecraft:skeleton_skull",
         "loot_table": "minecraft:archaeology/trail_ruins_common",
-        "chance": 0.75
+        "chance": 0.25
       }
     ]
   },
