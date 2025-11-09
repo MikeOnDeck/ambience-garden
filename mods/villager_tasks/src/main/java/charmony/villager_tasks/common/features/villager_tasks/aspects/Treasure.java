@@ -8,18 +8,17 @@ import charmony.villager_tasks.common.features.villager_tasks.Task;
 import charmony.villager_tasks.common.features.villager_tasks.interfaces.Satisfiable;
 import charmony.villager_tasks.common.features.villager_tasks.requirements.TreasureItem;
 import com.mojang.serialization.Codec;
-import net.fabricmc.fabric.api.loot.v3.LootTableSource;
 import net.minecraft.Util;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.storage.loot.LootTable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public final class Treasure extends Aspect implements Satisfiable {
     public static final String ID = "treasure";
@@ -112,8 +111,18 @@ public final class Treasure extends Aspect implements Satisfiable {
     }
 
     @Override
-    public void onLootTableModify(Task task, ResourceKey<LootTable> key, LootTable.Builder builder, LootTableSource source, HolderLookup.Provider provider) {
-        items().forEach(i -> i.onLootTableModify(builder));
+    public Optional<ItemStack> onLootTablePopulate(Task task, Player player, ResourceLocation lootTableId, RandomSource random) {
+        if (player == null) {
+            return Optional.empty();
+        }
+
+        for (var item : items()) {
+            var stack = item.onLootTablePopulate(task, player, lootTableId, random);
+            if (stack.isPresent()) {
+                return stack;
+            }
+        }
+        return Optional.empty();
     }
 
     public List<TreasureItem> items() {

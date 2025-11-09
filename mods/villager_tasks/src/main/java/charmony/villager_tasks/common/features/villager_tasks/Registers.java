@@ -5,12 +5,14 @@ import charmony.api.events.ItemPickupCallback;
 import charmony.api.events.PlayerTickCallback;
 import charmony.core.base.Setup;
 import charmony.core.common.CommonRegistry;
+import charmony.villager_tasks.common.features.villager_tasks.requirements.TreasureLootFunction;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 
 import java.util.function.Supplier;
 
@@ -19,6 +21,7 @@ public class Registers extends Setup<VillagerTasks> {
     public final Supplier<SoundEvent> taskAccept;
     public final Supplier<SoundEvent> taskCompleteSound;
     public final Supplier<SoundEvent> epicTaskCompleteSound;
+    public final Supplier<LootItemFunctionType<TreasureLootFunction>> treasureLootFunction;
 
     public Registers(VillagerTasks feature) {
         super(feature);
@@ -40,6 +43,9 @@ public class Registers extends Setup<VillagerTasks> {
         taskAccept = registry.sound("task_accept");
         taskCompleteSound = registry.sound("task_complete");
         epicTaskCompleteSound = registry.sound("epic_task_complete");
+
+        // Loot functions.
+        treasureLootFunction = registry.lootFunctionType("treasure_loot_function", () -> TreasureLootFunction.CODEC);
     }
 
     @Override

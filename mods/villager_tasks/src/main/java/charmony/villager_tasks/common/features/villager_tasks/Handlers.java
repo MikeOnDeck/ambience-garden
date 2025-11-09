@@ -3,6 +3,7 @@ package charmony.villager_tasks.common.features.villager_tasks;
 import charmony.core.base.Setup;
 import charmony.villager_tasks.common.features.villager_tasks.enums.TaskModifier;
 import charmony.villager_tasks.common.features.villager_tasks.enums.TaskQuery;
+import charmony.villager_tasks.common.features.villager_tasks.requirements.TreasureLootFunction;
 import net.fabricmc.fabric.api.loot.v3.LootTableSource;
 import net.minecraft.Util;
 import net.minecraft.core.HolderLookup;
@@ -24,8 +25,12 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.phys.EntityHitResult;
 import org.jetbrains.annotations.Nullable;
 
@@ -101,8 +106,14 @@ public class Handlers extends Setup<VillagerTasks> {
     public void lootTableModify(ResourceKey<LootTable> lootTable, LootTable.Builder builder, LootTableSource source, HolderLookup.Provider provider) {
         if (!source.isBuiltin()) return;
 
-        PLAYER_TASKS.values().stream().flatMap(tasks -> tasks.tasks().stream()).forEach(
-            task -> task.onLootTableModify(task, lootTable, builder, source, provider));
+        // Add custom loot functions for aspects that modify loot tables.
+        var pool = LootPool.lootPool()
+            .setRolls(ConstantValue.exactly(1))
+            .add(LootItem.lootTableItem(Items.AIR)
+                .setWeight(1)
+                .apply(() -> new TreasureLootFunction(lootTable)));
+
+        builder.pool(pool.build());
     }
 
     public void afterEntityDeath(LivingEntity entity, DamageSource damageSource) {

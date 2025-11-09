@@ -1,5 +1,6 @@
 package charmony.villager_tasks.common.features.villager_tasks.requirements;
 
+import charmony.core.base.Log;
 import charmony.villager_tasks.common.features.villager_tasks.Task;
 import charmony.villager_tasks.common.features.villager_tasks.VillagerTasks;
 import charmony.villager_tasks.common.features.villager_tasks.interfaces.PlayerHolder;
@@ -8,15 +9,11 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
-import net.minecraft.world.level.storage.loot.LootPool;
-import net.minecraft.world.level.storage.loot.LootTable;
-import net.minecraft.world.level.storage.loot.entries.LootItem;
-import net.minecraft.world.level.storage.loot.functions.SetComponentsFunction;
-import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
-import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -98,26 +95,26 @@ public class TreasureItem implements Satisfiable, PlayerHolder {
 
     public void onItemPickup(Task task, Player player, ItemStack itemStack) {
         if (!discovered && isTreasure(itemStack)) {
-            VillagerTasks.feature().log().debug("Player has discovered treasure item");
+            log().debug("Player has discovered treasure item");
             discovered = true;
         }
     }
 
-    public void onLootTableModify(LootTable.Builder builder) {
-        var enchantments = stack.getEnchantments();
-        var customData = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY);
-        var customName = stack.getDisplayName();
+    public Optional<ItemStack> onLootTablePopulate(Task task, Player player, ResourceLocation lootTableId, RandomSource randomSource) {
+        if (!discovered && task.isStarted()) {
+            if (lootTableId.toString().equals(this.lootTable)) {
+                if (randomSource.nextDouble() < chance) {
+                    log().debug("Providing treasure item from loot table {}", lootTableId);
+                    var discovered = true;
+                    var treasureStack = stack.copy();
+                    return Optional.of(treasureStack);
+                } else {
+                    log().debug("Treasure item not provided from loot table {} due to chance", lootTableId);
+                }
+            }
+        }
 
-        var pool = LootPool.lootPool()
-            .setRolls(ConstantValue.exactly(1))
-            .when(LootItemRandomChanceCondition.randomChance((float)chance))
-            .add(LootItem.lootTableItem(stack.getItem())
-                .apply(SetComponentsFunction.setComponent(DataComponents.ENCHANTMENTS, enchantments))
-                .apply(SetComponentsFunction.setComponent(DataComponents.CUSTOM_DATA, customData))
-                .apply(SetComponentsFunction.setComponent(DataComponents.CUSTOM_NAME, customName))
-                .setWeight(1));
-
-        builder.pool(pool.build());
+        return Optional.empty();
     }
 
     public boolean isTreasure(ItemStack stack) {
@@ -130,5 +127,9 @@ public class TreasureItem implements Satisfiable, PlayerHolder {
         }
 
         return false;
+    }
+
+    private Log log() {
+        return VillagerTasks.feature().log();
     }
 }

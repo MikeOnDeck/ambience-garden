@@ -11,12 +11,9 @@ import charmony.villager_tasks.common.features.villager_tasks.interfaces.EventLi
 import charmony.villager_tasks.common.features.villager_tasks.interfaces.Satisfiable;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.fabricmc.fabric.api.loot.v3.LootTableSource;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
@@ -24,9 +21,9 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.storage.loot.LootTable;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public class Task implements EventListener, Satisfiable {
@@ -204,13 +201,19 @@ public class Task implements EventListener, Satisfiable {
     }
 
     @Override
-    public void onItemPickup(Task task, Player player, ItemStack itemStack) {
-        aspects().forEach(a -> a.onItemPickup(this, player, itemStack));
+    public Optional<ItemStack> onLootTablePopulate(Task task, Player player, ResourceLocation lootTableId, RandomSource random) {
+        for (var aspect : aspects()) {
+            var result = aspect.onLootTablePopulate(this, player, lootTableId, random);
+            if (result.isPresent()) {
+                return result;
+            }
+        }
+        return Optional.empty();
     }
 
     @Override
-    public void onLootTableModify(Task task, ResourceKey<LootTable> key, LootTable.Builder builder, LootTableSource source, HolderLookup.Provider provider) {
-        aspects().forEach(a -> a.onLootTableModify(this, key, builder, source, provider));
+    public void onItemPickup(Task task, Player player, ItemStack itemStack) {
+        aspects().forEach(a -> a.onItemPickup(this, player, itemStack));
     }
 
     public boolean isNotStarted() {

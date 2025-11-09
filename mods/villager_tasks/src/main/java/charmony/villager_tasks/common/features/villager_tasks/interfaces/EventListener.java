@@ -1,16 +1,16 @@
 package charmony.villager_tasks.common.features.villager_tasks.interfaces;
 
 import charmony.villager_tasks.common.features.villager_tasks.Task;
-import net.fabricmc.fabric.api.loot.v3.LootTableSource;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.storage.loot.LootTable;
+
+import java.util.Optional;
 
 public interface EventListener {
     default void onStart(Task task, ServerPlayer player) {
@@ -45,7 +45,7 @@ public interface EventListener {
         // hook
     }
 
-    default void onLootTableModify(Task task, ResourceKey<LootTable> key, LootTable.Builder builder, LootTableSource source, HolderLookup.Provider provider) {
-        // hook
+    default Optional<ItemStack> onLootTablePopulate(Task task, Player player, ResourceLocation lootTableId, RandomSource random) {
+        return Optional.empty();
     }
 }
