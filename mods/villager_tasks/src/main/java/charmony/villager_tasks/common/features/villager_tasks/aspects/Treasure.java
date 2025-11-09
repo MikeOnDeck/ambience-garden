@@ -59,7 +59,7 @@ public final class Treasure extends Aspect implements Satisfiable {
                 var chance = (double) itemMap.getOrDefault("chance", 1.0d);
                 var itemStack = Helpers.createTreasureItemStack(builder.registryAccess(), itemId, uniqueId, random);
 
-                criteria.add(new TreasureItem(itemStack, UuidHelper.fromRandom(random), lootTable, chance, false));
+                criteria.add(new TreasureItem(itemStack, uniqueId, lootTable, chance, false));
             } catch (Exception e) {
                 throw new IllegalStateException("Failed to parse item at index " + i, e);
             }
@@ -103,6 +103,16 @@ public final class Treasure extends Aspect implements Satisfiable {
     @Override
     public int total() {
         return items().stream().mapToInt(TreasureItem::total).sum();
+    }
+
+    @Override
+    public void onTick(Task task, Player player) {
+        super.onTick(task, player);
+
+        // Pass player down to each item requirement on tick.
+        for (var item : items()) {
+            item.setPlayer(player);
+        }
     }
 
     @Override

@@ -105,7 +105,7 @@ public class TreasureItem implements Satisfiable, PlayerHolder {
             if (lootTableId.toString().equals(this.lootTable)) {
                 if (randomSource.nextDouble() < chance) {
                     log().debug("Providing treasure item from loot table {}", lootTableId);
-                    var discovered = true;
+                    discovered = true;
                     var treasureStack = stack.copy();
                     return Optional.of(treasureStack);
                 } else {
@@ -118,6 +118,7 @@ public class TreasureItem implements Satisfiable, PlayerHolder {
     }
 
     public boolean isTreasure(ItemStack stack) {
+        if (stack.isEmpty()) return false;
         var custom = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY);
         var tag = custom.copyTag();
 
