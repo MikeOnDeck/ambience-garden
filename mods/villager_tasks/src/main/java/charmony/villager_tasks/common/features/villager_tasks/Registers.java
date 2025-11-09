@@ -12,6 +12,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 
 import java.util.function.Supplier;
@@ -53,7 +54,9 @@ public class Registers extends Setup<VillagerTasks> {
         return () -> {
             ServerWorldEvents.LOAD.register(((server, level) -> {
                 // Load all definitions on world load. We need tags to already be resolved.
-                feature().handlers.loadDefinitions(server);
+                if (level.dimension() == Level.OVERWORLD) {
+                    feature().handlers.loadDefinitions(server);
+                }
             }));
 
             PlayerTickCallback.EVENT.register(feature().handlers::playerTick);

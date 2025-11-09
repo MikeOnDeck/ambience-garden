@@ -1,5 +1,6 @@
 package charmony.villager_tasks.common.features.villager_tasks;
 
+import charmony.core.base.Log;
 import charmony.villager_tasks.common.features.villager_tasks.interfaces.EventListener;
 import charmony.villager_tasks.common.features.villager_tasks.interfaces.PlayerHolder;
 import net.minecraft.network.chat.Component;
@@ -28,4 +29,8 @@ public abstract class Aspect implements EventListener, PlayerHolder {
     public abstract Component getName();
 
     public abstract boolean isEmpty();
+
+    protected static Log log() {
+        return VillagerTasks.feature().log();
+    }
 }

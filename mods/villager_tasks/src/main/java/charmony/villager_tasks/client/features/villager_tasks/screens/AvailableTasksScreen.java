@@ -58,6 +58,7 @@ public class AvailableTasksScreen extends BaseScreen {
             for (var i = 0; i < availableTasks.tasks().size(); i++) {
                 var rh = i * rowHeight;
                 var task = availableTasks.tasks().get(i);
+                if (task.isEmpty()) continue;
 
                 var activeTask = activeTasks.getTaskById(task.id).orElse(null);
 

@@ -90,10 +90,18 @@ public final class Rewards extends Aspect {
                 var itemStack = new ItemStack(Helpers.resolveItem(builder.registryAccess(), itemId, random));
                 var itemCount = Helpers.getCountFromMap(itemMap, multiplier, random);
 
+                if (itemStack.isEmpty()) {
+                    throw new IllegalStateException("Item " + itemId + " could not be parsed");
+                }
+
                 criteria.add(new RewardItem(itemStack, itemCount, (int)itemWeight));
             } catch (Exception e) {
-                throw new IllegalStateException("Failed to parse item at index " + i, e);
+                log().warn(e.getMessage() + " at index " + i);
             }
+        }
+
+        if (criteria.isEmpty()) {
+            return EMPTY;
         }
 
         var rewardItems = Helpers.getRandomlyByWeight(criteria, count, random);
@@ -117,7 +125,6 @@ public final class Rewards extends Aspect {
         }
 
         var villager = Helpers.getNearbyTaskOwner(player, task.villager).or(() -> Helpers.getNearbyRewardGiver(player));
-
         villager.ifPresent(v -> Helpers.throwItemsAtPlayer(v, player, stacks));
     }
 }

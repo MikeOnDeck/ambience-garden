@@ -55,10 +55,18 @@ public final class Collect extends Aspect implements Satisfiable {
                 var itemStack = new ItemStack(Helpers.resolveItem(builder.registryAccess(), itemId, random));
                 var itemCount = Helpers.getCountFromMap(itemMap, multiplier, random);
 
+                if (itemStack.isEmpty()) {
+                    throw new IllegalStateException("Item " + itemId + " could not be parsed");
+                }
+
                 criteria.add(new CollectItem(itemStack, itemCount, (int)itemWeight));
             } catch (Exception e) {
-                throw new IllegalStateException("Failed to parse item at index " + i, e);
+                log().warn(e.getMessage() + " at index " + i);
             }
+        }
+
+        if (criteria.isEmpty()) {
+            return EMPTY;
         }
 
         var collectItems = Helpers.getRandomlyByWeight(criteria, count, random);

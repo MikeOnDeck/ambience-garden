@@ -1,0 +1,31 @@
+{
+  "title": "Archaeology treasure",
+  "level": 1,
+  "treasure": {
+    "min": 1,
+    "max": 2,
+    "items": [
+      {
+        "item": "minecraft:creeper_skull",
+        "loot_table": "minecraft:archaeology/desert_pyramid",
+        "chance": 0.75
+      },
+      {
+        "item": "minecraft:skeleton_skull",
+        "loot_table": "minecraft:archaeology/trail_ruins_common",
+        "chance": 0.75
+      }
+    ]
+  },
+  "rewards": {
+    "min": 1,
+    "max": 2,
+    "experience": 10,
+    "items": [
+      {
+        "item": "#minecraft:shulker_boxes",
+        "exactly": 1
+      }
+    ]
+  }
+}

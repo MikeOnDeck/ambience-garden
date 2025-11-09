@@ -40,7 +40,7 @@ public final class RewardsRenderer extends BaseRenderer {
             // Items
             for (var i = 0; i < rows; i++) {
                 var item = items.get(i);
-                calcWidth = renderItemInTooltip(guiGraphics, item.stack(), Component.literal("" + item.total()), x, y + calcHeight + (i * rowHeight));
+                calcWidth = Math.max(calcWidth, renderItemInTooltip(guiGraphics, item.stack(), Component.literal("" + item.total()), x, y + calcHeight + (i * rowHeight)));
             }
 
             if (showEllipsis) {
@@ -51,7 +51,7 @@ public final class RewardsRenderer extends BaseRenderer {
             // XP
             if (xp > 0) {
                 var component = Component.translatable("gui.charmony.villager_tasks.experience_levels", task.rewards.experience);
-                calcWidth = renderItemInTooltip(guiGraphics, new ItemStack(Items.EXPERIENCE_BOTTLE), component, x, y + calcHeight + (rows * rowHeight), false);
+                calcWidth = Math.max(calcWidth, renderItemInTooltip(guiGraphics, new ItemStack(Items.EXPERIENCE_BOTTLE), component, x, y + calcHeight + (rows * rowHeight), false));
                 rows += 1;
             }
 

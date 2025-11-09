@@ -111,6 +111,23 @@ public class TreasureItem implements Satisfiable, PlayerHolder {
 
     public boolean isTreasure(ItemStack stack) {
         if (stack.isEmpty()) return false;
+
+        // Check it's the same item type.
+        if (!stack.is(stack().getItem())) {
+            return false;
+        }
+
+        // Check enchantments are the same.
+        if (!stack.getEnchantments().equals(stack().getEnchantments())) {
+            return false;
+        }
+
+        // Check name is the same.
+        if (!stack.getHoverName().equals(stack().getHoverName())) {
+            return false;
+        }
+
+        // Check it has the correct unique ID for the task.
         var custom = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY);
         var tag = custom.copyTag();
 

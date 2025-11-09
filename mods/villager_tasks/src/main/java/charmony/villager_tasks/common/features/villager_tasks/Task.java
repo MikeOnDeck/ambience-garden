@@ -252,6 +252,10 @@ public class Task implements EventListener, Satisfiable {
         return modifier.isEpic();
     }
 
+    public boolean isEmpty() {
+        return getDefinitionId().toString().equals("minecraft:empty");
+    }
+
     public record AspectBuilder(ServerPlayer player, Definition definition, TaskModifier modifier, RandomSource random) {
         public RegistryAccess registryAccess() {
             return player.level().registryAccess();

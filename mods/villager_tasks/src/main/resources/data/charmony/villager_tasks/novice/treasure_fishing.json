@@ -1,0 +1,26 @@
+{
+  "title": "Fishing treasure",
+  "level": 1,
+  "treasure": {
+    "min": 1,
+    "max": 2,
+    "items": [
+      {
+        "item": "minecraft:leather",
+        "loot_table": "minecraft:gameplay/fishing",
+        "chance": 0.75
+      }
+    ]
+  },
+  "rewards": {
+    "min": 1,
+    "max": 2,
+    "experience": 10,
+    "items": [
+      {
+        "item": "#minecraft:piglin_loved",
+        "exactly": 1
+      }
+    ]
+  }
+}

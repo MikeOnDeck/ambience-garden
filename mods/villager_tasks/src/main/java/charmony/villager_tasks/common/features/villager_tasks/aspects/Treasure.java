@@ -59,10 +59,18 @@ public final class Treasure extends Aspect implements Satisfiable {
                 var chance = (double) itemMap.getOrDefault("chance", 1.0d);
                 var itemStack = Helpers.createTreasureItemStack(builder.registryAccess(), itemId, uniqueId, random);
 
+                if (itemStack.isEmpty()) {
+                    throw new IllegalStateException("Item " + itemId + " could not be parsed");
+                }
+
                 criteria.add(new TreasureItem(itemStack, uniqueId, lootTable, chance, false));
             } catch (Exception e) {
-                throw new IllegalStateException("Failed to parse item at index " + i, e);
+                log().warn(e.getMessage() + " at index " + i);
             }
+        }
+
+        if (criteria.isEmpty()) {
+            return EMPTY;
         }
 
         Util.shuffle(criteria, random);
