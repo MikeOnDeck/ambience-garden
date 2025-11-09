@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.50.0
+
+- Fix LootFunctionType register.
+
 ## 1.49.0
 
 - Add backing for ItemPickupEvent.
