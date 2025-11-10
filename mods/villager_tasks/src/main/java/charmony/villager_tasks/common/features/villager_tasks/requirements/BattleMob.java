@@ -42,6 +42,7 @@ public class BattleMob implements Satisfiable {
     private final ResourceLocation dimension;
     private Optional<BlockPos> pos;
     private final List<BattleMobEffect> effects;
+    private final BattleMobStats stats;
     private final UUID uniqueId;
     private final int distance;
     private final int total;
@@ -53,6 +54,7 @@ public class BattleMob implements Satisfiable {
         ResourceLocation.CODEC.fieldOf("dimension").forGetter(self -> self.dimension),
         BlockPos.CODEC.lenientOptionalFieldOf("pos").forGetter(self -> self.pos),
         BattleMobEffect.CODEC.listOf().fieldOf("effects").forGetter(self -> self.effects),
+        BattleMobStats.CODEC.fieldOf("state").forGetter(self -> self.stats),
         UUIDUtil.CODEC.fieldOf("unique_id").forGetter(self -> self.uniqueId),
         Codec.INT.fieldOf("distance").forGetter(self -> self.distance),
         Codec.INT.fieldOf("total").forGetter(self -> self.total),
@@ -60,11 +62,12 @@ public class BattleMob implements Satisfiable {
         Codec.BOOL.fieldOf("spawned").forGetter(self -> self.spawned)
     ).apply(instance, BattleMob::new));
 
-    public BattleMob(ResourceLocation mob, ResourceLocation dimension, Optional<BlockPos> pos, List<BattleMobEffect> effects, UUID uniqueId, int distance, int total, int defeated, boolean spawned) {
+    public BattleMob(ResourceLocation mob, ResourceLocation dimension, Optional<BlockPos> pos, List<BattleMobEffect> effects, BattleMobStats stats, UUID uniqueId, int distance, int total, int defeated, boolean spawned) {
         this.mob = mob;
         this.dimension = dimension;
         this.pos = pos;
         this.effects = effects;
+        this.stats = stats;
         this.uniqueId = uniqueId;
         this.distance = distance;
         this.total = total;
@@ -73,7 +76,7 @@ public class BattleMob implements Satisfiable {
     }
 
     public BattleMob copy() {
-        return new BattleMob(mob, dimension, pos, new ArrayList<>(effects), uniqueId, distance, total, defeated, spawned);
+        return new BattleMob(mob, dimension, pos, new ArrayList<>(effects), stats, uniqueId, distance, total, defeated, spawned);
     }
 
     @Override
@@ -111,6 +114,10 @@ public class BattleMob implements Satisfiable {
         return pos.map(pos -> GlobalPos.of(ResourceKey.create(Registries.DIMENSION, dimension), pos));
     }
 
+    public BattleMobStats stats() {
+        return stats;
+    }
+
     @SuppressWarnings("unchecked")
     public void onTick(Task task, RegistryAccess registryAccess, ServerPlayer player) {
         var level = player.level();
@@ -139,11 +146,13 @@ public class BattleMob implements Satisfiable {
 
                 try {
                     if (spawnPos.isPresent()) {
+                        var health = stats.health();
                         var result = MobHelper.spawn((EntityType<? extends Mob>) entityType, level, spawnPos.get(), spawnReason, (mob) -> {
                             mob.addTag(BATTLE_TAG + "_" + uniqueId.toString());
                             mob.setTarget(player);
                             mob.setPersistenceRequired();
                             mob.setAggressive(true);
+                            mob.setHealth(health);
 
                             for (var effect : effects) {
                                 mob.addEffect(effect.mobEffectInstance(effectRegistry));

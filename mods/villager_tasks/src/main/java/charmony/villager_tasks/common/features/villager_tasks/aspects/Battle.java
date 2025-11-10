@@ -8,6 +8,7 @@ import charmony.villager_tasks.common.features.villager_tasks.Task;
 import charmony.villager_tasks.common.features.villager_tasks.interfaces.Satisfiable;
 import charmony.villager_tasks.common.features.villager_tasks.requirements.BattleMob;
 import charmony.villager_tasks.common.features.villager_tasks.requirements.BattleMobEffect;
+import charmony.villager_tasks.common.features.villager_tasks.requirements.BattleMobStats;
 import com.mojang.serialization.Codec;
 import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
@@ -69,6 +70,9 @@ public final class Battle extends Aspect implements Satisfiable {
                 var spawnDistance = (double) mobMap.getOrDefault("distance", 128.0d);
                 var uniqueId = UuidHelper.fromRandom(random);
 
+                var health = (double) mobMap.getOrDefault("health", 20.0d);
+                var stats = new BattleMobStats((int)health);
+
                 // Parse effects to apply to these mobs.
                 var effects = (List<Map<String, Object>>) mobMap.getOrDefault("effects", List.of());
                 List<BattleMobEffect> effectList = new ArrayList<>();
@@ -87,7 +91,7 @@ public final class Battle extends Aspect implements Satisfiable {
                 }
 
                 criteria.add(new BattleMob(mobId, dimension,  Optional.empty(), effectList,
-                    uniqueId, (int)spawnDistance, mobCount, 0, false));
+                    stats, uniqueId, (int)spawnDistance, mobCount, 0, false));
             } catch (Exception e) {
                 log().warn(e.getMessage() + " at index " + i);
             }
