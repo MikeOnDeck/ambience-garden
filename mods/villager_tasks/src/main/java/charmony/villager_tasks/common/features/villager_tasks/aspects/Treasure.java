@@ -126,7 +126,7 @@ public final class Treasure extends Aspect implements Satisfiable {
 
     @Override
     public void onItemPickup(Task task, Player player, ItemStack itemStack) {
-        items().forEach(i -> i.onItemPickup(task, player, itemStack));
+        items().forEach(i -> i.onItemPickup(itemStack));
     }
 
     @Override

@@ -1,14 +1,24 @@
 {
-  "title": "Treasure hunt",
+  "title": "Treasure hunting",
   "level": 1,
   "treasure": {
     "min": 1,
     "max": 2,
     "items": [
       {
-        "item": "minecraft:apple",
-        "loot_table": "minecraft:chests/desert_pyramid",
-        "chance": 0.75
+        "item": "minecraft:creeper_head",
+        "loot_table": "minecraft:archaeology/desert_pyramid",
+        "chance": 0.25
+      },
+      {
+        "item": "minecraft:skeleton_skull",
+        "loot_table": "minecraft:archaeology/trail_ruins_common",
+        "chance": 0.25
+      },
+      {
+        "item": "minecraft:leather",
+        "loot_table": "minecraft:gameplay/fishing",
+        "chance": 0.25
       }
     ]
   },
@@ -18,7 +28,7 @@
     "experience": 10,
     "items": [
       {
-        "item": "minecraft:netherite_ingot",
+        "item": "#minecraft:shulker_boxes",
         "exactly": 1
       }
     ]

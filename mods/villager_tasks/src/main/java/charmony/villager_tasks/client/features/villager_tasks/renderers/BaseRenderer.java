@@ -4,6 +4,7 @@ import charmony.api.core.Color;
 import charmony.core.client.renderers.SpriteRenderer;
 import charmony.villager_tasks.client.features.villager_tasks.Handlers;
 import charmony.villager_tasks.client.features.villager_tasks.VillagerTasks;
+import charmony.villager_tasks.client.features.villager_tasks.tooltips.MapTooltip;
 import charmony.villager_tasks.common.features.villager_tasks.Task;
 import charmony.villager_tasks.common.features.villager_tasks.interfaces.Satisfiable;
 import com.mojang.datafixers.util.Pair;
@@ -19,6 +20,7 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public abstract class BaseRenderer {
     protected static final Color DEFAULT_FILL_COLOR = new Color(0x808080);
@@ -175,6 +177,47 @@ public abstract class BaseRenderer {
         return box;
     }
 
+    public Pair<Integer, Integer> renderSpriteAndMapBox(GuiGraphics guiGraphics, Satisfiable req, SpriteRenderer spriteRenderer, ItemStack map, MutableComponent title, int x, int y, int mouseX, int mouseY, boolean showProgress) {
+        var textColor = textColor(req);
+        var fillColor = fillColor(req);
+        var text = showProgress ? (req.total() - req.remaining()) + "/" + req.total() : "" + req.total();
+        var box = renderRequirementBox(guiGraphics, Component.literal(text), x, y, 46, fillColor);
+        var width = box.getFirst();
+        var height = box.getSecond();
+
+        // Sprite x and y
+        var sx = x + 2;
+        var sy = y + 2;
+
+        spriteRenderer.render(guiGraphics, sx, sy);
+
+        // Map item x and y
+        var ix = sx + 18;
+        var iy = sy - 1;
+
+        renderItemStack(guiGraphics, map, List.of(), ix, iy, mouseX, mouseY);
+
+        // Text x and y
+        var tx = ix + 22;
+        var ty = iy + 5;
+
+        guiGraphics.drawString(font, text, tx, ty, textColor.getArgbColor());
+
+        // Tooltip on sprite box hover
+        var name = spriteRenderer.getName();
+        var tooltip = new ArrayList<Component>();
+        tooltip.add(title);
+        tooltip.add(Component.translatable("gui.charmony.villager_tasks.name_and_number", name, req.total()));
+
+        var mapTooltip = new MapTooltip(map);
+
+        if (mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height) {
+            guiGraphics.setTooltipForNextFrame(font, tooltip, Optional.of(mapTooltip), mouseX, mouseY);
+        }
+
+        return box;
+    }
+
     public Pair<Integer, Integer> renderItemAndSpriteBox(GuiGraphics guiGraphics, Satisfiable req, ItemStack stack, SpriteRenderer spriteRenderer, MutableComponent title, int x, int y, int mouseX, int mouseY, boolean showProgress) {
         var textColor = textColor(req);
         var fillColor = fillColor(req);
@@ -205,7 +248,7 @@ public abstract class BaseRenderer {
         var itemTooltip = Screen.getTooltipFromItem(Minecraft.getInstance(), stack);
         var tooltip = new ArrayList<Component>();
         tooltip.add(title);
-        tooltip.add(Component.translatable("gui.charmony.villager_tasks.name_and_number", itemTooltip.getFirst(), req.total()));
+        tooltip.add(Component.translatable("gui.charmony.villager_tasks.name_and_number", itemTooltip.getFirst(), text));
         tooltip.add(spriteRenderer.getDescription());
 
         if (mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height) {

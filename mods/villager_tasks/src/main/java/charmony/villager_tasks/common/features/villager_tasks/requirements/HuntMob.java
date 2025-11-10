@@ -4,10 +4,12 @@ import charmony.villager_tasks.common.features.villager_tasks.interfaces.HasWeig
 import charmony.villager_tasks.common.features.villager_tasks.interfaces.Satisfiable;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 
 public class HuntMob implements Satisfiable, HasWeight {
     private final ResourceLocation mob;
@@ -67,5 +69,18 @@ public class HuntMob implements Satisfiable, HasWeight {
 
     public void addHunted() {
         hunted += 1;
+    }
+
+    public boolean onEntityKilled(Registry<EntityType<?>> registry, LivingEntity entity) {
+        var isValidMob = registry.getOptional(mobKey())
+            .map(type -> type.equals(entity.getType()))
+            .orElse(false);
+
+        if (isValidMob && !isSatisfied()) {
+            addHunted();
+            return true;
+        }
+
+        return false;
     }
 }

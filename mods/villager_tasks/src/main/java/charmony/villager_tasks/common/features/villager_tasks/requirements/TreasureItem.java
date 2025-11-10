@@ -27,29 +27,29 @@ public class TreasureItem implements Satisfiable, PlayerHolder, RemovesStacksOnC
 
     private final ItemStack stack;
     private final String lootTable;
-    private final UUID itemId;
+    private final UUID uniqueId;
     private final double chance;
     private boolean discovered;
     @Nullable private Player player;
 
     public static final Codec<TreasureItem> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         ItemStack.CODEC.fieldOf("stack").forGetter(self -> self.stack),
-        UUIDUtil.CODEC.fieldOf("item_id").forGetter(self -> self.itemId),
+        UUIDUtil.CODEC.fieldOf("unique_id").forGetter(self -> self.uniqueId),
         Codec.STRING.fieldOf("loot_table").forGetter(self -> self.lootTable),
         Codec.DOUBLE.fieldOf("chance").forGetter(self -> self.chance),
         Codec.BOOL.fieldOf("discovered").forGetter(self -> self.discovered)
     ).apply(instance, TreasureItem::new));
 
-    public TreasureItem(ItemStack stack, UUID itemId, String lootTable, double chance, boolean discovered) {
+    public TreasureItem(ItemStack stack, UUID uniqueId, String lootTable, double chance, boolean discovered) {
         this.stack = stack;
-        this.itemId = itemId;
+        this.uniqueId = uniqueId;
         this.lootTable = lootTable;
         this.chance = chance;
-        this.discovered = false;
+        this.discovered = discovered;
     }
 
     public TreasureItem copy() {
-        return new TreasureItem(stack.copy(), itemId, lootTable, chance, discovered);
+        return new TreasureItem(stack.copy(), uniqueId, lootTable, chance, discovered);
     }
 
     public void setPlayer(Player player) {
@@ -103,8 +103,8 @@ public class TreasureItem implements Satisfiable, PlayerHolder, RemovesStacksOnC
         return chance;
     }
 
-    public UUID itemId() {
-        return itemId;
+    public UUID uniqueId() {
+        return uniqueId;
     }
 
     public ResourceLocation lootTable() {
@@ -135,13 +135,13 @@ public class TreasureItem implements Satisfiable, PlayerHolder, RemovesStacksOnC
 
         if (tag.contains(TREASURE_TAG)) {
             var treasureTag = tag.getString(TREASURE_TAG).orElse("");
-            return treasureTag.equals(itemId().toString());
+            return treasureTag.equals(uniqueId().toString());
         }
 
         return false;
     }
 
-    public void onItemPickup(Task task, Player player, ItemStack itemStack) {
+    public void onItemPickup(ItemStack itemStack) {
         if (!discovered && isTreasure(itemStack)) {
             log().debug("Player has discovered treasure item");
             discovered = true;

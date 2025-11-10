@@ -133,12 +133,18 @@ public class Handlers extends Setup<VillagerTasks> {
     }
 
     public void afterEntityDeath(LivingEntity entity, DamageSource damageSource) {
-        if (entity.level() instanceof ServerLevel && damageSource.getEntity() instanceof ServerPlayer player) {
-            var tasks = PLAYER_TASKS.getOrDefault(player, Tasks.EMPTY);
-            for (var task : tasks.tasks()) {
+        if (entity.level() instanceof ServerLevel) {
+            var allTasks = PLAYER_TASKS.values().stream().flatMap(t -> t.tasks().stream()).toList();
+            for (var task : allTasks) {
                 var result = task.onEntityKilled(task, entity, damageSource);
                 if (result) return; // Stop processing if the event was handled.
             }
+
+//            var tasks = PLAYER_TASKS.getOrDefault(player, Tasks.EMPTY);
+//            for (var task : tasks.tasks()) {
+//                var result = task.onEntityKilled(task, entity, damageSource);
+//                if (result) return; // Stop processing if the event was handled.
+//            }
         }
     }
 

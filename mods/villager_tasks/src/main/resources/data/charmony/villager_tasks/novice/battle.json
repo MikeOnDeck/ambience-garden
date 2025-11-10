@@ -1,0 +1,31 @@
+{
+  "title": "Battle",
+  "level": 1,
+  "battle": {
+    "exactly": 1,
+    "distance": 36,
+    "mobs": [
+      {
+        "entity": "minecraft:piglin_brute",
+        "exactly": 2,
+        "effects": [
+          {
+            "effect": "minecraft:speed",
+            "amplifier": 1
+          }
+        ]
+      }
+    ]
+  },
+  "rewards": {
+    "min": 1,
+    "max": 2,
+    "experience": 15,
+    "items": [
+      {
+        "item": "minecraft:emerald_block",
+        "exactly": 3
+      }
+    ]
+  }
+}

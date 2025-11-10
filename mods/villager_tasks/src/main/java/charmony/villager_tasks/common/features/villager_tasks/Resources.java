@@ -18,6 +18,7 @@ public final class Resources {
     public static final Component AVAILABLE_TASKS_BUTTON = Component.translatable("gui.charmony.villager_tasks.available_tasks.button");
     public static final Component AVAILABLE_TASKS_TOOLTIP = Component.translatable("gui.charmony.villager_tasks.available_tasks.tooltip");
     public static final Component BACK_TO_TASKS = Component.translatable("gui.charmony.villager_tasks.back_to_tasks");
+    public static final Component BATTLE_ASPECT = Component.translatable("gui.charmony.villager_tasks.aspect.battle");
     public static final Component CLOSE = Component.translatable("gui.charmony.villager_tasks.close");
     public static final Component COLLECT_ASPECT = Component.translatable("gui.charmony.villager_tasks.aspect.collect");
     public static final Component COMPLETE = Component.translatable("gui.charmony.villager_tasks.complete");
@@ -47,6 +48,7 @@ public final class Resources {
     public static final Component TASKS = Component.translatable("gui.charmony.villager_tasks.tasks");
     public static final Component TREASURE_ASPECT = Component.translatable("gui.charmony.villager_tasks.aspect.treasure");
     public static final MutableComponent YOU_COLLECT = Component.translatable("gui.charmony.villager_tasks.you_collect").withStyle(ChatFormatting.YELLOW);
+    public static final MutableComponent YOU_DEFEAT = Component.translatable("gui.charmony.villager_tasks.you_defeat").withStyle(ChatFormatting.YELLOW);
     public static final MutableComponent YOU_HUNT = Component.translatable("gui.charmony.villager_tasks.you_hunt").withStyle(ChatFormatting.YELLOW);
     public static final MutableComponent YOU_DISCOVER = Component.translatable("gui.charmony.villager_tasks.you_discover").withStyle(ChatFormatting.YELLOW);
     public static final MutableComponent YOU_RECEIVE = Component.translatable("gui.charmony.villager_tasks.you_receive").withStyle(ChatFormatting.AQUA);

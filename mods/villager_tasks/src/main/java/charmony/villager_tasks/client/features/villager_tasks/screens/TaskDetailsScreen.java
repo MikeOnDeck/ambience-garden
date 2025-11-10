@@ -72,10 +72,6 @@ public class TaskDetailsScreen extends BaseScreen {
             box = renderer.renderPanel(guiGraphics, px, py, box.getFirst(), box.getSecond(), maxWidth, mouseX, mouseY);
         }
 
-//        box = taskRenderer.collect.renderPanel(guiGraphics, px, py, box.getFirst(), box.getSecond(), maxWidth, mouseX, mouseY);
-//        box = taskRenderer.hunt.renderPanel(guiGraphics, px, py, box.getFirst(), box.getSecond(), maxWidth, mouseX, mouseY);
-//        box = taskRenderer.treasure.renderPanel(guiGraphics, px, py, box.getFirst(), box.getSecond(), maxWidth, mouseX, mouseY);
-
         top += 70;
         if (rewards.isEmpty()) {
             // Sadface.

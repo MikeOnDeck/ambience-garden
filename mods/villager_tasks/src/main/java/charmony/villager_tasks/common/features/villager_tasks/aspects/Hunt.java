@@ -10,6 +10,8 @@ import com.mojang.serialization.Codec;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 
@@ -54,7 +56,7 @@ public final class Hunt extends Aspect implements Satisfiable {
                 var mobStr = (String) mobMap.get("entity");
                 var mobId = ResourceLocation.tryParse(mobStr);
                 if (mobId == null) {
-                    throw new IllegalStateException("Invalid ID: " + mobStr);
+                    throw new IllegalStateException("Invalid mob ID " + mobStr);
                 }
                 var mobWeight = (double) mobMap.getOrDefault("weight", 1.0d);
                 var mobCount = Helpers.getCountFromMap(mobMap, multiplier, random);
@@ -110,19 +112,20 @@ public final class Hunt extends Aspect implements Satisfiable {
 
     @Override
     public boolean onEntityKilled(Task task, LivingEntity entity, DamageSource source) {
-        var level = entity.level();
-        if (level.isClientSide()) return false;
+        if (!(entity.level() instanceof ServerLevel level)) {
+            return false;
+        }
+
+        // Must be the player who killed the entity.
+        if (!(source.getEntity() instanceof ServerPlayer)) {
+            return false;
+        }
 
         var entityRegistry = level.registryAccess().lookup(Registries.ENTITY_TYPE).orElse(null);
         if (entityRegistry == null) return false;
 
         for (var req : mobs()) {
-            var isValidMob = entityRegistry.getOptional(req.mobKey())
-                .map(type -> type.equals(entity.getType()))
-                .orElse(false);
-
-            if (isValidMob && !req.isSatisfied()) {
-                req.addHunted();
+            if (req.onEntityKilled(entityRegistry, entity)) {
                 return true;
             }
         }

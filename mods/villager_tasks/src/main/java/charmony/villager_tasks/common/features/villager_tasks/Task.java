@@ -1,10 +1,7 @@
 package charmony.villager_tasks.common.features.villager_tasks;
 
 import charmony.core.helpers.UuidHelper;
-import charmony.villager_tasks.common.features.villager_tasks.aspects.Collect;
-import charmony.villager_tasks.common.features.villager_tasks.aspects.Hunt;
-import charmony.villager_tasks.common.features.villager_tasks.aspects.Rewards;
-import charmony.villager_tasks.common.features.villager_tasks.aspects.Treasure;
+import charmony.villager_tasks.common.features.villager_tasks.aspects.*;
 import charmony.villager_tasks.common.features.villager_tasks.enums.TaskModifier;
 import charmony.villager_tasks.common.features.villager_tasks.enums.TaskStatus;
 import charmony.villager_tasks.common.features.villager_tasks.interfaces.EventListener;
@@ -39,6 +36,7 @@ public class Task implements EventListener, Satisfiable {
     public final Collect collect;
     public final Hunt hunt;
     public final Treasure treasure;
+    public final Battle battle;
     public final Rewards rewards;
 
     private TaskStatus status;
@@ -56,16 +54,17 @@ public class Task implements EventListener, Satisfiable {
         Collect.CODEC.fieldOf("collect").forGetter(task -> task.collect),
         Hunt.CODEC.fieldOf("hunt").forGetter(task -> task.hunt),
         Treasure.CODEC.fieldOf("treasure").forGetter(task -> task.treasure),
+        Battle.CODEC.fieldOf("battle").forGetter(task -> task.battle),
         Rewards.CODEC.fieldOf("rewards").forGetter(task -> task.rewards)
     ).apply(instance, Task::new));
 
     public static final Task EMPTY = new Task(
         UUID.randomUUID(), UUID.randomUUID(), ResourceLocation.parse("minecraft:empty"), TaskStatus.Unspecified, TaskModifier.Unspecified, "", 0L, 0L, 0,
-        Collect.EMPTY, Hunt.EMPTY, Treasure.EMPTY, Rewards.EMPTY
+        Collect.EMPTY, Hunt.EMPTY, Treasure.EMPTY, Battle.EMPTY, Rewards.EMPTY
     );
 
     private Task(UUID id, UUID villager, ResourceLocation definitionId, TaskStatus status, TaskModifier modifier, String titleKey, long seed, long created, int level,
-                 Collect collect, Hunt hunt, Treasure treasure, Rewards reward
+                 Collect collect, Hunt hunt, Treasure treasure, Battle battle, Rewards reward
     ) {
         this.id = id;
         this.status = status;
@@ -80,6 +79,7 @@ public class Task implements EventListener, Satisfiable {
         this.collect = collect;
         this.hunt = hunt;
         this.treasure = treasure;
+        this.battle = battle;
         this.rewards = reward;
     }
 
@@ -90,7 +90,7 @@ public class Task implements EventListener, Satisfiable {
     public Task copyWithTime(long created) {
         return new Task(
             id, villager, definitionId, status, modifier, titleKey, seed, created, level,
-            collect.copy(), hunt.copy(), treasure.copy(), rewards.copy()
+            collect.copy(), hunt.copy(), treasure.copy(), battle.copy(), rewards.copy()
         );
     }
 
@@ -113,6 +113,7 @@ public class Task implements EventListener, Satisfiable {
                 Collect.make(builder),
                 Hunt.make(builder),
                 Treasure.make(builder),
+                Battle.make(builder),
                 Rewards.make(builder)
             );
         } catch (Exception e) {
@@ -125,12 +126,12 @@ public class Task implements EventListener, Satisfiable {
 
     // Define all aspects here or they won't be ticked.
     public List<? extends Aspect> aspects() {
-        return List.of(collect, hunt, treasure, rewards);
+        return List.of(collect, hunt, treasure, battle, rewards);
     }
 
     // Define the aspects that are also requirements for completing the task or they won't be calculated when checking completion.
     public List<? extends Satisfiable> requirements() {
-        return List.of(collect, hunt, treasure);
+        return List.of(collect, hunt, battle, treasure);
     }
 
     public Rewards rewards() {
@@ -254,6 +255,10 @@ public class Task implements EventListener, Satisfiable {
 
     public boolean isEmpty() {
         return getDefinitionId().toString().equals("minecraft:empty");
+    }
+
+    public RandomSource random() {
+        return RandomSource.create(seed);
     }
 
     public record AspectBuilder(ServerPlayer player, Definition definition, TaskModifier modifier, RandomSource random) {

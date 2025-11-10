@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @SuppressWarnings("unused")
-public class TextComponentHelper {
+public final class TextComponentHelper {
     public static List<Component> toComponents(String string, int lineLength) {
         List<Component> out = new ArrayList<>();
         int lineSize = 0;

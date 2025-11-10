@@ -45,6 +45,7 @@ public final class TaskRenderer extends BaseRenderer {
             new CollectRenderer(task),
             new HuntRenderer(task),
             new TreasureRenderer(task),
+            new BattleRenderer(task),
             new RewardsRenderer(task)
         ));
 
