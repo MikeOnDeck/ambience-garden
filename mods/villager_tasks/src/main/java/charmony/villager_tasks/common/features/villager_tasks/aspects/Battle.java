@@ -42,6 +42,8 @@ public final class Battle extends Aspect implements Satisfiable {
         var map = builder.definition().battle;
         if (map.isEmpty()) return EMPTY;
 
+        var level = builder.player().level();
+        var dimension = level.dimension().location();
         var random = builder.random();
         var multiplier = builder.modifier().negativeMultiplier();
 
@@ -84,7 +86,7 @@ public final class Battle extends Aspect implements Satisfiable {
                     effectList.add(new BattleMobEffect(effectId, (int)amplifier, (int)duration));
                 }
 
-                criteria.add(new BattleMob(mobId, Optional.empty(), Optional.empty(), effectList,
+                criteria.add(new BattleMob(mobId, dimension,  Optional.empty(), effectList,
                     uniqueId, (int)spawnDistance, mobCount, 0, false));
             } catch (Exception e) {
                 log().warn(e.getMessage() + " at index " + i);

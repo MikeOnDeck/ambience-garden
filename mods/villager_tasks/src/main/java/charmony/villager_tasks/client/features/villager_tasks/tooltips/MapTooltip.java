@@ -38,8 +38,6 @@ public class MapTooltip extends BaseTooltip {
         var savedData = MapItem.getSavedData(mapId, level);
         if (savedData == null) return;
         savedData.unlimitedTracking = true;
-//        savedData.addDecoration(MapDecorationTypes.PLAYER, level, player.getPlainTextName(), player.getX(), player.getZ(), player.getYRot(), null);
-//        savedData.setDirty();
 
         var w = 64;
         var right = x + w;
@@ -56,9 +54,7 @@ public class MapTooltip extends BaseTooltip {
         guiGraphics.pose().scale(0.455f, 0.455f);
 
         minecraft.getMapRenderer().extractRenderState(mapId, savedData, this.mapRenderState);
-//        var decorations = this.mapRenderState.decorations;
         this.mapRenderState.decorations.forEach(d -> d.renderOnFrame = true);
-//        this.mapRenderState.decorations = decorations;
 
         guiGraphics.submitMapRenderState(this.mapRenderState);
         guiGraphics.pose().popMatrix();

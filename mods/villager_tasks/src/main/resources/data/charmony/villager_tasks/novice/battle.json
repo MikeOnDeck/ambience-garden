@@ -6,7 +6,7 @@
     "distance": 36,
     "mobs": [
       {
-        "entity": "minecraft:piglin_brute",
+        "entity": "minecraft:wither_skeleton",
         "exactly": 2,
         "effects": [
           {

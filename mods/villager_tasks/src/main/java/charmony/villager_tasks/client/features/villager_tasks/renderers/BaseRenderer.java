@@ -4,7 +4,6 @@ import charmony.api.core.Color;
 import charmony.core.client.renderers.SpriteRenderer;
 import charmony.villager_tasks.client.features.villager_tasks.Handlers;
 import charmony.villager_tasks.client.features.villager_tasks.VillagerTasks;
-import charmony.villager_tasks.client.features.villager_tasks.tooltips.MapTooltip;
 import charmony.villager_tasks.common.features.villager_tasks.Task;
 import charmony.villager_tasks.common.features.villager_tasks.interfaces.Satisfiable;
 import com.mojang.datafixers.util.Pair;
@@ -177,7 +176,7 @@ public abstract class BaseRenderer {
         return box;
     }
 
-    public Pair<Integer, Integer> renderSpriteAndMapBox(GuiGraphics guiGraphics, Satisfiable req, SpriteRenderer spriteRenderer, ItemStack map, MutableComponent title, int x, int y, int mouseX, int mouseY, boolean showProgress) {
+    public Pair<Integer, Integer> renderSpriteAndItemBox(GuiGraphics guiGraphics, Satisfiable req, SpriteRenderer spriteRenderer, ItemStack stack, MutableComponent title, int x, int y, int mouseX, int mouseY, boolean showProgress) {
         var textColor = textColor(req);
         var fillColor = fillColor(req);
         var text = showProgress ? (req.total() - req.remaining()) + "/" + req.total() : "" + req.total();
@@ -195,7 +194,7 @@ public abstract class BaseRenderer {
         var ix = sx + 18;
         var iy = sy - 1;
 
-        renderItemStack(guiGraphics, map, List.of(), ix, iy, mouseX, mouseY);
+        renderItemStack(guiGraphics, stack, List.of(), ix, iy, mouseX, mouseY);
 
         // Text x and y
         var tx = ix + 22;
@@ -209,10 +208,8 @@ public abstract class BaseRenderer {
         tooltip.add(title);
         tooltip.add(Component.translatable("gui.charmony.villager_tasks.name_and_number", name, req.total()));
 
-        var mapTooltip = new MapTooltip(map);
-
         if (mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height) {
-            guiGraphics.setTooltipForNextFrame(font, tooltip, Optional.of(mapTooltip), mouseX, mouseY);
+            guiGraphics.setTooltipForNextFrame(font, tooltip, Optional.empty(), mouseX, mouseY);
         }
 
         return box;
@@ -259,7 +256,7 @@ public abstract class BaseRenderer {
     }
 
     public void renderItemStack(GuiGraphics guiGraphics, ItemStack itemStack, List<Component> tooltip, int x, int y, int mouseX, int mouseY) {
-        guiGraphics.renderFakeItem(itemStack, x, y);
+        guiGraphics.renderItem(itemStack, x, y);
         if (!tooltip.isEmpty() && mouseX > x && mouseX < x + 16 - 1 && mouseY > y && mouseY < y + 16 - 1) {
             guiGraphics.setTooltipForNextFrame(font, tooltip.stream().map(Component::getVisualOrderText).toList(), mouseX, mouseY);
         }

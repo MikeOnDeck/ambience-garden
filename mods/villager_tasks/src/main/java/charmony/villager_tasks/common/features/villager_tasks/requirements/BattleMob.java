@@ -9,6 +9,7 @@ import charmony.villager_tasks.common.features.villager_tasks.interfaces.Satisfi
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.component.DataComponents;
@@ -23,7 +24,6 @@ import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.MapItem;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.saveddata.maps.MapDecorationTypes;
@@ -39,8 +39,8 @@ public class BattleMob implements Satisfiable {
     public static final String BATTLE_TAG = "charmony_battle";
 
     private final ResourceLocation mob;
+    private final ResourceLocation dimension;
     private Optional<BlockPos> pos;
-    private Optional<ItemStack> map;
     private final List<BattleMobEffect> effects;
     private final UUID uniqueId;
     private final int distance;
@@ -50,8 +50,8 @@ public class BattleMob implements Satisfiable {
 
     public static final Codec<BattleMob> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         ResourceLocation.CODEC.fieldOf("mob").forGetter(self -> self.mob),
+        ResourceLocation.CODEC.fieldOf("dimension").forGetter(self -> self.dimension),
         BlockPos.CODEC.lenientOptionalFieldOf("pos").forGetter(self -> self.pos),
-        ItemStack.CODEC.lenientOptionalFieldOf("map").forGetter(self -> self.map),
         BattleMobEffect.CODEC.listOf().fieldOf("effects").forGetter(self -> self.effects),
         UUIDUtil.CODEC.fieldOf("unique_id").forGetter(self -> self.uniqueId),
         Codec.INT.fieldOf("distance").forGetter(self -> self.distance),
@@ -60,10 +60,10 @@ public class BattleMob implements Satisfiable {
         Codec.BOOL.fieldOf("spawned").forGetter(self -> self.spawned)
     ).apply(instance, BattleMob::new));
 
-    public BattleMob(ResourceLocation mob, Optional<BlockPos> pos, Optional<ItemStack> map, List<BattleMobEffect> effects, UUID uniqueId, int distance, int total, int defeated, boolean spawned) {
+    public BattleMob(ResourceLocation mob, ResourceLocation dimension, Optional<BlockPos> pos, List<BattleMobEffect> effects, UUID uniqueId, int distance, int total, int defeated, boolean spawned) {
         this.mob = mob;
+        this.dimension = dimension;
         this.pos = pos;
-        this.map = map;
         this.effects = effects;
         this.uniqueId = uniqueId;
         this.distance = distance;
@@ -73,7 +73,7 @@ public class BattleMob implements Satisfiable {
     }
 
     public BattleMob copy() {
-        return new BattleMob(mob, pos, map.map(ItemStack::copy), new ArrayList<>(effects), uniqueId, distance, total, defeated, spawned);
+        return new BattleMob(mob, dimension, pos, new ArrayList<>(effects), uniqueId, distance, total, defeated, spawned);
     }
 
     @Override
@@ -107,48 +107,24 @@ public class BattleMob implements Satisfiable {
         return ResourceKey.create(Registries.ENTITY_TYPE, mob());
     }
 
-    public Optional<ItemStack> map() {
-        return map;
+    public Optional<GlobalPos> globalPos() {
+        return pos.map(pos -> GlobalPos.of(ResourceKey.create(Registries.DIMENSION, dimension), pos));
     }
 
     @SuppressWarnings("unchecked")
     public void onTick(Task task, RegistryAccess registryAccess, ServerPlayer player) {
         var level = player.level();
 
-        if (map.isPresent()) {
-            var xmap = map.get();
-
-            var savedData = MapItem.getSavedData(xmap, level);
-            var mapId = xmap.get(DataComponents.MAP_ID);
-
-            if (savedData != null && mapId != null) {
-                var holding = savedData.getHoldingPlayer(player);
-//                if (!savedData.carriedBy.contains(holding)) {
-//                    savedData.carriedBy.add(holding);
-//                }
-                savedData.carriedByPlayers.put(player, holding);
-                savedData.tickCarriedBy(player, xmap);
-                savedData.addDecoration(MapDecorationTypes.PLAYER, player.level(), player.getPlainTextName(), player.getX(), player.getZ(), (double)player.getYRot(), (Component)null);
-                savedData.setDirty();
-                var packet = holding.nextUpdatePacket(mapId);
-//                var holding = savedData.getHoldingPlayer(player);
-//                var packet = holding.nextUpdatePacket(mapId);
-                if (packet != null) {
-                    player.connection.send(packet);
-                }
-            }
-        }
-
-        var entityRegistry = registryAccess.lookup(Registries.ENTITY_TYPE).orElseThrow();
-        var effectRegistry = registryAccess.lookup(Registries.MOB_EFFECT).orElseThrow();
-
         var pos = this.pos.orElse(null);
         if (pos == null) return;
 
         var playerPos = player.blockPosition();
-        var playerInRange = pos.distManhattan(playerPos) <= 32;
+        var playerDim = player.level().dimension().location();
+        var playerInRange = playerDim.equals(this.dimension) && pos.distManhattan(playerPos) <= 32;
 
         if (playerInRange && !spawned) {
+            var entityRegistry = registryAccess.lookup(Registries.ENTITY_TYPE).orElseThrow();
+            var effectRegistry = registryAccess.lookup(Registries.MOB_EFFECT).orElseThrow();
             spawned = true;
 
             // Spawn all mobs in a radius around the player.
@@ -205,7 +181,6 @@ public class BattleMob implements Satisfiable {
         map.set(DataComponents.ITEM_NAME, Component.translatable(task.titleKey));
 
         this.pos = Optional.of(pos);
-        this.map = Optional.of(map);
     }
 
     public boolean onEntityKilled(RegistryAccess registryAccess, LivingEntity entity) {

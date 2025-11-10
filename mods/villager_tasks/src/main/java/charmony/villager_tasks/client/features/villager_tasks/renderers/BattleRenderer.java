@@ -6,7 +6,11 @@ import charmony.villager_tasks.common.features.villager_tasks.Resources;
 import charmony.villager_tasks.common.features.villager_tasks.Task;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.LodestoneTracker;
 
 public final class BattleRenderer extends BaseRenderer {
     public BattleRenderer(Task task) {
@@ -57,10 +61,11 @@ public final class BattleRenderer extends BaseRenderer {
                 var mob = battle.mobs().get(i);
                 var spriteRenderer = new MobSpriteRenderer(mob.mob());
 
-                var map = mob.map().orElse(null);
-                if (map == null) continue;
+                var compass = new ItemStack(Items.COMPASS);
+                var tracker = new LodestoneTracker(mob.globalPos(), true);
+                compass.set(DataComponents.LODESTONE_TRACKER, tracker);
 
-                var box = renderSpriteAndMapBox(guiGraphics, mob, spriteRenderer, map, Resources.YOU_DEFEAT, x + xx, y + yy, mouseX, mouseY, task.isStarted());
+                var box = renderSpriteAndItemBox(guiGraphics, mob, spriteRenderer, compass, Resources.YOU_DEFEAT, x + xx, y + yy, mouseX, mouseY, task.isStarted());
 
                 var width = box.getFirst();
                 var height = box.getSecond();
