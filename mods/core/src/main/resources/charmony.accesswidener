@@ -27,7 +27,7 @@ mutable    field net/minecraft/world/item/BlockItem block Lnet/minecraft/world/l
 accessible field net/minecraft/world/level/block/Block item Lnet/minecraft/world/item/Item;
 accessible method net/minecraft/world/level/block/state/properties/BlockSetType register (Lnet/minecraft/world/level/block/state/properties/BlockSetType;)Lnet/minecraft/world/level/block/state/properties/BlockSetType;
 accessible method net/minecraft/world/level/block/state/properties/WoodType register (Lnet/minecraft/world/level/block/state/properties/WoodType;)Lnet/minecraft/world/level/block/state/properties/WoodType;
-accessible method net/minecraft/world/entity/npc/AbstractVillager addOffersFromItemListings (Lnet/minecraft/world/item/trading/MerchantOffers;[Lnet/minecraft/world/entity/npc/VillagerTrades$ItemListing;I)V
+accessible method net/minecraft/world/entity/npc/AbstractVillager addOffersFromItemListings (Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/item/trading/MerchantOffers;[Lnet/minecraft/world/entity/npc/VillagerTrades$ItemListing;I)V
 accessible field net/minecraft/server/level/ServerPlayer isChangingDimension Z
 accessible field net/minecraft/server/level/ServerPlayer lastSentExp I
 accessible field net/minecraft/server/level/ServerPlayer lastSentHealth F
@@ -35,6 +35,7 @@ accessible field net/minecraft/server/level/ServerPlayer lastSentFood I
 accessible method net/minecraft/world/entity/Entity unsetRemoved ()V
 accessible class net/minecraft/client/gui/components/MultiLineEditBox
 accessible method net/minecraft/client/gui/components/MultiLineEditBox <init> (Lnet/minecraft/client/gui/Font;IIIILnet/minecraft/network/chat/Component;Lnet/minecraft/network/chat/Component;IZIZZ)V
-accessible field net/minecraft/client/gui/screens/inventory/ShulkerBoxScreen CONTAINER_TEXTURE Lnet/minecraft/resources/ResourceLocation;
+accessible field net/minecraft/client/gui/screens/inventory/ShulkerBoxScreen CONTAINER_TEXTURE Lnet/minecraft/resources/Identifier;
 accessible field net/minecraft/client/gui/components/SpriteIconButton sprite Lnet/minecraft/client/gui/components/WidgetSprites;
 accessible field net/minecraft/client/Minecraft particleResources Lnet/minecraft/client/particle/ParticleResources;
+

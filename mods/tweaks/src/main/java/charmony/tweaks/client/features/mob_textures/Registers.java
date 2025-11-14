@@ -1,22 +1,22 @@
 package charmony.tweaks.client.features.mob_textures;
 
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
-import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.player.Player;
 import charmony.core.base.Setup;
 import charmony.core.client.ClientRegistry;
 import charmony.tweaks.client.features.mob_textures.custom_renderers.CustomSnowGolemRenderer;
 import charmony.tweaks.client.features.mob_textures.custom_renderers.CustomWanderingTraderRenderer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.player.Player;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Registers extends Setup<MobTextures> {
-    public final List<ResourceLocation> snowGolems = new ArrayList<>();
-    public final List<ResourceLocation> wanderingTraders = new ArrayList<>();
+    public final List<Identifier> snowGolems = new ArrayList<>();
+    public final List<Identifier> wanderingTraders = new ArrayList<>();
 
     public Registers(MobTextures feature) {
         super(feature);
@@ -45,7 +45,7 @@ public class Registers extends Setup<MobTextures> {
     }
 
     @SuppressWarnings("SameParameterValue")
-    private void setupCustomTextures(List<ResourceLocation> set, MobType mobType, String baseName, int max, boolean withVanilla) {
+    private void setupCustomTextures(List<Identifier> set, MobType mobType, String baseName, int max, boolean withVanilla) {
         set.clear();
 
         if (withVanilla) {

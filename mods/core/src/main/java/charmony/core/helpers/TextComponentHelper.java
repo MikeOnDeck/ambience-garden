@@ -56,7 +56,7 @@ public final class TextComponentHelper {
      * Get a locale key for a dimension.
      */
     public static String dimensionLocaleKey(ResourceKey<Level> dimension) {
-        var location = dimension.location();
+        var location = dimension.identifier();
         var namespace = location.getNamespace();
         var path = location.getPath();
         return "dimension." + namespace + "." + path;

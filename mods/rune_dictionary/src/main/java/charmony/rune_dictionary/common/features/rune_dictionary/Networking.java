@@ -7,7 +7,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.util.Map;
@@ -23,13 +23,13 @@ public class Networking extends Setup<RuneDictionary> {
      *
      * @param dictionary Hash map of rune words to their registered objects.
      */
-    public record S2CDictionary(Map<ResourceLocation, String> dictionary) implements CustomPacketPayload {
+    public record S2CDictionary(Map<Identifier, String> dictionary) implements CustomPacketPayload {
         public static Type<S2CDictionary> TYPE = new Type<>(RuneDictionaryMod.id("send_dictionary"));
 
         public static StreamCodec<FriendlyByteBuf, S2CDictionary> CODEC =
             StreamCodec.of(S2CDictionary::encode, S2CDictionary::decode);
 
-        public static void send(ServerPlayer player, Map<ResourceLocation, String> dictionary) {
+        public static void send(ServerPlayer player, Map<Identifier, String> dictionary) {
             ServerPlayNetworking.send(player, new S2CDictionary(dictionary));
         }
 
@@ -39,11 +39,11 @@ public class Networking extends Setup<RuneDictionary> {
         }
 
         public static void encode(FriendlyByteBuf buf, S2CDictionary self) {
-            buf.writeMap(self.dictionary, FriendlyByteBuf::writeResourceLocation, FriendlyByteBuf::writeUtf);
+            buf.writeMap(self.dictionary, FriendlyByteBuf::writeIdentifier, FriendlyByteBuf::writeUtf);
         }
 
         public static S2CDictionary decode(FriendlyByteBuf buf) {
-            return new S2CDictionary(buf.readMap(FriendlyByteBuf::readResourceLocation, FriendlyByteBuf::readUtf));
+            return new S2CDictionary(buf.readMap(FriendlyByteBuf::readIdentifier, FriendlyByteBuf::readUtf));
         }
     }
 

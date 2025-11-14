@@ -3,7 +3,7 @@ package charmony.tweaks.client.features.mob_textures.custom_renderers;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.SnowGolemRenderer;
 import net.minecraft.client.renderer.entity.state.SnowGolemRenderState;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.animal.SnowGolem;
 
@@ -20,7 +20,7 @@ public class CustomSnowGolemRenderer extends SnowGolemRenderer implements Custom
 
     @Override
     @Nullable
-    public ResourceLocation getTextureLocation(SnowGolemRenderState livingEntityRenderState) {
+    public Identifier getTextureLocation(SnowGolemRenderState livingEntityRenderState) {
         return handlers.texture(uuid, registers.snowGolems);
     }
 

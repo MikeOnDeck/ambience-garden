@@ -1,12 +1,12 @@
 package charmony.core.helpers;
 
+import charmony.core.base.Log;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerTrades;
-import charmony.core.base.Log;
 
 import java.util.Arrays;
 import java.util.List;
@@ -42,7 +42,7 @@ public final class VillagerHelper {
         trades.int2ObjectEntrySet().forEach(e
             -> mappedTrades.put(e.getIntKey(), e.getValue().toArray(new VillagerTrades.ItemListing[0])));
 
-        LOGGER.warnIfDebug("Reassembling trades for profession " + profession.location());
+        LOGGER.warnIfDebug("Reassembling trades for profession " + profession.identifier());
         TRADES.put(profession, mappedTrades);
     }
 }

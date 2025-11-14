@@ -1,11 +1,11 @@
 package charmony.api.runestones;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 @SuppressWarnings("unused")
-public record RunestoneLocation(Type type, ResourceLocation id) {
-    public static final ResourceLocation UNKNOWN = ResourceLocation.withDefaultNamespace("unknown");
+public record RunestoneLocation(Type type, Identifier id) {
+    public static final Identifier UNKNOWN = Identifier.withDefaultNamespace("unknown");
     public static final String TYPE_TAG = "type";
     public static final String ID_TAG = "id";
 
@@ -22,7 +22,7 @@ public record RunestoneLocation(Type type, ResourceLocation id) {
 
     public static RunestoneLocation load(CompoundTag tag) {
         var type = tag.getString(TYPE_TAG).map(Type::valueOf).orElse(null);
-        var id = tag.getString(ID_TAG).map(ResourceLocation::parse).orElse(null);
+        var id = tag.getString(ID_TAG).map(Identifier::parse).orElse(null);
 
         if (type == null || id == null) {
             return new RunestoneLocation(Type.Structure, UNKNOWN);

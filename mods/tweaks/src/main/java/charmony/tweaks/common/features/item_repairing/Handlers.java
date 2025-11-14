@@ -1,13 +1,13 @@
 package charmony.tweaks.common.features.item_repairing;
 
+import charmony.core.base.Setup;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AnvilMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.GameRules;
-import charmony.core.base.Setup;
+import net.minecraft.world.level.gamerules.GameRules;
 
 public class Handlers extends Setup<ItemRepairing> {
     public Handlers(ItemRepairing feature) {
@@ -24,7 +24,7 @@ public class Handlers extends Setup<ItemRepairing> {
             return true;
         }
 
-        if (feature().repairElytra() && !serverLevel.getGameRules().getBoolean(GameRules.RULE_DOINSOMNIA)
+        if (feature().repairElytra() && !serverLevel.getGameRules().get(GameRules.SPAWN_PHANTOMS)
             && leftStack.is(Items.ELYTRA) && rightStack.is(Items.LEATHER)) {
             return true;
         }

@@ -1,8 +1,9 @@
 package charmony.tweaks.common.features.wandering_trader_tiers;
 
+import charmony.core.base.Setup;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.entity.npc.WanderingTrader;
-import charmony.core.base.Setup;
 
 public class Handlers extends Setup<WanderingTraderTiers> {
     public Handlers(WanderingTraderTiers feature) {
@@ -11,6 +12,7 @@ public class Handlers extends Setup<WanderingTraderTiers> {
 
     public void addTierToTrader(WanderingTrader trader) {
         if (!feature().enabled()) return;
+        if (!(trader.level() instanceof ServerLevel level)) return;
 
         var tiers = Registers.WANDERING_TRADER_TIERS;
         if (tiers.isEmpty()) return;
@@ -19,6 +21,6 @@ public class Handlers extends Setup<WanderingTraderTiers> {
         var listings = tiers.values().stream().toList().get(random.nextInt(tiers.size()));
         var offers = trader.getOffers();
 
-        trader.addOffersFromItemListings(offers, listings.toArray(new VillagerTrades.ItemListing[0]), listings.size());
+        trader.addOffersFromItemListings(level, offers, listings.toArray(new VillagerTrades.ItemListing[0]), listings.size());
     }
 }

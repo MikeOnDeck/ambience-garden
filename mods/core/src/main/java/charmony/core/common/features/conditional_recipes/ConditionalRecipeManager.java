@@ -1,5 +1,8 @@
 package charmony.core.common.features.conditional_recipes;
 
+import charmony.core.Charmony;
+import charmony.core.base.Log;
+import charmony.core.common.CommonRegistry;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.mojang.serialization.DynamicOps;
@@ -7,17 +10,14 @@ import com.mojang.serialization.JsonOps;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeMap;
-import charmony.core.Charmony;
-import charmony.core.base.Log;
-import charmony.core.common.CommonRegistry;
 
 import java.util.*;
 
@@ -30,7 +30,7 @@ import java.util.*;
  * - use a mixin in RecipeManager#finalizeRecipeLoading to load the new recipe map
  */
 public class ConditionalRecipeManager extends SimpleJsonResourceReloadListener<Recipe<?>> implements IdentifiableResourceReloadListener {
-    public static final ResourceLocation ID = Charmony.id("charmony_conditional_recipe_manager");
+    public static final Identifier ID = Charmony.id("charmony_conditional_recipe_manager");
     protected static final Log LOGGER = new Log(Charmony.ID, "ConditionalRecipeManager");
 
     protected final DynamicOps<JsonElement> dynamicOps;
@@ -42,13 +42,13 @@ public class ConditionalRecipeManager extends SimpleJsonResourceReloadListener<R
     }
 
     @Override
-    public ResourceLocation getFabricId() {
+    public Identifier getFabricId() {
         return ID;
     }
 
     @Override
-    protected void apply(Map<ResourceLocation, Recipe<?>> map, ResourceManager resourceManager, ProfilerFiller profilerFiller) {
-        SortedMap<ResourceLocation, Recipe<?>> sortedMap = new TreeMap<>();
+    protected void apply(Map<Identifier, Recipe<?>> map, ResourceManager resourceManager, ProfilerFiller profilerFiller) {
+        SortedMap<Identifier, Recipe<?>> sortedMap = new TreeMap<>();
 
         for (var conditional : CommonRegistry.CONDITIONAL_RECIPES) {
             var id = conditional.id();

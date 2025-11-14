@@ -2,7 +2,6 @@ package charmony.api.core;
 
 import net.minecraft.util.ARGB;
 import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.phys.Vec3;
 
 @SuppressWarnings("unused")
 public record Color(int color) {
@@ -31,6 +30,6 @@ public record Color(int color) {
     }
 
     public int getArgbColor() {
-        return ARGB.color(Vec3.fromRGB24(color));
+        return ARGB.opaque(color);
     }
 }

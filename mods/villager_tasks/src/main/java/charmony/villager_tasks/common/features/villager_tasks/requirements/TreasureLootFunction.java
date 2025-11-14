@@ -4,8 +4,8 @@ import charmony.villager_tasks.common.features.villager_tasks.Tasks;
 import charmony.villager_tasks.common.features.villager_tasks.VillagerTasks;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.FishingHook;
 import net.minecraft.world.item.ItemStack;
@@ -19,22 +19,22 @@ import java.util.List;
 
 public class TreasureLootFunction extends LootItemConditionalFunction {
     private final LootContext.EntityTarget entityTarget;
-    private final ResourceLocation lootTableId;
+    private final Identifier lootTableId;
 
     public static final MapCodec<TreasureLootFunction> CODEC = RecordCodecBuilder.mapCodec(
         instance -> TreasureLootFunction.commonFields(instance)
             .and(LootContext.EntityTarget.CODEC.fieldOf("entity").forGetter(func -> func.entityTarget))
-            .and(ResourceLocation.CODEC.fieldOf("lootTableId").forGetter(func -> func.lootTableId))
+            .and(Identifier.CODEC.fieldOf("lootTableId").forGetter(func -> func.lootTableId))
             .apply(instance, TreasureLootFunction::new));
 
-    public TreasureLootFunction(List<LootItemCondition> conditions, LootContext.EntityTarget entityTarget, ResourceLocation lootTableId) {
+    public TreasureLootFunction(List<LootItemCondition> conditions, LootContext.EntityTarget entityTarget, Identifier lootTableId) {
         super(conditions);
         this.entityTarget = entityTarget;
         this.lootTableId = lootTableId;
     }
 
     public TreasureLootFunction(ResourceKey<LootTable> id) {
-        this(List.of(), LootContext.EntityTarget.THIS, id.location());
+        this(List.of(), LootContext.EntityTarget.THIS, id.identifier());
     }
 
     @Override
@@ -45,7 +45,7 @@ public class TreasureLootFunction extends LootItemConditionalFunction {
     @Override
     protected ItemStack run(ItemStack stack, LootContext context) {
         Player player = null;
-        var param = context.getOptionalParameter(this.entityTarget.getParam());
+        var param = context.getOptionalParameter(this.entityTarget.contextParam());
 
         if (param instanceof Player p) {
             player = p;

@@ -58,7 +58,7 @@ accessible field net/minecraft/world/entity/Mob goalSelector Lnet/minecraft/worl
 
 # ShulkerBoxMenuColors
 accessible field net/minecraft/world/inventory/ShulkerBoxMenu container Lnet/minecraft/world/Container;
-accessible field net/minecraft/client/gui/screens/inventory/ShulkerBoxScreen CONTAINER_TEXTURE Lnet/minecraft/resources/ResourceLocation;
+accessible field net/minecraft/client/gui/screens/inventory/ShulkerBoxScreen CONTAINER_TEXTURE Lnet/minecraft/resources/Identifier;
 
 # SuspiciousBlockCreating
 accessible field net/minecraft/world/level/block/entity/BrushableBlockEntity lootTable Lnet/minecraft/resources/ResourceKey;
@@ -71,4 +71,4 @@ accessible method net/minecraft/world/level/block/state/BlockBehaviour$BlockStat
 accessible method net/minecraft/client/gui/screens/inventory/AbstractRecipeBookScreen slotClicked (Lnet/minecraft/world/inventory/Slot;IILnet/minecraft/world/inventory/ClickType;)V
 
 # WanderingTraderTiers
-accessible method net/minecraft/world/entity/npc/AbstractVillager addOffersFromItemListings (Lnet/minecraft/world/item/trading/MerchantOffers;[Lnet/minecraft/world/entity/npc/VillagerTrades$ItemListing;I)V
+accessible method net/minecraft/world/entity/npc/AbstractVillager addOffersFromItemListings (Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/item/trading/MerchantOffers;[Lnet/minecraft/world/entity/npc/VillagerTrades$ItemListing;I)V

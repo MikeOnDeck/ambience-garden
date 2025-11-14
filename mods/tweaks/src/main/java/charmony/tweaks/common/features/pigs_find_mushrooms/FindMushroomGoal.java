@@ -9,10 +9,10 @@ import net.minecraft.world.entity.animal.Pig;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.gamerules.GameRules;
 
 public class FindMushroomGoal extends Goal {
     private final Pig pig;
@@ -68,7 +68,7 @@ public class FindMushroomGoal extends Goal {
 
         var uuid = pig.getUUID();
         var random = pig.getRandom();
-        var mobGriefing = serverLevel.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING);
+        var mobGriefing = serverLevel.getGameRules().get(GameRules.MOB_GRIEFING);
         var tick = feature().handlers.eating.getOrDefault(uuid, 0);
         pig.getNavigation().stop();
 

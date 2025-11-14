@@ -1,14 +1,14 @@
 package charmony.ambient_sounds.client.features.environment.sounds;
 
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.world.level.biome.Biomes;
-import org.jetbrains.annotations.Nullable;
 import charmony.ambient_sounds.client.features.environment.Environment;
 import charmony.ambient_sounds.client.features.environment.EnvironmentSound;
 import charmony.ambient_sounds.client.features.environment.LoopingEnvironmentSound;
 import charmony.ambient_sounds.client.features.sound.SoundHandler;
 import charmony.ambient_sounds.client.features.sound.SoundType;
 import charmony.core.Charmony;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.level.biome.Biomes;
+import org.jetbrains.annotations.Nullable;
 
 public class CaveDepth implements SoundType<EnvironmentSound> {
     public final SoundEvent sound;
@@ -30,7 +30,7 @@ public class CaveDepth implements SoundType<EnvironmentSound> {
                     return false;
                 }
 
-                if (!Environment.feature().validCaveDimensions().contains(level.dimension().location())) {
+                if (!Environment.feature().validCaveDimensions().contains(level.dimension().identifier())) {
                     return false;
                 }
 

@@ -1,13 +1,13 @@
 package charmony.ambient_sounds.client.features.environment.sounds;
 
-import net.minecraft.sounds.SoundEvent;
-import org.jetbrains.annotations.Nullable;
 import charmony.ambient_sounds.client.features.environment.Environment;
 import charmony.ambient_sounds.client.features.environment.EnvironmentSound;
 import charmony.ambient_sounds.client.features.environment.LoopingEnvironmentSound;
 import charmony.ambient_sounds.client.features.sound.SoundHandler;
 import charmony.ambient_sounds.client.features.sound.SoundType;
 import charmony.core.Charmony;
+import net.minecraft.sounds.SoundEvent;
+import org.jetbrains.annotations.Nullable;
 
 public class CaveDrone implements SoundType<EnvironmentSound> {
     public final SoundEvent sound;
@@ -23,7 +23,7 @@ public class CaveDrone implements SoundType<EnvironmentSound> {
                 var pos = player.blockPosition();
                 var light = level.getMaxLocalRawBrightness(pos);
 
-                if (!Environment.feature().validCaveDimensions().contains(level.dimension().location())) {
+                if (!Environment.feature().validCaveDimensions().contains(level.dimension().identifier())) {
                     return false;
                 }
 

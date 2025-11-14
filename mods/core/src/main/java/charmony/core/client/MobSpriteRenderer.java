@@ -3,14 +3,14 @@ package charmony.core.client;
 import charmony.core.Charmony;
 import charmony.core.client.renderers.SpriteRenderer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 @SuppressWarnings("unused")
 public class MobSpriteRenderer extends SpriteRenderer {
     private static final int WIDTH = 16;
     private static final int HEIGHT = 16;
 
-    public MobSpriteRenderer(ResourceLocation id) {
+    public MobSpriteRenderer(Identifier id) {
         super(id);
     }
 
@@ -24,7 +24,7 @@ public class MobSpriteRenderer extends SpriteRenderer {
         return HEIGHT;
     }
 
-    public ResourceLocation getTexture() {
+    public Identifier getTexture() {
         return Charmony.id("mob/" + id.getNamespace() + "/" + id.getPath());
     }
 

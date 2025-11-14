@@ -1,5 +1,9 @@
 package charmony.core.common;
 
+import charmony.core.Charmony;
+import charmony.core.base.Log;
+import charmony.core.helpers.TagHelper;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
@@ -9,9 +13,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.trading.ItemCost;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.level.ItemLike;
-import charmony.core.Charmony;
-import charmony.core.base.Log;
-import charmony.core.helpers.TagHelper;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -46,8 +47,7 @@ public final class GenericTrades {
 
         @Nullable
         @Override
-        public MerchantOffer getOffer(Entity merchant, RandomSource random) {
-            var level = merchant.level();
+        public MerchantOffer getOffer(ServerLevel level, Entity merchant, RandomSource random) {
             var blocks = TagHelper.getValues(level.registryAccess()
                 .lookupOrThrow(tag.registry()), tag);
 
@@ -92,9 +92,7 @@ public final class GenericTrades {
 
         @Nullable
         @Override
-        public MerchantOffer getOffer(Entity merchant, RandomSource random) {
-            var level = merchant.level();
-
+        public MerchantOffer getOffer(ServerLevel level, Entity merchant, RandomSource random) {
             var values1 = TagHelper.getValues(level.registryAccess().lookupOrThrow(tag1.registry()), tag1);
             var values2 = TagHelper.getValues(level.registryAccess().lookupOrThrow(tag2.registry()), tag2);
             if (values1.isEmpty() || values2.isEmpty()) return null;
@@ -135,7 +133,7 @@ public final class GenericTrades {
 
         @Nullable
         @Override
-        public MerchantOffer getOffer(Entity merchant, RandomSource random) {
+        public MerchantOffer getOffer(ServerLevel level, Entity merchant, RandomSource random) {
             return new MerchantOffer(
                 getCost(random, itemLike, baseCost, extraCost),
                 getStack(random, Items.EMERALD, baseEmeralds, extraEmeralds),
@@ -171,8 +169,7 @@ public final class GenericTrades {
 
         @Nullable
         @Override
-        public MerchantOffer getOffer(Entity merchant, RandomSource random) {
-            var level = merchant.level();
+        public MerchantOffer getOffer(ServerLevel level, Entity merchant, RandomSource random) {
             var blocks = TagHelper.getValues(level.registryAccess()
                 .lookupOrThrow(tag.registry()), tag);
 
@@ -211,7 +208,7 @@ public final class GenericTrades {
 
         @Nullable
         @Override
-        public MerchantOffer getOffer(Entity merchant, RandomSource random) {
+        public MerchantOffer getOffer(ServerLevel level, Entity merchant, RandomSource random) {
             return new MerchantOffer(
                 getCost(random, Items.EMERALD, baseEmeralds, extraEmeralds),
                 getStack(random, itemLike, baseItems, extraItems),
@@ -249,7 +246,7 @@ public final class GenericTrades {
 
         @Nullable
         @Override
-        public MerchantOffer getOffer(Entity merchant, RandomSource random) {
+        public MerchantOffer getOffer(ServerLevel level, Entity merchant, RandomSource random) {
             return new MerchantOffer(
                 getCost(random, inputItem, baseInput, extraInput),
                 getStack(random, outputItem, baseOutput, extraOutput),

@@ -1,19 +1,19 @@
 package charmony.core.client;
 
+import charmony.api.core.Sprite;
+import charmony.core.Charmony;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
-import charmony.api.core.Sprite;
-import charmony.core.Charmony;
 
 import java.util.List;
 
 @SuppressWarnings("unused")
 public interface ItemContainerTooltip extends TooltipComponent {
-    ResourceLocation BACKGROUND_SPRITE = ResourceLocation.fromNamespaceAndPath(Charmony.ID, "item_container/background");
+    Identifier BACKGROUND_SPRITE = Identifier.fromNamespaceAndPath(Charmony.ID, "item_container/background");
     int MARGIN_Y = 6;
     int SLOT_SIZE_X = 18;
     int SLOT_SIZE_Y = 18;
@@ -36,7 +36,7 @@ public interface ItemContainerTooltip extends TooltipComponent {
         return MARGIN_Y;
     }
 
-    default ResourceLocation backgroundSprite() {
+    default Identifier backgroundSprite() {
         return BACKGROUND_SPRITE;
     }
 

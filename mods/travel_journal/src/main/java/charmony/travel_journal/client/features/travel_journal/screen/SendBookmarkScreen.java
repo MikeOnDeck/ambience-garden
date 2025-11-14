@@ -1,14 +1,14 @@
 package charmony.travel_journal.client.features.travel_journal.screen;
 
+import charmony.core.base.Environment;
+import charmony.core.client.CoreButtons;
+import charmony.travel_journal.client.features.travel_journal.Resources;
+import charmony.travel_journal.common.features.travel_journal.Bookmark;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
-import charmony.core.base.Environment;
-import charmony.core.client.CoreButtons;
-import charmony.travel_journal.client.features.travel_journal.Resources;
-import charmony.travel_journal.common.features.travel_journal.Bookmark;
 
 import java.util.ArrayList;
 import java.util.List;

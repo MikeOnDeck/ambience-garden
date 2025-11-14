@@ -1,10 +1,10 @@
 package charmony.core.base;
 
-import com.google.common.base.CaseFormat;
-import net.minecraft.resources.ResourceLocation;
 import charmony.api.core.FeatureDefinition;
 import charmony.api.core.Side;
 import charmony.core.Charmony;
+import com.google.common.base.CaseFormat;
+import net.minecraft.resources.Identifier;
 
 import java.util.function.BooleanSupplier;
 
@@ -26,11 +26,11 @@ public abstract class SidedFeature {
         return mod;
     }
 
-    public ResourceLocation id(String path) {
-        return ResourceLocation.fromNamespaceAndPath(mod.id(), path);
+    public Identifier id(String path) {
+        return Identifier.fromNamespaceAndPath(mod.id(), path);
     }
 
-    public ResourceLocation registryId(String path) {
+    public Identifier registryId(String path) {
         return Charmony.id(path);
     }
 

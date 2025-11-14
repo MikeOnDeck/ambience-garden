@@ -3,14 +3,14 @@ package charmony.core.client;
 import charmony.core.Charmony;
 import charmony.core.client.renderers.SpriteRenderer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 @SuppressWarnings("unused")
 public class LootTableSpriteRenderer extends SpriteRenderer {
     private static final int WIDTH = 16;
     private static final int HEIGHT = 16;
 
-    public LootTableSpriteRenderer(ResourceLocation id) {
+    public LootTableSpriteRenderer(Identifier id) {
         super(id);
     }
 
@@ -24,7 +24,7 @@ public class LootTableSpriteRenderer extends SpriteRenderer {
         return HEIGHT;
     }
 
-    public ResourceLocation getTexture() {
+    public Identifier getTexture() {
         return Charmony.id("loot_table/" + id.getNamespace() + "/" + id.getPath());
     }
 
@@ -38,7 +38,7 @@ public class LootTableSpriteRenderer extends SpriteRenderer {
         return Component.translatable("gui.charmony.in_loot_table", getName());
     }
 
-    protected String niceLootTableName(ResourceLocation id) {
+    protected String niceLootTableName(Identifier id) {
         var path = id.getPath();
 
         // Split path into fragments based on "/".

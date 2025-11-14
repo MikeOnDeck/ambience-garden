@@ -1,11 +1,11 @@
 package charmony.core.base;
 
-import com.google.common.base.CaseFormat;
-import net.minecraft.resources.ResourceLocation;
 import charmony.api.core.FeatureDefinition;
 import charmony.api.core.ModDefinition;
-import charmony.core.common.CommonRegistry;
 import charmony.api.core.Side;
+import charmony.core.common.CommonRegistry;
+import com.google.common.base.CaseFormat;
+import net.minecraft.resources.Identifier;
 
 import java.util.*;
 import java.util.function.BooleanSupplier;
@@ -43,7 +43,7 @@ public abstract class Mod {
     /**
      * Resolve a mod feature using a resource location, e.g. charmony:control_panel
      */
-    public static Optional<Feature> tryGetFeature(ResourceLocation id) {
+    public static Optional<Feature> tryGetFeature(Identifier id) {
         var mod = id.getNamespace();
         var name = CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, id.getPath());
         return get(mod).map(m -> m.features.get(name));

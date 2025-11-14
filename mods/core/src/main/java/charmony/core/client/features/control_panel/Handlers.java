@@ -1,13 +1,13 @@
 package charmony.core.client.features.control_panel;
 
+import charmony.core.base.Setup;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.SpriteIconButton;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.gui.screens.options.OptionsScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import charmony.core.base.Setup;
+import net.minecraft.resources.Identifier;
 
 public class Handlers extends Setup<ControlPanel> {
     public static final Component SETTINGS_TOOLTIP = Component.translatable("gui.charmony.settings.settings");
@@ -26,7 +26,7 @@ public class Handlers extends Setup<ControlPanel> {
         if (feature().showButtonOnTitleScreen() && parent instanceof TitleScreen) {
             var children = parent.children();
             var accessibilityButton = children.stream()
-                .filter(b -> b instanceof SpriteIconButton s && s.sprite.enabled().equals(ResourceLocation.parse("icon/accessibility")))
+                .filter(b -> b instanceof SpriteIconButton s && s.sprite.enabled().equals(Identifier.parse("icon/accessibility")))
                 .map(b -> (SpriteIconButton)b)
                 .findFirst()
                 .orElse(null);

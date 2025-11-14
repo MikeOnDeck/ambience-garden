@@ -3,7 +3,7 @@ package charmony.rune_dictionary.client.features;
 import charmony.core.base.Setup;
 import charmony.rune_dictionary.common.features.rune_dictionary.Networking.S2CDictionary;
 import charmony.rune_dictionary.common.features.rune_dictionary.Networking.S2CKnowledge;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.Optional;
@@ -45,7 +45,7 @@ public class Handlers extends Setup<RuneDictionary> {
      * @param word Registered object.
      * @return Rune word for the registered object, empty optional if not found.
      */
-    public Optional<String> getRuneWord(ResourceLocation word) {
+    public Optional<String> getRuneWord(Identifier word) {
         return feature().common.get().handlers.getRuneWord(word);
     }
 
@@ -56,7 +56,7 @@ public class Handlers extends Setup<RuneDictionary> {
      * @param word Word to check
      * @return True if the player knows the word.
      */
-    public boolean knowsWord(Player player, ResourceLocation word) {
+    public boolean knowsWord(Player player, Identifier word) {
         return feature().common.get().handlers.knowsWord(player, word);
     }
 }

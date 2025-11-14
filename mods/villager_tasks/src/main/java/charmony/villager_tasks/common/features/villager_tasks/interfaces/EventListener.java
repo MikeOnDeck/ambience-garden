@@ -1,7 +1,7 @@
 package charmony.villager_tasks.common.features.villager_tasks.interfaces;
 
 import charmony.villager_tasks.common.features.villager_tasks.Task;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
@@ -45,7 +45,7 @@ public interface EventListener {
         // hook
     }
 
-    default Optional<ItemStack> onLootTablePopulate(Task task, Player player, ResourceLocation lootTableId, RandomSource random) {
+    default Optional<ItemStack> onLootTablePopulate(Task task, Player player, Identifier lootTableId, RandomSource random) {
         return Optional.empty();
     }
 }

@@ -5,7 +5,7 @@ import charmony.api.rune_dictionary.RuneWordProvider;
 import charmony.core.base.Setup;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +23,7 @@ public class Providers extends Setup<RuneDictionary> implements RuneWordProvider
      * @return List of all resourcelocations for registered structures and biomes.
      */
     @Override
-    public List<ResourceLocation> getRuneWords(RegistryAccess registryAccess) {
+    public List<Identifier> getRuneWords(RegistryAccess registryAccess) {
         var biomes = registryAccess
             .lookup(Registries.BIOME)
             .map(reg -> reg.keySet().stream().toList())
@@ -34,7 +34,7 @@ public class Providers extends Setup<RuneDictionary> implements RuneWordProvider
             .map(r -> r.keySet().stream().toList())
             .orElse(List.of());
 
-        List<ResourceLocation> out = new ArrayList<>();
+        List<Identifier> out = new ArrayList<>();
         out.addAll(structures);
         out.addAll(biomes);
 

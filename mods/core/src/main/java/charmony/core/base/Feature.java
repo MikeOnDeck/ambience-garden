@@ -1,7 +1,7 @@
 package charmony.core.base;
 
-import net.minecraft.resources.ResourceLocation;
 import charmony.api.core.Side;
+import net.minecraft.resources.Identifier;
 
 import java.util.*;
 
@@ -52,8 +52,8 @@ public final class Feature {
         return mod().config();
     }
 
-    public ResourceLocation id(String path) {
-        return ResourceLocation.fromNamespaceAndPath(mod.id(), path);
+    public Identifier id(String path) {
+        return Identifier.fromNamespaceAndPath(mod.id(), path);
     }
 
     /**

@@ -1,11 +1,11 @@
 package charmony.travel_journal.common.features.travel_journal;
 
+import charmony.core.helpers.WorldHelper;
 import com.google.gson.GsonBuilder;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
-import charmony.core.helpers.WorldHelper;
 
 import java.util.UUID;
 
@@ -18,7 +18,7 @@ public record Bookmark(
         return new Bookmark(
             UUID.randomUUID(),
             WorldHelper.biomeName(player),
-            player.level().dimension().location().toString(),
+            player.level().dimension().identifier().toString(),
             player.blockPosition().asLong(),
             player.getScoreboardName(),
             "",
@@ -27,8 +27,8 @@ public record Bookmark(
         );
     }
 
-    public ResourceLocation dimensionId() {
-        return ResourceLocation.parse(dimension);
+    public Identifier dimensionId() {
+        return Identifier.parse(dimension);
     }
 
     public BlockPos blockPos() {

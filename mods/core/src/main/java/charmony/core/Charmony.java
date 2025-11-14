@@ -1,9 +1,9 @@
 package charmony.core;
 
-import net.minecraft.resources.ResourceLocation;
 import charmony.api.core.ModDefinition;
-import charmony.core.base.Mod;
 import charmony.api.core.Side;
+import charmony.core.base.Mod;
+import net.minecraft.resources.Identifier;
 
 @SuppressWarnings("unused")
 @ModDefinition(id = Charmony.ID, sides = {Side.Client, Side.Common},
@@ -21,7 +21,7 @@ public final class Charmony extends Mod {
         return instance;
     }
 
-    public static ResourceLocation id(String path) {
-        return ResourceLocation.tryBuild(ID, path);
+    public static Identifier id(String path) {
+        return Identifier.tryBuild(ID, path);
     }
 }

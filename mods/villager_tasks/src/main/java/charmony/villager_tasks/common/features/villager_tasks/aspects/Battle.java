@@ -10,11 +10,11 @@ import charmony.villager_tasks.common.features.villager_tasks.requirements.Battl
 import charmony.villager_tasks.common.features.villager_tasks.requirements.BattleMobEffect;
 import charmony.villager_tasks.common.features.villager_tasks.requirements.BattleMobStats;
 import com.mojang.serialization.Codec;
-import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Util;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -44,7 +44,7 @@ public final class Battle extends Aspect implements Satisfiable {
         if (map.isEmpty()) return EMPTY;
 
         var level = builder.player().level();
-        var dimension = level.dimension().location();
+        var dimension = level.dimension().identifier();
         var random = builder.random();
         var multiplier = builder.modifier().negativeMultiplier();
 
@@ -61,7 +61,7 @@ public final class Battle extends Aspect implements Satisfiable {
                 // Parse mob entry.
                 var mobMap = mobs.get(i);
                 var mobStr = (String) mobMap.get("entity");
-                var mobId = ResourceLocation.tryParse(mobStr);
+                var mobId = Identifier.tryParse(mobStr);
                 if (mobId == null) {
                     throw new IllegalStateException("Invalid mob ID " + mobStr);
                 }
@@ -82,7 +82,7 @@ public final class Battle extends Aspect implements Satisfiable {
                     var effectStr = (String) effectMap.get("effect");
                     var amplifier = (double) effectMap.getOrDefault("amplifier", 0.0d);
                     var duration = (double) effectMap.getOrDefault("duration", 288000.0d);
-                    var effectId = ResourceLocation.tryParse(effectStr);
+                    var effectId = Identifier.tryParse(effectStr);
                     if (effectId == null) {
                         throw new IllegalStateException("Invalid effect ID " + effectStr);
                     }

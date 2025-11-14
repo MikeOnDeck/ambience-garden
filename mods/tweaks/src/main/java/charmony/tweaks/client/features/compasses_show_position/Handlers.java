@@ -1,12 +1,12 @@
 package charmony.tweaks.client.features.compasses_show_position;
 
+import charmony.core.base.Setup;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Items;
-import charmony.core.base.Setup;
 
 public class Handlers extends Setup<CompassesShowPosition> {
     public Handlers(CompassesShowPosition feature) {
@@ -67,7 +67,7 @@ public class Handlers extends Setup<CompassesShowPosition> {
         }
 
         if (feature().showBiome()) {
-            var biomeRes = player.level().getBiome(pos).unwrap().map(key -> key != null ? key.location() : null, unknown -> null);
+            var biomeRes = player.level().getBiome(pos).unwrap().map(key -> key != null ? key.identifier() : null, unknown -> null);
             if (biomeRes != null) {
                 var biomeName = I18n.get("biome." + biomeRes.getNamespace() + "." + biomeRes.getPath());
                 var biomeText = Component.translatable("gui.charmony.compass.biome", biomeName).getString();

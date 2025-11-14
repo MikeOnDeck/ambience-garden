@@ -3,7 +3,7 @@ package charmony.villager_tasks.common.features.villager_tasks;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -53,15 +53,15 @@ public final class Resources {
     public static final MutableComponent YOU_DISCOVER = Component.translatable("gui.charmony.villager_tasks.you_discover").withStyle(ChatFormatting.YELLOW);
     public static final MutableComponent YOU_RECEIVE = Component.translatable("gui.charmony.villager_tasks.you_receive").withStyle(ChatFormatting.AQUA);
 
-    public static final Map<Integer, ResourceLocation> ACTIVE_SCROLL_LEVELS = new HashMap<>();
-    public static final Map<Integer, ResourceLocation> AVAILABLE_SCROLL_LEVELS = new HashMap<>();
-    public static final ResourceLocation STAR = ResourceLocation.fromNamespaceAndPath("charmony", "task/star");
-    public static final ResourceLocation TASKS_BACKGROUND = ResourceLocation.fromNamespaceAndPath("charmony", "textures/gui/container/tasks.png");
+    public static final Map<Integer, Identifier> ACTIVE_SCROLL_LEVELS = new HashMap<>();
+    public static final Map<Integer, Identifier> AVAILABLE_SCROLL_LEVELS = new HashMap<>();
+    public static final Identifier STAR = Identifier.fromNamespaceAndPath("charmony", "task/star");
+    public static final Identifier TASKS_BACKGROUND = Identifier.fromNamespaceAndPath("charmony", "textures/gui/container/tasks.png");
 
     static {
         for (var i = 1; i <= 6; i++) {
-            ACTIVE_SCROLL_LEVELS.put(i, ResourceLocation.fromNamespaceAndPath("charmony", "scroll/active/level" + i));
-            AVAILABLE_SCROLL_LEVELS.put(i, ResourceLocation.fromNamespaceAndPath("charmony", "scroll/available/level" + i));
+            ACTIVE_SCROLL_LEVELS.put(i, Identifier.fromNamespaceAndPath("charmony", "scroll/active/level" + i));
+            AVAILABLE_SCROLL_LEVELS.put(i, Identifier.fromNamespaceAndPath("charmony", "scroll/available/level" + i));
         }
     }
 }

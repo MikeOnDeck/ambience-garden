@@ -1,5 +1,10 @@
 package charmony.travel_journal.client.features.travel_journal.screen;
 
+import charmony.api.core.Color;
+import charmony.core.helpers.TextComponentHelper;
+import charmony.travel_journal.client.features.travel_journal.Resources;
+import charmony.travel_journal.client.features.travel_journal.TravelJournal;
+import charmony.travel_journal.common.features.travel_journal.Bookmark;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -7,12 +12,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
-import charmony.api.core.Color;
-import charmony.core.helpers.TextComponentHelper;
-import charmony.travel_journal.client.features.travel_journal.Resources;
-import charmony.travel_journal.client.features.travel_journal.TravelJournal;
-import charmony.travel_journal.common.features.travel_journal.Bookmark;
+import net.minecraft.resources.Identifier;
 
 public abstract class BaseScreen extends Screen {
     protected final TravelJournal journal;
@@ -65,7 +65,7 @@ public abstract class BaseScreen extends Screen {
         TextComponentHelper.drawCenteredString(guiGraphics, font, title.withStyle(ChatFormatting.BOLD), x, y, color.getArgbColor(), false);
     }
     
-    protected ResourceLocation getBackgroundTexture() {
+    protected Identifier getBackgroundTexture() {
         return Resources.BACKGROUND;
     }
     

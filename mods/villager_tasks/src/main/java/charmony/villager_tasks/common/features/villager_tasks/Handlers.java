@@ -6,17 +6,17 @@ import charmony.villager_tasks.common.features.villager_tasks.enums.TaskQuery;
 import charmony.villager_tasks.common.features.villager_tasks.requirements.TreasureLootFunction;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.fabricmc.fabric.api.loot.v3.LootTableSource;
-import net.minecraft.Util;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
+import net.minecraft.util.Util;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
@@ -49,7 +49,7 @@ public class Handlers extends Setup<VillagerTasks> {
     public static final Map<Player, Long> LAST_REQUESTED_TASK_SYNC = new HashMap<>();
     public static final Map<Player, UUID> LAST_VILLAGER_INTERACTION = new HashMap<>();
 
-    public final Map<ResourceLocation, Definition> definitions = new HashMap<>();
+    public final Map<Identifier, Definition> definitions = new HashMap<>();
 
     public Handlers(VillagerTasks feature) {
         super(feature);

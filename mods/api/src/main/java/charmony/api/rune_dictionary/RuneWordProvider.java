@@ -1,7 +1,7 @@
 package charmony.api.rune_dictionary;
 
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.List;
 
@@ -14,5 +14,5 @@ public interface RuneWordProvider {
      * @param registryAccess Reference to the finalized registry.
      * @return List of objects to register.
      */
-    List<ResourceLocation> getRuneWords(RegistryAccess registryAccess);
+    List<Identifier> getRuneWords(RegistryAccess registryAccess);
 }

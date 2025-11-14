@@ -15,8 +15,8 @@ import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
@@ -38,8 +38,8 @@ import java.util.UUID;
 public class BattleMob implements Satisfiable {
     public static final String BATTLE_TAG = "charmony_battle";
 
-    private final ResourceLocation mob;
-    private final ResourceLocation dimension;
+    private final Identifier mob;
+    private final Identifier dimension;
     private Optional<BlockPos> pos;
     private final List<BattleMobEffect> effects;
     private final BattleMobStats stats;
@@ -50,8 +50,8 @@ public class BattleMob implements Satisfiable {
     private boolean spawned;
 
     public static final Codec<BattleMob> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-        ResourceLocation.CODEC.fieldOf("mob").forGetter(self -> self.mob),
-        ResourceLocation.CODEC.fieldOf("dimension").forGetter(self -> self.dimension),
+        Identifier.CODEC.fieldOf("mob").forGetter(self -> self.mob),
+        Identifier.CODEC.fieldOf("dimension").forGetter(self -> self.dimension),
         BlockPos.CODEC.lenientOptionalFieldOf("pos").forGetter(self -> self.pos),
         BattleMobEffect.CODEC.listOf().fieldOf("effects").forGetter(self -> self.effects),
         BattleMobStats.CODEC.fieldOf("state").forGetter(self -> self.stats),
@@ -62,7 +62,7 @@ public class BattleMob implements Satisfiable {
         Codec.BOOL.fieldOf("spawned").forGetter(self -> self.spawned)
     ).apply(instance, BattleMob::new));
 
-    public BattleMob(ResourceLocation mob, ResourceLocation dimension, Optional<BlockPos> pos, List<BattleMobEffect> effects, BattleMobStats stats, UUID uniqueId, int distance, int total, int defeated, boolean spawned) {
+    public BattleMob(Identifier mob, Identifier dimension, Optional<BlockPos> pos, List<BattleMobEffect> effects, BattleMobStats stats, UUID uniqueId, int distance, int total, int defeated, boolean spawned) {
         this.mob = mob;
         this.dimension = dimension;
         this.pos = pos;
@@ -102,7 +102,7 @@ public class BattleMob implements Satisfiable {
         this.defeated++;
     }
 
-    public ResourceLocation mob() {
+    public Identifier mob() {
         return mob;
     }
 
@@ -126,7 +126,7 @@ public class BattleMob implements Satisfiable {
         if (pos == null) return;
 
         var playerPos = player.blockPosition();
-        var playerDim = player.level().dimension().location();
+        var playerDim = player.level().dimension().identifier();
         var playerInRange = playerDim.equals(this.dimension) && pos.distManhattan(playerPos) <= 32;
 
         if (playerInRange && !spawned) {

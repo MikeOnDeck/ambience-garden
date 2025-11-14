@@ -1,5 +1,11 @@
 package charmony.tweaks.common.features.trade_improvements;
 
+import charmony.api.tweaks.WandererTradeProvider;
+import charmony.core.Api;
+import charmony.core.base.Setup;
+import charmony.core.common.CommonRegistry;
+import charmony.core.common.GenericTrades;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.npc.VillagerProfession;
@@ -7,11 +13,6 @@ import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.trading.MerchantOffer;
-import charmony.api.tweaks.WandererTradeProvider;
-import charmony.core.Api;
-import charmony.core.base.Setup;
-import charmony.core.common.CommonRegistry;
-import charmony.core.common.GenericTrades;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
@@ -98,7 +99,7 @@ public class Registers extends Setup<TradeImprovements> {
 
         @Nullable
         @Override
-        public MerchantOffer getOffer(Entity merchant, RandomSource random) {
+        public MerchantOffer getOffer(ServerLevel level, Entity merchant, RandomSource random) {
             var item = random.nextBoolean() ? Items.DAMAGED_ANVIL : Items.CHIPPED_ANVIL;
 
             return new MerchantOffer(

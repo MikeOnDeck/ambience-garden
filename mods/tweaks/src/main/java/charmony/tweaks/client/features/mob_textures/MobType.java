@@ -1,9 +1,9 @@
 package charmony.tweaks.client.features.mob_textures;
 
-import net.minecraft.resources.ResourceLocation;
+import charmony.core.Charmony;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.StringRepresentable;
 import org.jetbrains.annotations.NotNull;
-import charmony.core.Charmony;
 
 import java.util.Locale;
 
@@ -11,18 +11,18 @@ public enum MobType implements StringRepresentable {
     SNOW_GOLEM("snow_golem"),
     WANDERING_TRADER("wandering_trader");
 
-    private final ResourceLocation vanillaTexture;
+    private final Identifier vanillaTexture;
 
     MobType(String vanillaTexture) {
-        this.vanillaTexture = ResourceLocation.parse("textures/entity/" + vanillaTexture + ".png");
+        this.vanillaTexture = Identifier.parse("textures/entity/" + vanillaTexture + ".png");
     }
 
-    public ResourceLocation vanillaTexture() {
+    public Identifier vanillaTexture() {
         return vanillaTexture;
     }
 
-    public ResourceLocation customTexture(String texture) {
-        return ResourceLocation.tryBuild(Charmony.ID, "textures/entity/" + this.getSerializedName() + "/" + texture + ".png");
+    public Identifier customTexture(String texture) {
+        return Identifier.tryBuild(Charmony.ID, "textures/entity/" + this.getSerializedName() + "/" + texture + ".png");
     }
 
     @Override

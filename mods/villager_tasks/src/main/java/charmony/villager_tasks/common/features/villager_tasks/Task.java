@@ -11,7 +11,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
@@ -26,7 +26,7 @@ import java.util.UUID;
 public class Task implements EventListener, Satisfiable {
     public final UUID id;
     public final UUID villager;
-    public final ResourceLocation definitionId;
+    public final Identifier definitionId;
     public final TaskModifier modifier;
     public final String titleKey;
     public final long seed;
@@ -44,7 +44,7 @@ public class Task implements EventListener, Satisfiable {
     public static final Codec<Task> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         UUIDUtil.CODEC.fieldOf("id").forGetter(task -> task.id),
         UUIDUtil.CODEC.fieldOf("villager").forGetter(task -> task.villager),
-        ResourceLocation.CODEC.fieldOf("definitionId").forGetter(task -> task.definitionId),
+        Identifier.CODEC.fieldOf("definitionId").forGetter(task -> task.definitionId),
         TaskStatus.CODEC.fieldOf("status").forGetter(task -> task.status),
         TaskModifier.CODEC.fieldOf("modifier").forGetter(task -> task.modifier),
         Codec.STRING.fieldOf("titleKey").forGetter(task -> task.titleKey),
@@ -59,11 +59,11 @@ public class Task implements EventListener, Satisfiable {
     ).apply(instance, Task::new));
 
     public static final Task EMPTY = new Task(
-        UUID.randomUUID(), UUID.randomUUID(), ResourceLocation.parse("minecraft:empty"), TaskStatus.Unspecified, TaskModifier.Unspecified, "", 0L, 0L, 0,
+        UUID.randomUUID(), UUID.randomUUID(), Identifier.parse("minecraft:empty"), TaskStatus.Unspecified, TaskModifier.Unspecified, "", 0L, 0L, 0,
         Collect.EMPTY, Hunt.EMPTY, Treasure.EMPTY, Battle.EMPTY, Rewards.EMPTY
     );
 
-    private Task(UUID id, UUID villager, ResourceLocation definitionId, TaskStatus status, TaskModifier modifier, String titleKey, long seed, long created, int level,
+    private Task(UUID id, UUID villager, Identifier definitionId, TaskStatus status, TaskModifier modifier, String titleKey, long seed, long created, int level,
                  Collect collect, Hunt hunt, Treasure treasure, Battle battle, Rewards reward
     ) {
         this.id = id;
@@ -202,7 +202,7 @@ public class Task implements EventListener, Satisfiable {
     }
 
     @Override
-    public Optional<ItemStack> onLootTablePopulate(Task task, Player player, ResourceLocation lootTableId, RandomSource random) {
+    public Optional<ItemStack> onLootTablePopulate(Task task, Player player, Identifier lootTableId, RandomSource random) {
         for (var aspect : aspects()) {
             var result = aspect.onLootTablePopulate(this, player, lootTableId, random);
             if (result.isPresent()) {
@@ -233,7 +233,7 @@ public class Task implements EventListener, Satisfiable {
         this.status = status;
     }
 
-    public ResourceLocation getDefinitionId() {
+    public Identifier getDefinitionId() {
         return definitionId;
     }
 

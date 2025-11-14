@@ -14,7 +14,7 @@ public final class Buttons {
     public static final WidgetSprites COMPLETE_BUTTON = makeButtonWithDisabled("complete");
     public static final WidgetSprites DETAILS_BUTTON = makeButton("details");
 
-    public static class ActiveTasksButton extends Button {
+    public static class ActiveTasksButton extends Button.Plain {
         public static final int WIDTH = 120;
         public static final int HEIGHT = 20;
         static Component TEXT = Resources.ACTIVE_TASKS_BUTTON;
@@ -24,7 +24,7 @@ public final class Buttons {
         }
     }
 
-    public static class AvailableTasksButton extends Button {
+    public static class AvailableTasksButton extends Button.Plain {
         public static final int WIDTH = 120;
         public static final int HEIGHT = 20;
         static Component TEXT = Resources.AVAILABLE_TASKS_BUTTON;
@@ -64,7 +64,7 @@ public final class Buttons {
         }
     }
 
-    public static class BackToTaskButton extends Button {
+    public static class BackToTaskButton extends Button.Plain {
         public static final int WIDTH = 120;
         public static final int HEIGHT = 20;
         static Component TEXT = Resources.BACK_TO_TASKS;
@@ -74,7 +74,7 @@ public final class Buttons {
         }
     }
 
-    public static class CancelButton extends Button {
+    public static class CancelButton extends Button.Plain {
         public static final int WIDTH = 80;
         public static final int HEIGHT = 20;
         static Component TEXT = Component.translatable("gui.cancel");
@@ -84,7 +84,7 @@ public final class Buttons {
         }
     }
 
-    public static class CloseButton extends Button {
+    public static class CloseButton extends Button.Plain {
         public static final int WIDTH = 80;
         public static final int HEIGHT = 20;
         static Component TEXT = Resources.CLOSE;
@@ -110,7 +110,7 @@ public final class Buttons {
         }
     }
 
-    public static class CompleteTasksButton extends Button {
+    public static class CompleteTasksButton extends Button.Plain {
         public static final int WIDTH = 120;
         public static final int HEIGHT = 20;
         static Component TEXT = Resources.COMPLETE_TASKS_BUTTON;
@@ -122,7 +122,7 @@ public final class Buttons {
         }
     }
 
-    public static class ConfirmButton extends Button {
+    public static class ConfirmButton extends Button.Plain {
         public static final int WIDTH = 80;
         public static final int HEIGHT = 20;
         static Component TEXT = Resources.CONFIRM;

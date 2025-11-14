@@ -3,7 +3,7 @@ package charmony.rune_dictionary;
 import charmony.api.core.ModDefinition;
 import charmony.api.core.Side;
 import charmony.core.base.Mod;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 @ModDefinition(
     id = RuneDictionaryMod.ID,
@@ -23,7 +23,7 @@ public final class RuneDictionaryMod extends Mod {
         return instance;
     }
 
-    public static ResourceLocation id(String path) {
-        return ResourceLocation.fromNamespaceAndPath(ID, path);
+    public static Identifier id(String path) {
+        return Identifier.fromNamespaceAndPath(ID, path);
     }
 }

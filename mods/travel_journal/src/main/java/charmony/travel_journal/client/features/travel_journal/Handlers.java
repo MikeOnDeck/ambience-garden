@@ -1,20 +1,5 @@
 package charmony.travel_journal.client.features.travel_journal;
 
-import com.mojang.blaze3d.platform.NativeImage;
-import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.DeltaTracker;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.texture.DynamicTexture;
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.game.ClientboundLoginPacket;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.AABB;
-import org.jetbrains.annotations.NotNull;
 import charmony.core.Charmony;
 import charmony.core.base.Environment;
 import charmony.core.base.Setup;
@@ -25,6 +10,21 @@ import charmony.travel_journal.common.features.travel_journal.Bookmark;
 import charmony.travel_journal.common.features.travel_journal.Bookmarks;
 import charmony.travel_journal.common.features.travel_journal.Networking;
 import charmony.travel_journal.common.features.travel_journal.Networking.S2CSendBookmarkToPlayer;
+import com.mojang.blaze3d.platform.NativeImage;
+import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.client.DeltaTracker;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundLoginPacket;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
+import org.jetbrains.annotations.NotNull;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -42,7 +42,7 @@ public class Handlers extends Setup<TravelJournal> {
     private static final String CHARMONY_BASE = "charmony";
     private static final String TRAVEL_JOURNAL_BASE = "travel_journal";
 
-    private final Map<UUID, ResourceLocation> cachedPhotos = new WeakHashMap<>();
+    private final Map<UUID, Identifier> cachedPhotos = new WeakHashMap<>();
     private int lastViewedPage = 1;
     private long lastSentBookmarkTime = 0;
     private boolean sentPlayerSettings = false;
@@ -307,7 +307,7 @@ public class Handlers extends Setup<TravelJournal> {
      * While a photo isn't available, a placeholder is used.
      */
     @SuppressWarnings("ConstantValue")
-    public @NotNull ResourceLocation tryLoadPhoto(Bookmark bookmark) {
+    public @NotNull Identifier tryLoadPhoto(Bookmark bookmark) {
         var fallback = Resources.PHOTO_BACKGROUND;
         var id = bookmark.id();
         var minecraft = Minecraft.getInstance();
@@ -403,7 +403,7 @@ public class Handlers extends Setup<TravelJournal> {
 
         return bookmarks.all().stream()
             .filter(bookmark -> bookmark.blockPos().distManhattan(pos) < distance)
-            .filter(bookmark -> bookmark.dimension().equals(dimension.location().toString()))
+            .filter(bookmark -> bookmark.dimension().equals(dimension.identifier().toString()))
             .min((a, b) -> {
                 var ap = a.blockPos().distManhattan(pos);
                 var bp = b.blockPos().distManhattan(pos);

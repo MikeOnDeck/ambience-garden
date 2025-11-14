@@ -3,15 +3,15 @@ package charmony.villager_tasks.common.features.villager_tasks;
 import charmony.core.helpers.TagHelper;
 import charmony.villager_tasks.common.features.villager_tasks.interfaces.HasWeight;
 import charmony.villager_tasks.common.features.villager_tasks.requirements.TreasureItem;
-import net.minecraft.Util;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
+import net.minecraft.util.Util;
 import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
@@ -88,7 +88,7 @@ public final class Helpers {
 
         // If itemId starts with a # then it's a tag; resolve all elements.
         if (itemId.startsWith("#")) {
-            var tagKey = TagKey.create(Registries.ITEM, ResourceLocation.parse(itemId.substring(1)));
+            var tagKey = TagKey.create(Registries.ITEM, Identifier.parse(itemId.substring(1)));
             var values = TagHelper.getValues(itemRegistry, tagKey);
             if (values.isEmpty()) {
                 throw new IllegalStateException("Could not get values for item tag");
@@ -97,7 +97,7 @@ public final class Helpers {
             Util.shuffle(values, random);
             item = values.getFirst();
         } else {
-            item = itemRegistry.getValue(ResourceLocation.parse(itemId));
+            item = itemRegistry.getValue(Identifier.parse(itemId));
         }
 
         return item;

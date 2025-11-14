@@ -1,5 +1,9 @@
 package charmony.ambient_sounds.client.features.biomes;
 
+import charmony.ambient_sounds.client.features.sound.LoopingSound;
+import charmony.ambient_sounds.client.features.sound.SoundInstance;
+import charmony.ambient_sounds.helpers.BiomeCheckHelper;
+import charmony.ambient_sounds.helpers.SettingsHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
@@ -9,10 +13,6 @@ import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.biome.Biome;
-import charmony.ambient_sounds.client.features.sound.LoopingSound;
-import charmony.ambient_sounds.client.features.sound.SoundInstance;
-import charmony.ambient_sounds.helpers.BiomeCheckHelper;
-import charmony.ambient_sounds.helpers.SettingsHelper;
 
 import java.util.ConcurrentModificationException;
 import java.util.List;
@@ -105,7 +105,7 @@ public abstract class BiomeSound implements SoundInstance {
         if (!player.isAlive()) return false;
         if (!isValidPlayerCondition()) return false;
 
-        if (!Biomes.feature().validDimensions().contains(level.dimension().location())) {
+        if (!Biomes.feature().validDimensions().contains(level.dimension().identifier())) {
             return false;
         }
 

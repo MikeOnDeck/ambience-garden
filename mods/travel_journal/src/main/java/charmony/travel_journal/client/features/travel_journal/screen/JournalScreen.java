@@ -1,12 +1,5 @@
 package charmony.travel_journal.client.features.travel_journal.screen;
 
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import charmony.api.core.Color;
 import charmony.core.client.CoreButtons;
 import charmony.core.helpers.TextComponentHelper;
@@ -14,6 +7,13 @@ import charmony.travel_journal.client.features.travel_journal.Buttons;
 import charmony.travel_journal.client.features.travel_journal.Resources;
 import charmony.travel_journal.client.features.travel_journal.TravelJournal;
 import charmony.travel_journal.common.features.travel_journal.Bookmark;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -173,7 +173,7 @@ public class JournalScreen extends BaseScreen {
         pose.translate(midX - 25f, 20f);
         pose.scale(1.0f, 1.0f);
 
-        var dimensionText = TextComponentHelper.dimensionAsText(ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(bookmark.dimension())));
+        var dimensionText = TextComponentHelper.dimensionAsText(ResourceKey.create(Registries.DIMENSION, Identifier.parse(bookmark.dimension())));
         TextComponentHelper.drawCenteredString(guiGraphics, font, dimensionText, left + 50, top, color.getArgbColor(), false);
         pose.popMatrix();
     }

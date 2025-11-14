@@ -10,7 +10,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -107,8 +107,8 @@ public class TreasureItem implements Satisfiable, PlayerHolder, RemovesStacksOnC
         return uniqueId;
     }
 
-    public ResourceLocation lootTable() {
-        return ResourceLocation.parse(lootTable);
+    public Identifier lootTable() {
+        return Identifier.parse(lootTable);
     }
 
     public boolean isTreasure(ItemStack stack) {
@@ -148,7 +148,7 @@ public class TreasureItem implements Satisfiable, PlayerHolder, RemovesStacksOnC
         }
     }
 
-    public Optional<ItemStack> onLootTablePopulate(Task task, ResourceLocation lootTableId, RandomSource randomSource) {
+    public Optional<ItemStack> onLootTablePopulate(Task task, Identifier lootTableId, RandomSource randomSource) {
         if (!discovered && task.isStarted()) {
             if (lootTableId.equals(lootTable())) {
                 if (randomSource.nextDouble() < chance()) {

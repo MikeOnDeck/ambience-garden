@@ -5,7 +5,7 @@ import charmony.core.Api;
 import charmony.core.base.Setup;
 import charmony.rune_dictionary.common.features.rune_dictionary.Networking.C2SRequestDictionary;
 import charmony.rune_dictionary.common.features.rune_dictionary.Networking.C2SRequestKnowledge;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -17,7 +17,7 @@ import java.util.*;
 
 @SuppressWarnings("unused")
 public class Handlers extends Setup<RuneDictionary> {
-    private static final Map<ResourceLocation, String> DICTIONARY = new HashMap<>();
+    private static final Map<Identifier, String> DICTIONARY = new HashMap<>();
     private static final Map<Player, Knowledge> KNOWLEDGE = new HashMap<>();
 
     public Handlers(RuneDictionary feature) {
@@ -29,7 +29,7 @@ public class Handlers extends Setup<RuneDictionary> {
      *
      * @param dictionary Dictionary map.
      */
-    public void setDictionary(Map<ResourceLocation, String> dictionary) {
+    public void setDictionary(Map<Identifier, String> dictionary) {
         DICTIONARY.clear();
         DICTIONARY.putAll(dictionary);
     }
@@ -49,7 +49,7 @@ public class Handlers extends Setup<RuneDictionary> {
      *
      * @param word The word to add to the dictionary.
      */
-    public void addDicationaryWord(ResourceLocation word) {
+    public void addDicationaryWord(Identifier word) {
         DICTIONARY.put(word, ""); // Empty string until the server is loaded and we generate it.
     }
 
@@ -58,7 +58,7 @@ public class Handlers extends Setup<RuneDictionary> {
      *
      * @param words Words to add to the dictionary.
      */
-    public void addDictionaryWords(List<ResourceLocation> words) {
+    public void addDictionaryWords(List<Identifier> words) {
         for (var word : words) {
             addDicationaryWord(word);
         }
@@ -71,7 +71,7 @@ public class Handlers extends Setup<RuneDictionary> {
      * @param word Registered object.
      * @return Rune word for the registered object, empty optional if not found.
      */
-    public Optional<String> getRuneWord(ResourceLocation word) {
+    public Optional<String> getRuneWord(Identifier word) {
         var runeWord = DICTIONARY.get(word);
         if (runeWord == null) return Optional.empty();
         return runeWord.isEmpty() ? Optional.empty() : Optional.of(runeWord);
@@ -84,7 +84,7 @@ public class Handlers extends Setup<RuneDictionary> {
      * @param word Word to check
      * @return True if the player knows the word.
      */
-    public boolean knowsWord(Player player, ResourceLocation word) {
+    public boolean knowsWord(Player player, Identifier word) {
         return knownWords(player).contains(word);
     }
 
@@ -94,7 +94,7 @@ public class Handlers extends Setup<RuneDictionary> {
      * @param player Player to check.
      * @return List of all known words (resourcelocations)
      */
-    public List<ResourceLocation> knownWords(Player player) {
+    public List<Identifier> knownWords(Player player) {
         var knowledge = KNOWLEDGE.get(player);
         if (knowledge == null) return List.of();
         return knowledge.words();
@@ -106,7 +106,7 @@ public class Handlers extends Setup<RuneDictionary> {
      * @param player The player to add the word to.
      * @param word The word to add to the player's knowledge.
      */
-    public void learnWord(ServerPlayer player, ResourceLocation word) {
+    public void learnWord(ServerPlayer player, Identifier word) {
         learnWords(player, List.of(word));
     }
 
@@ -116,7 +116,7 @@ public class Handlers extends Setup<RuneDictionary> {
      * @param player The player to add the words to.
      * @param words The words to add to the player's knowledge.
      */
-    public void learnWords(ServerPlayer player, List<ResourceLocation> words) {
+    public void learnWords(ServerPlayer player, List<Identifier> words) {
         ServerLevel serverLevel = player.level();
 
         var knowledge = KNOWLEDGE.get(player);

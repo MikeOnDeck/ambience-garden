@@ -1,21 +1,21 @@
 package charmony.tweaks.client.features.maps_show_when_hovering;
 
+import charmony.core.base.Setup;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.state.MapRenderState;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.MapItem;
-import charmony.core.base.Setup;
 
 import java.util.List;
 
 public class Handlers extends Setup<MapsShowWhenHovering> {
-    public static final ResourceLocation MAP_BACKGROUND = ResourceLocation.parse("textures/map/map_background.png");
+    public static final Identifier MAP_BACKGROUND = Identifier.parse("textures/map/map_background.png");
     private final MapRenderState mapRenderState = new MapRenderState();
 
     public Handlers(MapsShowWhenHovering feature) {

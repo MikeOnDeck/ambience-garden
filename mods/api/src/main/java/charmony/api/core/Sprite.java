@@ -1,10 +1,10 @@
 package charmony.api.core;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 @SuppressWarnings("unused")
 public interface Sprite {
-    ResourceLocation sprite();
+    Identifier sprite();
 
     int width();
 

@@ -1,12 +1,12 @@
 package charmony.ambient_sounds.client.features.environment;
 
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
 import charmony.api.core.Configurable;
 import charmony.api.core.FeatureDefinition;
+import charmony.api.core.Side;
 import charmony.core.base.Mod;
 import charmony.core.base.SidedFeature;
-import charmony.api.core.Side;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.Mth;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +15,7 @@ import java.util.List;
     Plays ambient sound according to the player's environment.""")
 @SuppressWarnings({"FieldMayBeFinal", "FieldCanBeLocal"})
 public final class Environment extends SidedFeature {
-    private final List<ResourceLocation> validCaveDimensions = new ArrayList<>();
+    private final List<Identifier> validCaveDimensions = new ArrayList<>();
     public Registers registers;
     public Handlers handlers;
 
@@ -110,10 +110,10 @@ public final class Environment extends SidedFeature {
         return caveDimensions;
     }
 
-    public List<ResourceLocation> validCaveDimensions() {
+    public List<Identifier> validCaveDimensions() {
         if (caveDimensions().isEmpty()) return List.of();
         if (validCaveDimensions.isEmpty()) {
-            caveDimensions().forEach(dim -> validCaveDimensions.add(ResourceLocation.parse(dim)));
+            caveDimensions().forEach(dim -> validCaveDimensions.add(Identifier.parse(dim)));
         }
         return validCaveDimensions;
     }

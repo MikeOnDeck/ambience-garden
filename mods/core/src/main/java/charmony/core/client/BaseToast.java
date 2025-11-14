@@ -1,5 +1,6 @@
 package charmony.core.client;
 
+import charmony.api.core.Color;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.toasts.Toast;
@@ -7,13 +8,12 @@ import net.minecraft.client.gui.components.toasts.ToastManager;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
-import charmony.api.core.Color;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,8 +22,8 @@ import java.util.Optional;
 public abstract class BaseToast implements Toast {
     private static final Component DEFAULT_DESCRIPTION = Component.empty();
     private static final ItemStack DEFAULT_ICON = ItemStack.EMPTY;
-    private static final ResourceLocation DEFAULT_BACKGROUND = 
-        ResourceLocation.withDefaultNamespace("toast/advancement");
+    private static final Identifier DEFAULT_BACKGROUND = 
+        Identifier.withDefaultNamespace("toast/advancement");
     private static final Color DEFAULT_COLOR = new Color(0xffffff);
     
     private boolean hasPlayedSound = false;
@@ -47,7 +47,7 @@ public abstract class BaseToast implements Toast {
     /**
      * Override for custom background texture.
      */
-    protected ResourceLocation background() {
+    protected Identifier background() {
         return DEFAULT_BACKGROUND;
     }
 

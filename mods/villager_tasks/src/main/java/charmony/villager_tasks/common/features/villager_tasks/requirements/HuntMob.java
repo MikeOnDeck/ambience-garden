@@ -7,24 +7,24 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 
 public class HuntMob implements Satisfiable, HasWeight {
-    private final ResourceLocation mob;
+    private final Identifier mob;
     private final int total;
     private final int weight;
     private int hunted;
 
     public static final Codec<HuntMob> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-        ResourceLocation.CODEC.fieldOf("mob").forGetter(self -> self.mob),
+        Identifier.CODEC.fieldOf("mob").forGetter(self -> self.mob),
         Codec.INT.fieldOf("total").forGetter(self -> self.total),
         Codec.INT.fieldOf("hunted").forGetter(self -> self.hunted),
         Codec.INT.fieldOf("weight").forGetter(self -> self.weight)
     ).apply(instance, HuntMob::new));
 
-    public HuntMob(ResourceLocation mob, int total, int hunted, int weight) {
+    public HuntMob(Identifier mob, int total, int hunted, int weight) {
         this.mob = mob;
         this.total = total;
         this.hunted = hunted;
@@ -55,7 +55,7 @@ public class HuntMob implements Satisfiable, HasWeight {
         return total;
     }
 
-    public ResourceLocation mob() {
+    public Identifier mob() {
         return mob;
     }
 

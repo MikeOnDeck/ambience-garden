@@ -10,7 +10,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -167,7 +167,7 @@ public final class TaskRenderer extends BaseRenderer {
     }
 
     public void renderScroll(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY) {
-        ResourceLocation texture;
+        Identifier texture;
         var level = task.level;
 
         if (task.isStarted()) {

@@ -1,11 +1,11 @@
 package charmony.travel_journal.client.features.travel_journal;
 
+import charmony.core.Charmony;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.network.chat.Component;
-import charmony.core.Charmony;
 
 public class Buttons {
     public static final WidgetSprites NEXT_PAGE_BUTTON = makeButton("next_page");
@@ -13,7 +13,7 @@ public class Buttons {
     public static final WidgetSprites SEND_TO_PLAYER_BUTTON = makeButtonWithDisabled("send_to_player");
     public static final WidgetSprites TAKE_NEW_PHOTO_BUTTON = makeButtonWithDisabled("take_new_photo");
 
-    public static class NewWhenEmptyButton extends Button {
+    public static class NewWhenEmptyButton extends Button.Plain {
         public static int WIDTH = 100;
         public static int HEIGHT = 20;
         static Component TEXT = Resources.NEW_BOOKMARK;
@@ -23,7 +23,7 @@ public class Buttons {
         }
     }
 
-    public static class NewBookmarkButton extends Button {
+    public static class NewBookmarkButton extends Button.Plain {
         public static int WIDTH = 110;
         public static int HEIGHT = 20;
         static Component TEXT = Resources.NEW_BOOKMARK;

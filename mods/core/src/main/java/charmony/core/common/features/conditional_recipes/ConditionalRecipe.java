@@ -2,13 +2,13 @@ package charmony.core.common.features.conditional_recipes;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.*;
 import java.util.function.Predicate;
 
 public class ConditionalRecipe {
-    protected final ResourceLocation id;
+    protected final Identifier id;
     protected final Predicate<ConditionalRecipe> predicate;
 
     protected String type;
@@ -18,7 +18,7 @@ public class ConditionalRecipe {
     protected List<String> pattern = new ArrayList<>();
     protected Map<String, String> key;
 
-    public ConditionalRecipe(ResourceLocation id, Predicate<ConditionalRecipe> predicate) {
+    public ConditionalRecipe(Identifier id, Predicate<ConditionalRecipe> predicate) {
         this.id = id;
         this.predicate = predicate;
         this.useShapedCrafting();
@@ -60,7 +60,7 @@ public class ConditionalRecipe {
         return this;
     }
 
-    public ResourceLocation id() {
+    public Identifier id() {
         return this.id;
     }
 

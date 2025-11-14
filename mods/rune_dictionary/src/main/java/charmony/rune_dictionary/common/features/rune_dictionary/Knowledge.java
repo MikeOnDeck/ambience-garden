@@ -6,14 +6,14 @@ import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 @SuppressWarnings("unused")
-public record Knowledge(UUID uuid, String name, List<ResourceLocation> words) {
+public record Knowledge(UUID uuid, String name, List<Identifier> words) {
     public static final String UUID_TAG = "uuid";
     public static final String NAME_TAG = "name";
     public static final String WORDS_TAG = "words";
@@ -24,7 +24,7 @@ public record Knowledge(UUID uuid, String name, List<ResourceLocation> words) {
     public static final Codec<Knowledge> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         UUIDUtil.CODEC.fieldOf("uuid").forGetter(Knowledge::uuid),
         Codec.STRING.fieldOf("name").forGetter(Knowledge::name),
-        ResourceLocation.CODEC.listOf().fieldOf("words").forGetter(Knowledge::words)
+        Identifier.CODEC.listOf().fieldOf("words").forGetter(Knowledge::words)
     ).apply(instance, Knowledge::new));
 
     /**
@@ -33,7 +33,7 @@ public record Knowledge(UUID uuid, String name, List<ResourceLocation> words) {
      * @param word The word to add to the knowledge.
      * @return The new knowledge record.
      */
-    public Knowledge learnWord(ResourceLocation word) {
+    public Knowledge learnWord(Identifier word) {
         return learnWords(List.of(word));
     }
 
@@ -43,7 +43,7 @@ public record Knowledge(UUID uuid, String name, List<ResourceLocation> words) {
      * @param words The words to add to the knowledge.
      * @return The new knowledge record.
      */
-    public Knowledge learnWords(List<ResourceLocation> words) {
+    public Knowledge learnWords(List<Identifier> words) {
         var updated = new ArrayList<>(words());
         for (var word : words) {
             if (word.toString().equals("minecraft:")) continue; // Don't store empty resource locations.
@@ -89,11 +89,11 @@ public record Knowledge(UUID uuid, String name, List<ResourceLocation> words) {
             wordStrings.add(list.getStringOr(i, ""));
         }
 
-        List<ResourceLocation> words = new ArrayList<>();
+        List<Identifier> words = new ArrayList<>();
 
         for (var str : wordStrings) {
             if (str.isEmpty()) continue;
-            words.add(ResourceLocation.tryParse(str));
+            words.add(Identifier.tryParse(str));
         }
 
         return new Knowledge(uuid, name, words);

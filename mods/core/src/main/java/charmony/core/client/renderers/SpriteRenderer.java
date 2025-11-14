@@ -3,13 +3,13 @@ package charmony.core.client.renderers;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public abstract class SpriteRenderer {
-    protected final ResourceLocation id;
-    protected ResourceLocation texture;
+    protected final Identifier id;
+    protected Identifier texture;
 
-    public SpriteRenderer(ResourceLocation id) {
+    public SpriteRenderer(Identifier id) {
         this.id = id;
     }
 
@@ -29,7 +29,7 @@ public abstract class SpriteRenderer {
         }
     }
 
-    public abstract ResourceLocation getTexture();
+    public abstract Identifier getTexture();
 
     public abstract Component getName();
 
@@ -37,7 +37,7 @@ public abstract class SpriteRenderer {
         return Component.empty();
     }
 
-    public ResourceLocation getId() {
+    public Identifier getId() {
         return id;
     }
 

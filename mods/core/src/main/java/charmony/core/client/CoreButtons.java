@@ -5,7 +5,7 @@ import net.minecraft.network.chat.Component;
 
 @SuppressWarnings("unused")
 public final class CoreButtons {
-    public static class CloseButton extends Button {
+    public static class CloseButton extends Button.Plain {
         public static int WIDTH = 110;
         public static int HEIGHT = 20;
         static Component TEXT = CoreResources.CLOSE;
@@ -15,7 +15,7 @@ public final class CoreButtons {
         }
     }
 
-    public static class BackButton extends Button {
+    public static class BackButton extends Button.Plain {
         public static int WIDTH = 100;
         public static int HEIGHT = 20;
         static Component TEXT = CoreResources.BACK;
@@ -25,7 +25,7 @@ public final class CoreButtons {
         }
     }
 
-    public static class SaveButton extends Button {
+    public static class SaveButton extends Button.Plain {
         public static int WIDTH = 100;
         public static int HEIGHT = 20;
         static Component TEXT = CoreResources.SAVE;
@@ -35,7 +35,7 @@ public final class CoreButtons {
         }
     }
 
-    public static class CancelButton extends Button {
+    public static class CancelButton extends Button.Plain {
         public static int WIDTH = 100;
         public static int HEIGHT = 20;
         static Component TEXT = CoreResources.CANCEL;
@@ -45,7 +45,7 @@ public final class CoreButtons {
         }
     }
 
-    public static class DeleteButton extends Button {
+    public static class DeleteButton extends Button.Plain {
         public static int WIDTH = 100;
         public static int HEIGHT = 20;
         static Component TEXT = CoreResources.DELETE;
@@ -55,7 +55,7 @@ public final class CoreButtons {
         }
     }
 
-    public static class EditButton extends Button {
+    public static class EditButton extends Button.Plain {
         public static int HEIGHT = 20;
 
         public EditButton(int x, int y, int width, OnPress onPress, Component text) {

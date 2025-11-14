@@ -1,17 +1,17 @@
 package charmony.tweaks.client.features.crafting_table_nearby;
 
+import charmony.core.client.BaseHudRenderer;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.player.Player;
-import charmony.core.client.BaseHudRenderer;
 
 public class HudRenderer extends BaseHudRenderer {
-    public ResourceLocation getImage() {
-        return ResourceLocation.withDefaultNamespace("textures/block/crafting_table_front.png");
+    public Identifier getImage() {
+        return Identifier.withDefaultNamespace("textures/block/crafting_table_front.png");
     }
 
     @Override

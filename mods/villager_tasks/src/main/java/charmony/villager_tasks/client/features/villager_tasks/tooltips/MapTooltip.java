@@ -3,11 +3,11 @@ package charmony.villager_tasks.client.features.villager_tasks.tooltips;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.state.MapRenderState;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
 public class MapTooltip extends BaseTooltip {
-    public static final ResourceLocation MAP_BACKGROUND = ResourceLocation.parse("textures/map/map_background.png");
+    public static final Identifier MAP_BACKGROUND = Identifier.parse("textures/map/map_background.png");
     private final MapRenderState mapRenderState = new MapRenderState();
     private final ItemStack stack;
 

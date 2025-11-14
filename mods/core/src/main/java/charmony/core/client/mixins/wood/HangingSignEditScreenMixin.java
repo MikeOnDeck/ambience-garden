@@ -1,22 +1,22 @@
 package charmony.core.client.mixins.wood;
 
+import charmony.core.base.SidedFeature;
+import charmony.core.common.features.wood.blocks.CustomCeilingHangingSignBlock;
+import charmony.core.common.features.wood.blocks.CustomWallHangingSignBlock;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractSignEditScreen;
 import net.minecraft.client.gui.screens.inventory.HangingSignEditScreen;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.SignBlockEntity;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import charmony.core.base.SidedFeature;
-import charmony.core.common.features.wood.blocks.CustomCeilingHangingSignBlock;
-import charmony.core.common.features.wood.blocks.CustomWallHangingSignBlock;
 
 @Mixin(HangingSignEditScreen.class)
 public abstract class HangingSignEditScreenMixin extends AbstractSignEditScreen {
-    @Mutable @Final @Shadow private ResourceLocation texture;
+    @Mutable @Final @Shadow private Identifier texture;
     @Unique private boolean hasCheckedForCustomGui;
 
     public HangingSignEditScreenMixin(SignBlockEntity signBlockEntity, boolean bl, boolean bl2) {

@@ -8,11 +8,11 @@ import charmony.villager_tasks.common.features.villager_tasks.Task;
 import charmony.villager_tasks.common.features.villager_tasks.interfaces.Satisfiable;
 import charmony.villager_tasks.common.features.villager_tasks.requirements.TreasureItem;
 import com.mojang.serialization.Codec;
-import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
+import net.minecraft.util.Util;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
@@ -135,7 +135,7 @@ public final class Treasure extends Aspect implements Satisfiable {
     }
 
     @Override
-    public Optional<ItemStack> onLootTablePopulate(Task task, Player player, ResourceLocation lootTableId, RandomSource random) {
+    public Optional<ItemStack> onLootTablePopulate(Task task, Player player, Identifier lootTableId, RandomSource random) {
         if (player == null) {
             return Optional.empty();
         }

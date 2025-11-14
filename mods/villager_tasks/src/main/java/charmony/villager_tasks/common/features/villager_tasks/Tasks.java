@@ -7,7 +7,7 @@ import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.resources.RegistryOps;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +49,7 @@ public record Tasks(UUID uuid, String name, List<Task> tasks) {
             .findFirst();
     }
 
-    public List<Task> ofDefinition(ResourceLocation def) {
+    public List<Task> ofDefinition(Identifier def) {
         return tasks.stream().filter(task -> task.definitionId.equals(def)).toList();
     }
 

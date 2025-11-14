@@ -1,12 +1,11 @@
 package charmony.core.client.mixins.setup_screen;
 
-import net.minecraft.client.Minecraft;
+import charmony.api.events.SetupScreenCallback;
 import net.minecraft.client.gui.screens.Screen;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import charmony.api.events.SetupScreenCallback;
 
 @Mixin(Screen.class)
 public abstract class ScreenMixin {
@@ -15,10 +14,10 @@ public abstract class ScreenMixin {
      * We can access existing GUI buttons and add new ones as required using the event invoked in this hook.
      */
     @Inject(
-        method = "init(Lnet/minecraft/client/Minecraft;II)V",
+        method = "init(II)V",
         at = @At("RETURN")
     )
-    private void hookInit(Minecraft client, int width, int height, CallbackInfo ci) {
+    private void hookInit(int width, int height, CallbackInfo ci) {
         SetupScreenCallback.EVENT.invoker().interact((Screen)(Object)this);
     }
 

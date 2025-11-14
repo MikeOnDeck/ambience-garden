@@ -1,14 +1,14 @@
 package charmony.tweaks.client.features.mob_textures;
 
+import charmony.core.base.Setup;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import charmony.core.base.Setup;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -36,7 +36,7 @@ public class Handlers extends Setup<MobTextures> {
     }
 
     @Nullable
-    public ResourceLocation texture(UUID uuid, List<ResourceLocation> textures) {
+    public Identifier texture(UUID uuid, List<Identifier> textures) {
         if (textures.isEmpty()) {
             return null;
         }

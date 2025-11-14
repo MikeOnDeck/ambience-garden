@@ -1,14 +1,14 @@
 package charmony.travel_journal.client.features.travel_journal;
 
+import charmony.core.Charmony;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import charmony.core.Charmony;
+import net.minecraft.resources.Identifier;
 
 public class Resources {
     public static final Pair<Integer, Integer> BACKGROUND_DIMENSIONS = Pair.of(256, 208);
-    public static final ResourceLocation BACKGROUND = Charmony.id("textures/gui/travel_journal.png");
-    public static final ResourceLocation PHOTO_BACKGROUND = Charmony.id("textures/gui/photo_background.png");
+    public static final Identifier BACKGROUND = Charmony.id("textures/gui/travel_journal.png");
+    public static final Identifier PHOTO_BACKGROUND = Charmony.id("textures/gui/photo_background.png");
     public static final Component DESCRIPTION = Component.translatable("gui.charmony.description");
     public static final Component DETAILS = Component.translatable("gui.charmony.details");
     public static final Component EDIT_DESCRIPTION = Component.translatable("gui.charmony.edit_description");

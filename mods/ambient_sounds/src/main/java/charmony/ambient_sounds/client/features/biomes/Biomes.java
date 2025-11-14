@@ -1,12 +1,12 @@
 package charmony.ambient_sounds.client.features.biomes;
 
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
 import charmony.api.core.Configurable;
 import charmony.api.core.FeatureDefinition;
+import charmony.api.core.Side;
 import charmony.core.base.Mod;
 import charmony.core.base.SidedFeature;
-import charmony.api.core.Side;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.Mth;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,7 +16,7 @@ import java.util.List;
     Plays ambient background sound according to the biome and time of day.""")
 @SuppressWarnings({"FieldMayBeFinal", "FieldCanBeLocal"})
 public final class Biomes extends SidedFeature {
-    private final List<ResourceLocation> validDimensions = new ArrayList<>();
+    private final List<Identifier> validDimensions = new ArrayList<>();
 
     public final Registers registers;
     public final Handlers handlers;
@@ -57,10 +57,10 @@ public final class Biomes extends SidedFeature {
         return dimensions;
     }
 
-    public List<ResourceLocation> validDimensions() {
+    public List<Identifier> validDimensions() {
         if (dimensions().isEmpty()) return List.of();
         if (validDimensions.isEmpty()) {
-            dimensions().forEach(dim -> validDimensions.add(ResourceLocation.parse(dim)));
+            dimensions().forEach(dim -> validDimensions.add(Identifier.parse(dim)));
         }
         return validDimensions;
     }

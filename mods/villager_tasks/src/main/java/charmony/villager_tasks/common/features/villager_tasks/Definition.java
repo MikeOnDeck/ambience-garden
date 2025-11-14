@@ -5,7 +5,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.tags.TagKey;
@@ -25,7 +25,7 @@ public class Definition {
     private ResourceManager manager; // TODO: check why this is needed
 
     // These are loaded from the JSON definition.
-    public ResourceLocation id;
+    public Identifier id;
     public String title = "";
     public int level = 0;
     public int expiry = 0;
@@ -41,7 +41,7 @@ public class Definition {
     private @Nullable ResourceKey<EntityType<?>> villagerKey = null;
     private @Nullable TagKey<EntityType<?>> villagerTag = null;
 
-    public static Definition fromJson(ResourceLocation id, ResourceManager manager, Resource resource) throws IOException {
+    public static Definition fromJson(Identifier id, ResourceManager manager, Resource resource) throws IOException {
         BufferedReader reader;
 
         reader = resource.openAsReader();
@@ -52,9 +52,9 @@ public class Definition {
 
         // Convert villager to a tag or resource key for lookup later.
         if (def.villager.startsWith("#")) {
-            def.villagerTag = TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.parse(def.villager.substring(1)));
+            def.villagerTag = TagKey.create(Registries.ENTITY_TYPE, Identifier.parse(def.villager.substring(1)));
         } else if (!def.villager.isEmpty()) {
-            def.villagerKey = ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.parse(def.villager));
+            def.villagerKey = ResourceKey.create(Registries.ENTITY_TYPE, Identifier.parse(def.villager));
         }
 
         return def;

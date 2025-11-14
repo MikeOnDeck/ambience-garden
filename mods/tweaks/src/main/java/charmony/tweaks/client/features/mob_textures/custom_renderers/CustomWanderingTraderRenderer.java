@@ -3,7 +3,7 @@ package charmony.tweaks.client.features.mob_textures.custom_renderers;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.WanderingTraderRenderer;
 import net.minecraft.client.renderer.entity.state.VillagerRenderState;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.npc.WanderingTrader;
 
@@ -20,7 +20,7 @@ public class CustomWanderingTraderRenderer extends WanderingTraderRenderer imple
 
     @Override
     @Nullable
-    public ResourceLocation getTextureLocation(VillagerRenderState villagerRenderState) {
+    public Identifier getTextureLocation(VillagerRenderState villagerRenderState) {
         return handlers.texture(uuid, registers.wanderingTraders);
     }
 

@@ -1,5 +1,12 @@
 package charmony.travel_journal.client.features.travel_journal.screen;
 
+import charmony.api.core.Color;
+import charmony.core.base.Environment;
+import charmony.core.client.CoreButtons;
+import charmony.core.helpers.TextComponentHelper;
+import charmony.travel_journal.client.features.travel_journal.Buttons;
+import charmony.travel_journal.client.features.travel_journal.Resources;
+import charmony.travel_journal.common.features.travel_journal.Bookmark;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -11,20 +18,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
-import charmony.api.core.Color;
-import charmony.core.base.Environment;
-import charmony.core.client.CoreButtons;
-import charmony.core.helpers.TextComponentHelper;
-import charmony.travel_journal.client.features.travel_journal.Buttons;
-import charmony.travel_journal.client.features.travel_journal.Resources;
-import charmony.travel_journal.common.features.travel_journal.Bookmark;
 
 @SuppressWarnings("unused")
 public class BookmarkScreen extends BaseScreen {
     private final Bookmark.Mutable bookmark;
-    private final ResourceLocation dimension;
+    private final Identifier dimension;
     private final BlockPos pos;
     private EditBox name;
     private MultiLineEditBox description;
