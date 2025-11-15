@@ -10,6 +10,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.Util;
@@ -20,6 +21,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.phys.AABB;
@@ -71,6 +73,28 @@ public final class Helpers {
         }
 
         return selected;
+    }
+
+    public static void applyEnchantments(RegistryAccess registryAccess, ItemStack stack, List<Map<String, Object>> enchantments, RandomSource random) {
+        var registry = registryAccess.lookupOrThrow(Registries.ENCHANTMENT);
+
+        for (var enchantmentMap : enchantments) {
+            Holder<Enchantment> ench;
+            var name = (String) enchantmentMap.get("enchantment");
+            if (!name.equals("random")) {
+                var key = ResourceKey.create(Registries.ENCHANTMENT, Identifier.parse(name));
+                ench = registry.get(key).orElse(null);
+            } else {
+                ench = registry.getRandom(random).orElse(null);
+            }
+
+            if (ench == null) continue;
+
+            var level = (int) (double) enchantmentMap.getOrDefault("level", 1.0d);
+            if (ench.value().canEnchant(stack)) {
+                stack.enchant(ench, Math.min(level, ench.value().getMaxLevel()));
+            }
+        }
     }
 
     /**

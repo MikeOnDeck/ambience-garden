@@ -24,12 +24,18 @@
     "experience": 5,
     "items": [
       {
-        "item": "minecraft:copper_ingot",
-        "exactly": 5
-      },
-      {
-        "item": "minecraft:iron_ingot",
-        "exactly": 5
+        "item": "minecraft:copper_sword",
+        "exactly": 1,
+        "enchantments": [
+          {
+            "enchantment": "minecraft:sharpness",
+            "level": 2
+          },
+          {
+            "enchantment": "random",
+            "level": 2
+          }
+        ]
       }
     ]
   }

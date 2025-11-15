@@ -55,6 +55,11 @@ public final class Collect extends Aspect implements Satisfiable {
                 var itemStack = new ItemStack(Helpers.resolveItem(builder.registryAccess(), itemId, random));
                 var itemCount = Helpers.getCountFromMap(itemMap, multiplier, random);
 
+                var enchantments = (List<Map<String, Object>>) itemMap.get("enchantments");
+                if (enchantments != null) {
+                    Helpers.applyEnchantments(builder.registryAccess(), itemStack, enchantments, random);
+                }
+
                 if (itemStack.isEmpty()) {
                     throw new IllegalStateException("Item " + itemId + " could not be parsed");
                 }

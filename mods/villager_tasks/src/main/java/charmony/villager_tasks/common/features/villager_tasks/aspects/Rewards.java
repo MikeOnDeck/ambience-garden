@@ -94,6 +94,11 @@ public final class Rewards extends Aspect {
                     throw new IllegalStateException("Item " + itemId + " could not be parsed");
                 }
 
+                var enchantments = (List<Map<String, Object>>) itemMap.get("enchantments");
+                if (enchantments != null) {
+                    Helpers.applyEnchantments(builder.registryAccess(), itemStack, enchantments, random);
+                }
+
                 criteria.add(new RewardItem(itemStack, itemCount, (int)itemWeight));
             } catch (Exception e) {
                 log().warn(e.getMessage() + " at index " + i);
