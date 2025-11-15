@@ -1,6 +1,7 @@
 package charmony.villager_tasks.client.features.villager_tasks.renderers;
 
 import charmony.api.core.Color;
+import charmony.villager_tasks.client.features.villager_tasks.component.IndentedBoxBuilder;
 import charmony.villager_tasks.client.features.villager_tasks.tooltips.BaseTooltip;
 import charmony.villager_tasks.common.features.villager_tasks.Resources;
 import charmony.villager_tasks.common.features.villager_tasks.Task;
@@ -91,7 +92,12 @@ public final class TaskRenderer extends BaseRenderer {
 
         // Background behind the task
         var taskHeight = task.isStarted() ? 23 : 21;
-        renderIndentedBox(guiGraphics, left, right, top, top + taskHeight, fillColor);
+
+        var box = new IndentedBoxBuilder()
+            .withDimensions(right - left, taskHeight)
+            .withColor(fillColor);
+
+        box.render(guiGraphics, left, top);
 
         // Level scroll icon
         var sx = left + 3;

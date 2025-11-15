@@ -2,6 +2,7 @@ package charmony.villager_tasks.client.features.villager_tasks.renderers;
 
 import charmony.api.core.Color;
 import charmony.core.client.MobSpriteRenderer;
+import charmony.villager_tasks.client.features.villager_tasks.component.AspectBoxBuilder;
 import charmony.villager_tasks.common.features.villager_tasks.Resources;
 import charmony.villager_tasks.common.features.villager_tasks.Task;
 import com.mojang.datafixers.util.Pair;
@@ -11,6 +12,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.LodestoneTracker;
+
+import java.util.List;
 
 public final class BattleRenderer extends BaseRenderer {
     public BattleRenderer(Task task) {
@@ -65,10 +68,21 @@ public final class BattleRenderer extends BaseRenderer {
                 var tracker = new LodestoneTracker(mob.globalPos(), true);
                 compass.set(DataComponents.LODESTONE_TRACKER, tracker);
 
-                var box = renderSpriteAndItemBox(guiGraphics, mob, spriteRenderer, compass, Resources.YOU_DEFEAT, x + xx, y + yy, mouseX, mouseY, task.isStarted());
+                List<Component> tooltips = List.of(
+                    Resources.YOU_MUST_DEFEAT,
+                    nameAndTotal(spriteRenderer.getName(), mob.total())
+                );
 
-                var width = box.getFirst();
-                var height = box.getSecond();
+                var box = new AspectBoxBuilder()
+                    .withSpriteRenderer(spriteRenderer)
+                    .withItemStack(compass)
+                    .withGraphicOrder(AspectBoxBuilder.GraphicOrder.SPRITE_FIRST)
+                    .withTooltipText(tooltips)
+                    .withRequirement(mob);
+
+                box.render(guiGraphics, font, x + xx, y + yy, mouseX, mouseY);
+                var width = box.width();
+                var height = box.height();
 
                 xx += width + boxMargin;
                 if (xx + width > maxWidth) {

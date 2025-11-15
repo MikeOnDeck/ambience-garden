@@ -1,6 +1,7 @@
 package charmony.villager_tasks.client.features.villager_tasks.screens;
 
 import charmony.villager_tasks.client.features.villager_tasks.Buttons;
+import charmony.villager_tasks.client.features.villager_tasks.component.IndentedBoxBuilder;
 import charmony.villager_tasks.client.features.villager_tasks.renderers.TaskRenderer;
 import charmony.villager_tasks.common.features.villager_tasks.Resources;
 import charmony.villager_tasks.common.features.villager_tasks.Task;
@@ -29,7 +30,6 @@ public class TaskDetailsScreen extends BaseScreen {
     @Override
     protected void init() {
         super.init();
-        if (minecraft == null) return;
 
         if (parent != null) {
             var backToTask = new Buttons.BackToTaskButton(midX - (Buttons.BackToTaskButton.WIDTH / 2), midY + 94,
@@ -61,7 +61,11 @@ public class TaskDetailsScreen extends BaseScreen {
         guiGraphics.drawString(font, Resources.REQUIREMENTS, left, top + 5, titleColor.getArgbColor(), false);
 
         top += 14;
-        taskRenderer.renderIndentedBox(guiGraphics, left, right, top, top + 70, fillColor);
+        var reqbox = new IndentedBoxBuilder()
+            .withDimensions(right - left, 70)
+            .withColor(fillColor);
+
+        reqbox.render(guiGraphics, left, top);
 
         var px = left + 5;
         var py = top + 5;
@@ -83,7 +87,11 @@ public class TaskDetailsScreen extends BaseScreen {
         guiGraphics.drawString(font, Resources.REWARDS, left, top + 5, titleColor.getArgbColor(), false);
 
         top += 14;
-        taskRenderer.renderIndentedBox(guiGraphics, left, right, top, top + 49, fillColor);
+        var rewardbox = new IndentedBoxBuilder()
+            .withDimensions(right - left, 49)
+            .withColor(fillColor);
+
+        rewardbox.render(guiGraphics, left, top);
 
         px = left + 5;
         py = top + 5;

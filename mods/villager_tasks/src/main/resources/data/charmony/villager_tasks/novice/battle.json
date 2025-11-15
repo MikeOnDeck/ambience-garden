@@ -3,7 +3,7 @@
   "level": 1,
   "battle": {
     "exactly": 1,
-    "distance": 36,
+    "structure": "#minecraft:village",
     "mobs": [
       {
         "entity": "minecraft:wither_skeleton",

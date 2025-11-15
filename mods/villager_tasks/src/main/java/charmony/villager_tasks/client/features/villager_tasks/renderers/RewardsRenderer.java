@@ -1,21 +1,19 @@
 package charmony.villager_tasks.client.features.villager_tasks.renderers;
 
 import charmony.api.core.Color;
+import charmony.villager_tasks.client.features.villager_tasks.component.AspectBoxBuilder;
 import charmony.villager_tasks.common.features.villager_tasks.Resources;
 import charmony.villager_tasks.common.features.villager_tasks.Task;
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public final class RewardsRenderer extends BaseRenderer {
-    private Color fillColor;
-
     public RewardsRenderer(Task task) {
         super(task);
     }
@@ -72,38 +70,44 @@ public final class RewardsRenderer extends BaseRenderer {
 
         // Reward XP
         if (rewards.experience > 0) {
-            fillColor = new Color(0x40b0b0);
+            List<Component> tooltips = List.of(
+                Resources.YOU_RECEIVE,
+                Component.translatable("gui.charmony.villager_tasks.experience_levels", rewards.experience)
+            );
 
-            var stack = new ItemStack(Items.EXPERIENCE_BOTTLE);
-            var component = Component.literal("" + rewards.experience);
-            var tooltip = new ArrayList<Component>();
-            tooltip.add(Resources.YOU_RECEIVE);
-            tooltip.add(Component.translatable("gui.charmony.villager_tasks.experience_levels", rewards.experience));
+            var box = new AspectBoxBuilder()
+                .withText(Component.literal("" + rewards.experience))
+                .withItemStack(new ItemStack(Items.EXPERIENCE_BOTTLE))
+                .withFillColor(new Color(0x40b0b0))
+                .withTooltipText(tooltips);
 
-            var box = renderCustomItemBox(guiGraphics, stack, component, tooltip, x + xx, y + yy, mouseX, mouseY);
-            xx += box.getFirst() + boxMargin;
+            box.render(guiGraphics, font, x + xx, y + yy, mouseX, mouseY);
+            xx += box.width() + boxMargin;
         }
 
         // Reward items
         if (!rewards.items.isEmpty()) {
-            fillColor = new Color(0x4090c0);
-
             for (var i = 0; i < rewards.items.size(); i++) {
                 var item = rewards.items.get(i);
                 var stack = item.stack();
-                var total = "" + item.total();
-                var component = Component.literal(total);
 
                 // Reconstruct the item tooltip
-                var itemTooltip = Screen.getTooltipFromItem(Minecraft.getInstance(), stack);
-                var tooltip = new ArrayList<Component>();
-                tooltip.add(Resources.YOU_RECEIVE);
-                tooltip.add(Component.translatable("gui.charmony.villager_tasks.name_and_number", itemTooltip.getFirst(), total));
+                var itemTooltip = itemTooltip(stack);
+                List<Component> tooltip = new ArrayList<>(List.of(
+                    Resources.YOU_RECEIVE,
+                    nameAndTotal(itemTooltip.getFirst(), item.total())
+                ));
                 tooltip.addAll(itemTooltip.subList(1, itemTooltip.size()));
 
-                var box = renderCustomItemBox(guiGraphics, stack, component, tooltip, x + xx, y + yy, mouseX, mouseY);
-                var width = box.getFirst();
-                var height = box.getSecond();
+                var box = new AspectBoxBuilder()
+                    .withText(item.total())
+                    .withItemStack(item.stack())
+                    .withFillColor(new Color(0x4090c0))
+                    .withTooltipText(tooltip);
+
+                box.render(guiGraphics, font, x + xx, y + yy, mouseX, mouseY);
+                var width = box.width();
+                var height = box.height();
 
                 xx += width + boxMargin;
                 if (xx >= maxWidth) {
@@ -115,10 +119,5 @@ public final class RewardsRenderer extends BaseRenderer {
         }
 
         return Pair.of(xx, yy);
-    }
-
-    @Override
-    public Color fillColor() {
-        return fillColor;
     }
 }

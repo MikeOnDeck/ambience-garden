@@ -2,7 +2,6 @@ package charmony.villager_tasks.common.features.villager_tasks.requirements;
 
 import charmony.core.base.Log;
 import charmony.core.helpers.MobHelper;
-import charmony.core.helpers.WorldHelper;
 import charmony.villager_tasks.common.features.villager_tasks.Task;
 import charmony.villager_tasks.common.features.villager_tasks.VillagerTasks;
 import charmony.villager_tasks.common.features.villager_tasks.interfaces.Satisfiable;
@@ -12,9 +11,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.UUIDUtil;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
@@ -24,13 +21,8 @@ import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.item.MapItem;
 import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraft.world.level.saveddata.maps.MapDecorationTypes;
-import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -38,45 +30,36 @@ import java.util.UUID;
 public class BattleMob implements Satisfiable {
     public static final String BATTLE_TAG = "charmony_battle";
 
-    private final Identifier mob;
-    private final Identifier dimension;
-    private Optional<BlockPos> pos;
-    private final List<BattleMobEffect> effects;
-    private final BattleMobStats stats;
+    private final BattleMobData data;
     private final UUID uniqueId;
-    private final int distance;
+    private final Identifier dimension;
     private final int total;
     private int defeated;
     private boolean spawned;
+    private Optional<BlockPos> pos;
 
     public static final Codec<BattleMob> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-        Identifier.CODEC.fieldOf("mob").forGetter(self -> self.mob),
+        BattleMobData.CODEC.fieldOf("data").forGetter(self -> self.data),
+        UUIDUtil.CODEC.fieldOf("unique_id").forGetter(self -> self.uniqueId),
         Identifier.CODEC.fieldOf("dimension").forGetter(self -> self.dimension),
         BlockPos.CODEC.lenientOptionalFieldOf("pos").forGetter(self -> self.pos),
-        BattleMobEffect.CODEC.listOf().fieldOf("effects").forGetter(self -> self.effects),
-        BattleMobStats.CODEC.fieldOf("state").forGetter(self -> self.stats),
-        UUIDUtil.CODEC.fieldOf("unique_id").forGetter(self -> self.uniqueId),
-        Codec.INT.fieldOf("distance").forGetter(self -> self.distance),
         Codec.INT.fieldOf("total").forGetter(self -> self.total),
         Codec.INT.fieldOf("defeated").forGetter(self -> self.defeated),
         Codec.BOOL.fieldOf("spawned").forGetter(self -> self.spawned)
     ).apply(instance, BattleMob::new));
 
-    public BattleMob(Identifier mob, Identifier dimension, Optional<BlockPos> pos, List<BattleMobEffect> effects, BattleMobStats stats, UUID uniqueId, int distance, int total, int defeated, boolean spawned) {
-        this.mob = mob;
+    public BattleMob(BattleMobData data, UUID uniqueId, Identifier dimension, Optional<BlockPos> pos, int total, int defeated, boolean spawned) {
         this.dimension = dimension;
         this.pos = pos;
-        this.effects = effects;
-        this.stats = stats;
+        this.data = data;
         this.uniqueId = uniqueId;
-        this.distance = distance;
         this.total = total;
         this.defeated = defeated;
         this.spawned = spawned;
     }
 
     public BattleMob copy() {
-        return new BattleMob(mob, dimension, pos, new ArrayList<>(effects), stats, uniqueId, distance, total, defeated, spawned);
+        return new BattleMob(data.copy(), uniqueId, dimension, pos, total, defeated, spawned);
     }
 
     @Override
@@ -103,7 +86,7 @@ public class BattleMob implements Satisfiable {
     }
 
     public Identifier mob() {
-        return mob;
+        return data.mob();
     }
 
     public ResourceKey<EntityType<?>> mobKey() {
@@ -114,8 +97,8 @@ public class BattleMob implements Satisfiable {
         return pos.map(pos -> GlobalPos.of(ResourceKey.create(Registries.DIMENSION, dimension), pos));
     }
 
-    public BattleMobStats stats() {
-        return stats;
+    public BattleMobData data() {
+        return data;
     }
 
     @SuppressWarnings("unchecked")
@@ -125,9 +108,12 @@ public class BattleMob implements Satisfiable {
         var pos = this.pos.orElse(null);
         if (pos == null) return;
 
-        var playerPos = player.blockPosition();
         var playerDim = player.level().dimension().identifier();
-        var playerInRange = playerDim.equals(this.dimension) && pos.distManhattan(playerPos) <= 32;
+        var playerPos = player.blockPosition();
+        var xzPos = new BlockPos(playerPos.getX(), 0, playerPos.getZ());
+
+        var dist = pos.distManhattan(xzPos);
+        var playerInRange = playerDim.equals(this.dimension) && dist <= 32;
 
         if (playerInRange && !spawned) {
             var entityRegistry = registryAccess.lookup(Registries.ENTITY_TYPE).orElseThrow();
@@ -146,7 +132,7 @@ public class BattleMob implements Satisfiable {
 
                 try {
                     if (spawnPos.isPresent()) {
-                        var health = stats.health();
+                        var health = data().health();
                         var result = MobHelper.spawn((EntityType<? extends Mob>) entityType, level, spawnPos.get(), spawnReason, (mob) -> {
                             mob.addTag(BATTLE_TAG + "_" + uniqueId.toString());
                             mob.setTarget(player);
@@ -154,12 +140,12 @@ public class BattleMob implements Satisfiable {
                             mob.setAggressive(true);
                             mob.setHealth(health);
 
-                            for (var effect : effects) {
+                            for (var effect : data().effects()) {
                                 mob.addEffect(effect.mobEffectInstance(effectRegistry));
                             }
                         });
                         if (result) {
-                            log().debug("Spawned mob " + mob + " at " + spawnPos.get());
+                            log().debug("Spawned mob " + mob() + " at " + spawnPos.get());
                             successfullySpawned++;
                         }
                     }
@@ -176,18 +162,12 @@ public class BattleMob implements Satisfiable {
     }
 
     public void onStart(Task task, ServerPlayer player) {
-        if (pos.isPresent()) return;
+        if (this.pos.isPresent()) return;
         if (!task.isStarting()) return; // Just in case.
 
         var level = player.level();
         var playerPos = player.blockPosition();
-        var xpos = WorldHelper.addRandomOffset(level, playerPos, task.random(), distance / 2, distance);
-        var pos = new BlockPos(xpos.getX(), level.getHeight(Heightmap.Types.WORLD_SURFACE, xpos.getX(), xpos.getZ()), xpos.getZ());
-
-        var map = MapItem.create(level, pos.getX(), pos.getZ(), (byte) 2, true, true);
-        MapItem.renderBiomePreviewMap(level, map);
-        MapItemSavedData.addTargetDecoration(map, pos, "+", MapDecorationTypes.RED_X);
-        map.set(DataComponents.ITEM_NAME, Component.translatable(task.titleKey));
+        var pos = task.battle.spawn().getSpawnPosition(level, playerPos, task.random());
 
         this.pos = Optional.of(pos);
     }

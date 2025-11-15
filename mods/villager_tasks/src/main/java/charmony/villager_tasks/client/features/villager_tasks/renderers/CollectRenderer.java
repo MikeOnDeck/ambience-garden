@@ -1,11 +1,14 @@
 package charmony.villager_tasks.client.features.villager_tasks.renderers;
 
 import charmony.api.core.Color;
+import charmony.villager_tasks.client.features.villager_tasks.component.AspectBoxBuilder;
 import charmony.villager_tasks.common.features.villager_tasks.Resources;
 import charmony.villager_tasks.common.features.villager_tasks.Task;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
+
+import java.util.List;
 
 public final class CollectRenderer extends BaseRenderer {
     public CollectRenderer(Task task) {
@@ -52,11 +55,20 @@ public final class CollectRenderer extends BaseRenderer {
 
             for (var i = 0; i < collect.items().size(); i++) {
                 var item = collect.items().get(i);
-                var stack = item.stack();
-                var box = renderItemBox(guiGraphics, item, stack, Resources.YOU_COLLECT, x + xx, y + yy, mouseX, mouseY, task.isStarted());
 
-                var width = box.getFirst();
-                var height = box.getSecond();
+                List<Component> tooltips = List.of(
+                    Resources.YOU_MUST_COLLECT,
+                    nameAndTotal(itemNameFromTooltip(item.stack()), item.total())
+                );
+
+                var box = new AspectBoxBuilder()
+                    .withItemStack(item.stack())
+                    .withTooltipText(tooltips)
+                    .withRequirement(item);
+
+                box.render(guiGraphics, font, x + xx, y + yy, mouseX, mouseY);
+                var width = box.width();
+                var height = box.height();
 
                 xx += width + boxMargin;
                 if (xx >= maxWidth) {

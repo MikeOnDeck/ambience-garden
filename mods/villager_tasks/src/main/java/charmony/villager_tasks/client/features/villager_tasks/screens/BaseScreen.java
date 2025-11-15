@@ -30,7 +30,6 @@ public abstract class BaseScreen extends Screen {
     @Override
     protected void init() {
         super.init();
-        if (minecraft == null) return;
 
         midX = width / 2;
         midY = height / 2;
@@ -71,8 +70,6 @@ public abstract class BaseScreen extends Screen {
     }
 
     protected void addCloseButton() {
-        if (minecraft == null) return;
-
         var closeButton = new Buttons.CloseButton(midX - (Buttons.CloseButton.WIDTH / 2), midY + 94,
             b -> minecraft.setScreen(null));
 

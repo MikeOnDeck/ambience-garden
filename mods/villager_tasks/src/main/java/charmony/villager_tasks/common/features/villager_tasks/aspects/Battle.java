@@ -7,9 +7,11 @@ import charmony.villager_tasks.common.features.villager_tasks.Resources;
 import charmony.villager_tasks.common.features.villager_tasks.Task;
 import charmony.villager_tasks.common.features.villager_tasks.interfaces.Satisfiable;
 import charmony.villager_tasks.common.features.villager_tasks.requirements.BattleMob;
+import charmony.villager_tasks.common.features.villager_tasks.requirements.BattleMobData;
 import charmony.villager_tasks.common.features.villager_tasks.requirements.BattleMobEffect;
-import charmony.villager_tasks.common.features.villager_tasks.requirements.BattleMobStats;
+import charmony.villager_tasks.common.features.villager_tasks.requirements.BattleMobSpawn;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
@@ -28,14 +30,18 @@ public final class Battle extends Aspect implements Satisfiable {
     public static final String ID = "battle";
 
     private final List<BattleMob> mobs;
+    private final BattleMobSpawn spawn;
 
-    public static final Codec<Battle> CODEC = BattleMob.CODEC.listOf().fieldOf("mobs")
-        .xmap(Battle::new, battle -> battle.mobs).codec();
+    public static final Codec<Battle> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+        BattleMob.CODEC.listOf().fieldOf("mobs").forGetter(self -> self.mobs),
+        BattleMobSpawn.CODEC.fieldOf("spawn").forGetter(self -> self.spawn)
+    ).apply(instance, Battle::new));
 
-    public static final Battle EMPTY = new Battle(List.of());
+    public static final Battle EMPTY = new Battle(List.of(), BattleMobSpawn.EMPTY);
 
-    public Battle(List<BattleMob> mobs) {
+    public Battle(List<BattleMob> mobs, BattleMobSpawn spawn) {
         this.mobs = mobs;
+        this.spawn = spawn;
     }
 
     @SuppressWarnings("unchecked")
@@ -44,6 +50,7 @@ public final class Battle extends Aspect implements Satisfiable {
         if (map.isEmpty()) return EMPTY;
 
         var level = builder.player().level();
+        var registryAccess = level.registryAccess();
         var dimension = level.dimension().identifier();
         var random = builder.random();
         var multiplier = builder.modifier().negativeMultiplier();
@@ -56,6 +63,12 @@ public final class Battle extends Aspect implements Satisfiable {
         var count = Math.min(mobs.size(), Helpers.getCountFromMap(map, multiplier, random));
         var criteria = new ArrayList<BattleMob>();
 
+        // Decide where to place the blockPos for spawning.
+        var distance = (double) map.getOrDefault("distance", 0d);
+        var structure = (String) map.getOrDefault("structure", "");
+        var biome = (String) map.getOrDefault("biome", "");
+        var spawn = BattleMobSpawn.make(registryAccess, distance, structure, biome, random);
+
         for (var i = 0; i < mobs.size(); i++) {
             try {
                 // Parse mob entry.
@@ -66,12 +79,8 @@ public final class Battle extends Aspect implements Satisfiable {
                     throw new IllegalStateException("Invalid mob ID " + mobStr);
                 }
                 var mobCount = Helpers.getCountFromMap(mobMap, multiplier, random);
-
-                var spawnDistance = (double) mobMap.getOrDefault("distance", 128.0d);
                 var uniqueId = UuidHelper.fromRandom(random);
-
                 var health = (double) mobMap.getOrDefault("health", 20.0d);
-                var stats = new BattleMobStats((int)health);
 
                 // Parse effects to apply to these mobs.
                 var effects = (List<Map<String, Object>>) mobMap.getOrDefault("effects", List.of());
@@ -90,8 +99,8 @@ public final class Battle extends Aspect implements Satisfiable {
                     effectList.add(new BattleMobEffect(effectId, (int)amplifier, (int)duration));
                 }
 
-                criteria.add(new BattleMob(mobId, dimension,  Optional.empty(), effectList,
-                    stats, uniqueId, (int)spawnDistance, mobCount, 0, false));
+                var stats = new BattleMobData(mobId, (int)health, effectList);
+                criteria.add(new BattleMob(stats, uniqueId, dimension,  Optional.empty(), mobCount, 0, false));
             } catch (Exception e) {
                 log().warn(e.getMessage() + " at index " + i);
             }
@@ -103,12 +112,12 @@ public final class Battle extends Aspect implements Satisfiable {
 
         Util.shuffle(criteria, random);
         var list = criteria.subList(0, Math.min(count, criteria.size()));
-        return new Battle(list);
+        return new Battle(list, spawn);
     }
 
     @Override
     public Battle copy() {
-        return new Battle(mobs.stream().map(BattleMob::copy).toList());
+        return new Battle(mobs.stream().map(BattleMob::copy).toList(), spawn.copy());
     }
 
     @Override
@@ -169,6 +178,10 @@ public final class Battle extends Aspect implements Satisfiable {
         }
 
         return false;
+    }
+
+    public BattleMobSpawn spawn() {
+        return spawn;
     }
 
     public List<BattleMob> mobs() {

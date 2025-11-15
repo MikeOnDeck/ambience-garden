@@ -2,11 +2,14 @@ package charmony.villager_tasks.client.features.villager_tasks.renderers;
 
 import charmony.api.core.Color;
 import charmony.core.client.MobSpriteRenderer;
+import charmony.villager_tasks.client.features.villager_tasks.component.AspectBoxBuilder;
 import charmony.villager_tasks.common.features.villager_tasks.Resources;
 import charmony.villager_tasks.common.features.villager_tasks.Task;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
+
+import java.util.List;
 
 public final class HuntRenderer extends BaseRenderer {
     public HuntRenderer(Task task) {
@@ -56,10 +59,20 @@ public final class HuntRenderer extends BaseRenderer {
             for (var i = 0; i < hunt.mobs().size(); i++) {
                 var mob = hunt.mobs().get(i);
                 var spriteRenderer = new MobSpriteRenderer(mob.mob());
-                var box = renderSpriteBox(guiGraphics, mob, spriteRenderer, Resources.YOU_HUNT, x + xx, y + yy, mouseX, mouseY, task.isStarted());
 
-                var width = box.getFirst();
-                var height = box.getSecond();
+                List<Component> tooltips = List.of(
+                    Resources.YOU_MUST_HUNT,
+                    nameAndTotal(spriteRenderer.getName(), mob.total())
+                );
+
+                var box = new AspectBoxBuilder()
+                    .withSpriteRenderer(spriteRenderer)
+                    .withTooltipText(tooltips)
+                    .withRequirement(mob);
+
+                box.render(guiGraphics, font, x + xx, y + yy, mouseX, mouseY);
+                var width = box.width();
+                var height = box.height();
 
                 xx += width + boxMargin;
                 if (xx + width > maxWidth) {

@@ -47,10 +47,11 @@ public final class Resources {
     public static final Component REWARDS = Component.translatable("gui.charmony.villager_tasks.rewards");
     public static final Component TASKS = Component.translatable("gui.charmony.villager_tasks.tasks");
     public static final Component TREASURE_ASPECT = Component.translatable("gui.charmony.villager_tasks.aspect.treasure");
-    public static final MutableComponent YOU_COLLECT = Component.translatable("gui.charmony.villager_tasks.you_collect").withStyle(ChatFormatting.YELLOW);
-    public static final MutableComponent YOU_DEFEAT = Component.translatable("gui.charmony.villager_tasks.you_defeat").withStyle(ChatFormatting.YELLOW);
-    public static final MutableComponent YOU_HUNT = Component.translatable("gui.charmony.villager_tasks.you_hunt").withStyle(ChatFormatting.YELLOW);
-    public static final MutableComponent YOU_DISCOVER = Component.translatable("gui.charmony.villager_tasks.you_discover").withStyle(ChatFormatting.YELLOW);
+
+    public static final MutableComponent YOU_MUST_COLLECT = Component.translatable("gui.charmony.villager_tasks.you_must_collect").withStyle(ChatFormatting.YELLOW);
+    public static final MutableComponent YOU_MUST_DEFEAT = Component.translatable("gui.charmony.villager_tasks.you_must_defeat").withStyle(ChatFormatting.YELLOW);
+    public static final MutableComponent YOU_MUST_HUNT = Component.translatable("gui.charmony.villager_tasks.you_must_hunt").withStyle(ChatFormatting.YELLOW);
+    public static final MutableComponent YOU_MUST_DISCOVER = Component.translatable("gui.charmony.villager_tasks.you_must_discover").withStyle(ChatFormatting.YELLOW);
     public static final MutableComponent YOU_RECEIVE = Component.translatable("gui.charmony.villager_tasks.you_receive").withStyle(ChatFormatting.AQUA);
 
     public static final Map<Integer, Identifier> ACTIVE_SCROLL_LEVELS = new HashMap<>();
