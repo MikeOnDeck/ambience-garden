@@ -1,6 +1,7 @@
 {
   "title": "Treasure hunting",
   "level": 1,
+  "peaceful": true,
   "treasure": {
     "min": 1,
     "max": 2,

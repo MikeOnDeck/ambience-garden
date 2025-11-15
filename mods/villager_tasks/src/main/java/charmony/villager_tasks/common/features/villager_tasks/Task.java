@@ -117,7 +117,7 @@ public class Task implements EventListener, Satisfiable {
                 Rewards.make(builder)
             );
         } catch (Exception e) {
-            VillagerTasks.feature().log().error("Failed to create task for definition: " + definition.id, e);
+            VillagerTasks.feature().log().error("Failed to create task from definition: " + definition.id, e);
             task = EMPTY;
         }
 

@@ -7,7 +7,6 @@ import charmony.villager_tasks.common.features.villager_tasks.requirements.Treas
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.fabricmc.fabric.api.loot.v3.LootTableSource;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
@@ -139,12 +138,6 @@ public class Handlers extends Setup<VillagerTasks> {
                 var result = task.onEntityKilled(task, entity, damageSource);
                 if (result) return; // Stop processing if the event was handled.
             }
-
-//            var tasks = PLAYER_TASKS.getOrDefault(player, Tasks.EMPTY);
-//            for (var task : tasks.tasks()) {
-//                var result = task.onEntityKilled(task, entity, damageSource);
-//                if (result) return; // Stop processing if the event was handled.
-//            }
         }
     }
 
@@ -281,18 +274,16 @@ public class Handlers extends Setup<VillagerTasks> {
 
             // Get top valid definitions.
             var valid = defs.stream()
-                .filter(def -> taskOwner != null && def.appliesTo(level.registryAccess().lookupOrThrow(Registries.ENTITY_TYPE), taskOwner))
+                .filter(def -> taskOwner != null && def.canBeApplied(level, taskOwner))
                 .limit(5)
                 .toList();
 
             // Generate tasks from definitions
             var taskList = new ArrayList<Task>();
             for (var def : valid) {
-                try {
-                    var task = Task.create(player, def, uuid, taskModifier, seed);
+                var task = Task.create(player, def, uuid, taskModifier, seed);
+                if (!task.isEmpty()) {
                     taskList.add(task);
-                } catch (Exception e) {
-                    log().error("Failed to create task from definition " + def.id + ": " + e.getMessage());
                 }
             }
 

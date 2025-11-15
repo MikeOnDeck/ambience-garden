@@ -1,14 +1,15 @@
 package charmony.villager_tasks.common.features.villager_tasks;
 
 import com.google.gson.Gson;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.npc.Villager;
@@ -29,6 +30,7 @@ public class Definition {
     public String title = "";
     public int level = 0;
     public int expiry = 0;
+    public boolean peaceful = false;
     public String villager = ""; // Don't reference this directly; use appliesTo().
     public Map<String, Object> collect = new HashMap<>();
     public Map<String, Object> treasure = new HashMap<>();
@@ -61,9 +63,15 @@ public class Definition {
     }
 
     /**
-     * True if this definition applies to the given villager.
+     * True if this definition can be applied.
      */
-    public boolean appliesTo(Registry<EntityType<?>> entityRegistry, AbstractVillager abstractVillager) {
+    public boolean canBeApplied(ServerLevel level, AbstractVillager abstractVillager) {
+        if (level.getDifficulty().equals(Difficulty.PEACEFUL) && !peaceful) {
+            return false;
+        }
+
+        var registry = level.registryAccess().lookupOrThrow(Registries.ENTITY_TYPE);
+
         if (this.villager.isEmpty()) {
             return true; // Allows all villagers if undefined.
         }
@@ -83,7 +91,7 @@ public class Definition {
         if (villagerTag != null) {
             return abstractVillager.getType().is(villagerTag);
         } else {
-            return entityRegistry.getOptional(villagerKey)
+            return registry.getOptional(villagerKey)
                 .map(type -> abstractVillager.getType().equals(type))
                 .orElse(false);
         }
