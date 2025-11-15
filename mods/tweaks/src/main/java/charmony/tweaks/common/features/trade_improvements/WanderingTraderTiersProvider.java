@@ -1,15 +1,15 @@
 package charmony.tweaks.common.features.trade_improvements;
 
-import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.world.entity.npc.VillagerTrades;
 import charmony.api.tweaks.WandererTradeProvider;
 import charmony.api.tweaks.WandererTradeTier;
 import charmony.core.Api;
 import charmony.core.base.Setup;
 import charmony.core.common.GenericTrades;
 import charmony.core.helpers.TagHelper;
+import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.world.entity.npc.VillagerTrades;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +34,7 @@ public class WanderingTraderTiersProvider extends Setup<TradeImprovements> imple
                 @Override
                 public List<VillagerTrades.ItemListing> trades() {
                     return TagHelper.getValues(BuiltInRegistries.BLOCK, BlockTags.WOOL).stream()
-                        .map(block -> (VillagerTrades.ItemListing) new GenericTrades.ItemsForEmeralds(block, 3, 2, 8, 0, 0, 2))
+                        .map(block -> (VillagerTrades.ItemListing) new GenericTrades.ItemsForEmeralds(block.value(), 3, 2, 8, 0, 0, 2))
                         .toList();
                 }
             });
@@ -50,7 +50,7 @@ public class WanderingTraderTiersProvider extends Setup<TradeImprovements> imple
                 @Override
                 public List<VillagerTrades.ItemListing> trades() {
                     return TagHelper.getValues(BuiltInRegistries.BLOCK, BlockTags.CONCRETE_POWDER).stream()
-                        .map(block -> (VillagerTrades.ItemListing) new GenericTrades.ItemsForEmeralds(block, 3, 2, 8, 0, 0, 2))
+                        .map(block -> (VillagerTrades.ItemListing) new GenericTrades.ItemsForEmeralds(block.value(), 3, 2, 8, 0, 0, 2))
                         .toList();
                 }
             });
@@ -66,7 +66,7 @@ public class WanderingTraderTiersProvider extends Setup<TradeImprovements> imple
                 @Override
                 public List<VillagerTrades.ItemListing> trades() {
                     return TagHelper.getValues(BuiltInRegistries.BLOCK, ConventionalBlockTags.CONCRETES).stream()
-                        .map(block -> (VillagerTrades.ItemListing) new GenericTrades.ItemsForEmeralds(block, 5, 2, 8, 0, 0, 2))
+                        .map(block -> (VillagerTrades.ItemListing) new GenericTrades.ItemsForEmeralds(block.value(), 5, 2, 8, 0, 0, 2))
                         .toList();
                 }
             });
@@ -82,7 +82,7 @@ public class WanderingTraderTiersProvider extends Setup<TradeImprovements> imple
                 @Override
                 public List<VillagerTrades.ItemListing> trades() {
                     return TagHelper.getValues(BuiltInRegistries.BLOCK, ConventionalBlockTags.GLAZED_TERRACOTTAS).stream()
-                        .map(block -> (VillagerTrades.ItemListing) new GenericTrades.ItemsForEmeralds(block, 9, 2, 8, 0, 0, 2))
+                        .map(block -> (VillagerTrades.ItemListing) new GenericTrades.ItemsForEmeralds(block.value(), 9, 2, 8, 0, 0, 2))
                         .toList();
                 }
             });
@@ -98,7 +98,7 @@ public class WanderingTraderTiersProvider extends Setup<TradeImprovements> imple
                 @Override
                 public List<VillagerTrades.ItemListing> trades() {
                     return TagHelper.getValues(BuiltInRegistries.BLOCK, Tags.COLORED_TERRACOTTAS).stream()
-                        .map(block -> (VillagerTrades.ItemListing) new GenericTrades.ItemsForEmeralds(block, 3, 2, 8, 0, 0, 2))
+                        .map(block -> (VillagerTrades.ItemListing) new GenericTrades.ItemsForEmeralds(block.value(), 3, 2, 8, 0, 0, 2))
                         .toList();
                 }
             });
@@ -114,7 +114,7 @@ public class WanderingTraderTiersProvider extends Setup<TradeImprovements> imple
                 @Override
                 public List<VillagerTrades.ItemListing> trades() {
                     return TagHelper.getValues(BuiltInRegistries.BLOCK, Tags.COLORED_GLASS).stream()
-                        .map(block -> (VillagerTrades.ItemListing) new GenericTrades.ItemsForEmeralds(block, 3, 2, 8, 0, 0, 2))
+                        .map(block -> (VillagerTrades.ItemListing) new GenericTrades.ItemsForEmeralds(block.value(), 3, 2, 8, 0, 0, 2))
                         .toList();
                 }
             });
@@ -130,7 +130,7 @@ public class WanderingTraderTiersProvider extends Setup<TradeImprovements> imple
                 @Override
                 public List<VillagerTrades.ItemListing> trades() {
                     return TagHelper.getValues(BuiltInRegistries.ITEM, Tags.COLORED_BUNDLES).stream()
-                        .map(block -> (VillagerTrades.ItemListing) new GenericTrades.ItemsForEmeralds(block, 28, 8, 1, 0, 0, 1))
+                        .map(block -> (VillagerTrades.ItemListing) new GenericTrades.ItemsForEmeralds(block.value(), 28, 8, 1, 0, 0, 1))
                         .toList();
                 }
             });
@@ -146,7 +146,7 @@ public class WanderingTraderTiersProvider extends Setup<TradeImprovements> imple
                 @Override
                 public List<VillagerTrades.ItemListing> trades() {
                     return TagHelper.getValues(BuiltInRegistries.ITEM, Tags.COLORED_CANDLES).stream()
-                        .map(block -> (VillagerTrades.ItemListing) new GenericTrades.ItemsForEmeralds(block, 3, 2, 8, 0, 0, 2))
+                        .map(block -> (VillagerTrades.ItemListing) new GenericTrades.ItemsForEmeralds(block.value(), 3, 2, 8, 0, 0, 2))
                         .toList();
                 }
             });

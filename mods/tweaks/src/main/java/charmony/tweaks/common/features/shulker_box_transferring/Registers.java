@@ -44,8 +44,9 @@ public class Registers extends Setup<ShulkerBoxTransferring> {
 
     private void worldLoad(MinecraftServer server, ServerLevel level) {
         for (var block : TagHelper.getValues(BuiltInRegistries.BLOCK, BlockTags.SHULKER_BOXES)) {
-            if (!blacklist.contains(block)) {
-                blacklist.add(block);
+            var value = block.value();
+            if (!blacklist.contains(value)) {
+                blacklist.add(value);
             }
         }
     }
