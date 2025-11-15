@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.52.0
+
+- Update for Minecraft 1.21.11.
+- TagHelper values now return holders.
+
 ## 1.51.1
 
 - Remove getDescription from sprite renderers.

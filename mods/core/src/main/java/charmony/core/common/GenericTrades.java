@@ -3,6 +3,7 @@ package charmony.core.common;
 import charmony.core.Charmony;
 import charmony.core.base.Log;
 import charmony.core.helpers.TagHelper;
+import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
@@ -49,7 +50,7 @@ public final class GenericTrades {
         @Override
         public MerchantOffer getOffer(ServerLevel level, Entity merchant, RandomSource random) {
             var blocks = TagHelper.getValues(level.registryAccess()
-                .lookupOrThrow(tag.registry()), tag);
+                .lookupOrThrow(tag.registry()), tag).stream().map(Holder::value).toList();
 
             if (blocks.isEmpty()) {
                 return null;
@@ -93,8 +94,10 @@ public final class GenericTrades {
         @Nullable
         @Override
         public MerchantOffer getOffer(ServerLevel level, Entity merchant, RandomSource random) {
-            var values1 = TagHelper.getValues(level.registryAccess().lookupOrThrow(tag1.registry()), tag1);
-            var values2 = TagHelper.getValues(level.registryAccess().lookupOrThrow(tag2.registry()), tag2);
+            var registryAccess = level.registryAccess();
+
+            var values1 = TagHelper.getValues(registryAccess.lookupOrThrow(tag1.registry()), tag1).stream().map(Holder::value).toList();
+            var values2 = TagHelper.getValues(registryAccess.lookupOrThrow(tag2.registry()), tag2).stream().map(Holder::value).toList();
             if (values1.isEmpty() || values2.isEmpty()) return null;
 
             return new MerchantOffer(
@@ -171,7 +174,7 @@ public final class GenericTrades {
         @Override
         public MerchantOffer getOffer(ServerLevel level, Entity merchant, RandomSource random) {
             var blocks = TagHelper.getValues(level.registryAccess()
-                .lookupOrThrow(tag.registry()), tag);
+                .lookupOrThrow(tag.registry()), tag).stream().map(Holder::value).toList();
 
             return new MerchantOffer(
                 getCost(random, Items.EMERALD, baseEmeralds, extraEmeralds),

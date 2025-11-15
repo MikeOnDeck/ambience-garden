@@ -16,12 +16,12 @@ public final class TagHelper {
      * Get all individual values of a given tag using a registry reference.
      * Must be run after world initialisation and data packs have been loaded!
      */
-    public static <T> List<T> getValues(Registry<T> registry, TagKey<T> tags) {
-        List<T> items = new LinkedList<>();
+    public static <T> List<Holder<T>> getValues(Registry<T> registry, TagKey<T> tags) {
+        List<Holder<T>> items = new LinkedList<>();
 
         var iter = registry.getTagOrEmpty(tags);
         for (Holder<T> holder : iter) {
-            items.add(holder.value());
+            items.add(holder);
         }
 
         return items;
@@ -31,12 +31,12 @@ public final class TagHelper {
      * Get all individual values of a given tag using a HolderGetter.
      * Must be run after world initialisation and data packs have been loaded!
      */
-    public static <T> List<T> getValues(HolderGetter<T> holderGetter, TagKey<T> tags) {
-        List<T> items = new LinkedList<>();
+    public static <T> List<Holder<T>> getValues(HolderGetter<T> holderGetter, TagKey<T> tags) {
+        List<Holder<T>> items = new LinkedList<>();
 
         holderGetter.get(tags).ifPresent(holders -> {
             for (var holder : holders) {
-                items.add(holder.value());
+                items.add(holder);
             }
         });
 
@@ -73,12 +73,13 @@ public final class TagHelper {
         return items;
     }
 
-    public static <T> List<T> parseAndGetValues(Registry<T> registry, String id) {
+    public static <T> List<Holder<T>> parseAndGetValues(Registry<T> registry, String id) {
         if (id.startsWith("#")) {
-            var tagKey = TagKey.create(registry.key(), Identifier.parse(id.substring(1)));
-            return getValues(registry, tagKey);
+            var key = TagKey.create(registry.key(), Identifier.parse(id.substring(1)));
+            return getValues(registry, key);
         } else {
-            var item = registry.getValue(Identifier.parse(id));
+            var key = ResourceKey.create(registry.key(), Identifier.parse(id));
+            var item = registry.get(key).orElse(null);
             if (item == null) {
                 throw new IllegalStateException("Could not resolve value for id: " + id);
             }

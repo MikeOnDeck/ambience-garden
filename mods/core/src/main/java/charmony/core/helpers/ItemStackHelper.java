@@ -67,7 +67,7 @@ public final class ItemStackHelper {
     public static Item randomItem(LevelAccessor level, RandomSource random, TagKey<Item> tag, Item fallback) {
         var values = TagHelper.getValues(level.registryAccess().lookupOrThrow(Registries.ITEM), tag);
         if (!values.isEmpty()) {
-            return values.get(random.nextInt(values.size()));
+            return values.get(random.nextInt(values.size())).value();
         }
         return fallback;
     }
