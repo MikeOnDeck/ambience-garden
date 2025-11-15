@@ -29,7 +29,6 @@ public class AvailableTasksScreen extends BaseScreen {
     @Override
     protected void init() {
         super.init();
-        if (minecraft == null) return;
         addCloseButton();
         refresh();
     }
@@ -45,7 +44,7 @@ public class AvailableTasksScreen extends BaseScreen {
 
     @Override
     protected void renderContent(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        if (minecraft == null || minecraft.level == null) return;
+        if (minecraft.level == null) return;
 
         var top = midY - 67;
         var right = midX + 137;

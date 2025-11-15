@@ -16,10 +16,6 @@ public class TaskDetailsScreen extends BaseScreen {
     private final Task task;
     private final TaskRenderer taskRenderer;
 
-    public TaskDetailsScreen(Task task) {
-        this(task, null);
-    }
-
     public TaskDetailsScreen(Task task, @Nullable Screen parent) {
         super(task.getTitle());
         this.task = task;

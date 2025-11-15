@@ -27,15 +27,12 @@ public class CompleteTasksScreen extends BaseScreen {
     @Override
     protected void init() {
         super.init();
-        if (minecraft == null) return;
         addCloseButton();
         refresh();
     }
 
     @Override
     protected void renderContent(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        if (minecraft == null) return;
-
         var top = midY - 67;
         var right = midX + 137;
 

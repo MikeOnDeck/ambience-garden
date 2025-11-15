@@ -42,10 +42,6 @@ public final class Buttons {
         public static Component DEFAULT_TOOLTIP = Resources.ACCEPT;
         static WidgetSprites SPRITES = ACCEPT_BUTTON;
 
-        public AcceptButton(int x, int y, OnPress onPress) {
-            this(x, y, DEFAULT_TOOLTIP, onPress);
-        }
-
         public AcceptButton(int x, int y, Component tooltip, OnPress onPress) {
             super(x, y, WIDTH, HEIGHT, SPRITES, onPress);
             setTooltip(Tooltip.create(tooltip));

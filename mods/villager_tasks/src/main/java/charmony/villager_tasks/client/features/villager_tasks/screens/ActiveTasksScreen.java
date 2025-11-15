@@ -27,7 +27,6 @@ public class ActiveTasksScreen extends BaseScreen {
     @Override
     protected void init() {
         super.init();
-        if (minecraft == null) return;
         handlers.clearLastVillagerInteraction();
         addCloseButton();
         refresh();
@@ -35,8 +34,6 @@ public class ActiveTasksScreen extends BaseScreen {
 
     @Override
     protected void renderContent(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        if (minecraft == null) return;
-
         var top = midY - 67;
         var right = midX + 137;
 
