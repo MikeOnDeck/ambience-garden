@@ -22,8 +22,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.phys.AABB;
 
 import java.util.*;
@@ -122,60 +120,12 @@ public final class Helpers {
             }
 
             Util.shuffle(values, random);
-            item = values.getFirst();
+            item = values.getFirst().value();
         } else {
             item = itemRegistry.getValue(Identifier.parse(itemId));
         }
 
         return item;
-    }
-
-    public static Holder<Structure> resolveStructure(RegistryAccess registryAccess, String structureId, RandomSource random) {
-        var structureRegistry = registryAccess.lookupOrThrow(Registries.STRUCTURE);
-
-        Structure structure;
-
-        if (structureId.startsWith("#")) {
-            var tagKey = TagKey.create(Registries.STRUCTURE, Identifier.parse(structureId.substring(1)));
-            var values = TagHelper.getValues(structureRegistry, tagKey);
-            if (values.isEmpty()) {
-                throw new IllegalStateException("Could not get values for tag: " + structureId);
-            }
-
-            Util.shuffle(values, random);
-            structure = values.getFirst();
-        } else {
-            structure = structureRegistry.getValue(Identifier.parse(structureId));
-            if (structure == null) {
-                throw new IllegalStateException("Could not resolve structure for tag: " + structureId);
-            }
-        }
-
-        return Holder.direct(structure);
-    }
-
-    public static Holder<Biome> resolveBiome(RegistryAccess registryAccess, String biomeId, RandomSource random) {
-        var biomeRegistry = registryAccess.lookupOrThrow(Registries.BIOME);
-
-        Biome biome;
-
-        if (biomeId.startsWith("#")) {
-            var tagKey = TagKey.create(Registries.BIOME, Identifier.parse(biomeId.substring(1)));
-            var values = TagHelper.getValues(biomeRegistry, tagKey);
-            if (values.isEmpty()) {
-                throw new IllegalStateException("Could not get values for tag: " + biomeId);
-            }
-
-            Util.shuffle(values, random);
-            biome = values.getFirst();
-        } else {
-            biome = biomeRegistry.getValue(Identifier.parse(biomeId));
-            if (biome == null) {
-                throw new IllegalStateException("Could not resolve biome for tag: " + biomeId);
-            }
-        }
-
-        return Holder.direct(biome);
     }
 
     public static ItemStack createTreasureItemStack(RegistryAccess registryAccess, String itemId, UUID uniqueId, RandomSource random) {

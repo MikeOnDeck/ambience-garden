@@ -36,7 +36,7 @@ public record BattleMobSpawn(BattleMobLocation type, String identifier, double d
             }
 
             Util.shuffle(values, random);
-            var key = registry.getResourceKey(values.getFirst()).orElseThrow();
+            var key = values.getFirst().unwrapKey().orElseThrow();
             identifier = key.identifier().toString();
             locationType = BattleMobLocation.Structure;
             log().debug("BattleMobSpawn using structure: " + identifier);
@@ -48,7 +48,7 @@ public record BattleMobSpawn(BattleMobLocation type, String identifier, double d
             }
 
             Util.shuffle(values, random);
-            var key = registry.getResourceKey(values.getFirst()).orElseThrow();
+            var key = values.getFirst().unwrapKey().orElseThrow();
             identifier = key.identifier().toString();
             locationType = BattleMobLocation.Biome;
             log().debug("BattleMobSpawn using biome: " + identifier);
