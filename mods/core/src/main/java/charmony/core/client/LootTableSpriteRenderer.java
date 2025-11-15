@@ -33,11 +33,6 @@ public class LootTableSpriteRenderer extends SpriteRenderer {
         return Component.translatableWithFallback("loot_table." + id.getNamespace() + "." + id.getPath().replace("/", "."), niceLootTableName(id));
     }
 
-    @Override
-    public Component getDescription() {
-        return Component.translatable("gui.charmony.in_loot_table", getName());
-    }
-
     protected String niceLootTableName(Identifier id) {
         var path = id.getPath();
 

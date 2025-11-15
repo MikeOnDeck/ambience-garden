@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.51.1
+
+- Remove getDescription from sprite renderers.
+
 ## 1.51.0
 
 - Fix loot table resource sprite locations.

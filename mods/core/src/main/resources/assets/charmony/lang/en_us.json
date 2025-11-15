@@ -4,7 +4,6 @@
   "dimension.minecraft.overworld": "Overworld",
   "dimension.minecraft.the_nether": "The Nether",
   "dimension.minecraft.the_end": "The End",
-  "gui.charmony.in_loot_table": "In %s loot",
   "gui.charmony.labels.xyz": "%s %s %s",
   "gui.charmony.labels.back": "Back",
   "gui.charmony.labels.cancel": "Cancel",
