@@ -69,6 +69,7 @@ public final class Rewards extends Aspect {
 
         var random = builder.random();
         var multiplier = builder.modifier().positiveMultiplier();
+        var registryAccess = builder.registryAccess();
 
         // Resolve experience from map.
         var experience = (int) Math.round((double) map.getOrDefault("experience", 0.0d) * multiplier);
@@ -82,32 +83,10 @@ public final class Rewards extends Aspect {
         var count = Math.min(items.size(), Helpers.getCountFromMap(map, multiplier, random));
         var criteria = new ArrayList<RewardItem>();
 
-        for (var i = 0; i < items.size(); i++) {
-            try {
-                var itemMap = items.get(i);
-                var itemId = (String) itemMap.get("item");
-                var itemWeight = (double) itemMap.getOrDefault("weight", 1.0d);
-                var itemStack = new ItemStack(Helpers.resolveItem(builder.registryAccess(), itemId, random));
-                var itemCount = Helpers.getCountFromMap(itemMap, multiplier, random);
+        Helpers.parseStandardItemsEntry(registryAccess, items, multiplier, random,
+            parsed -> criteria.add(new RewardItem(parsed.stack(), parsed.count(), parsed.weight())));
 
-                if (itemStack.isEmpty()) {
-                    throw new IllegalStateException("Item " + itemId + " could not be parsed");
-                }
-
-                var enchantments = (List<Map<String, Object>>) itemMap.get("enchantments");
-                if (enchantments != null) {
-                    Helpers.applyEnchantments(builder.registryAccess(), itemStack, enchantments, random);
-                }
-
-                criteria.add(new RewardItem(itemStack, itemCount, (int)itemWeight));
-            } catch (Exception e) {
-                log().warn(e.getMessage() + " at index " + i);
-            }
-        }
-
-        if (criteria.isEmpty()) {
-            return EMPTY;
-        }
+        if (criteria.isEmpty()) return EMPTY;
 
         var rewardItems = Helpers.getRandomlyByWeight(criteria, count, random);
         return new Rewards(experience, rewardItems, List.of());

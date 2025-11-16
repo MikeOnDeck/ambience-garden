@@ -46,6 +46,13 @@ public enum TaskModifier implements StringRepresentable {
         return Math.max(0.1, negative);
     }
 
+    public double multiplier(MultiplierType type) {
+        return switch (type) {
+            case Positive -> positiveMultiplier();
+            case Negative -> negativeMultiplier();
+        };
+    }
+
     public boolean isEpic() {
         return epic;
     }
@@ -66,5 +73,10 @@ public enum TaskModifier implements StringRepresentable {
     @Override
     public String getSerializedName() {
         return name.toLowerCase(Locale.ROOT);
+    }
+
+    public enum MultiplierType {
+        Positive,
+        Negative
     }
 }

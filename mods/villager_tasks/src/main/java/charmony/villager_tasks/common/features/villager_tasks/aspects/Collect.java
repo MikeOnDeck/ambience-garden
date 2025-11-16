@@ -10,7 +10,6 @@ import com.mojang.serialization.Codec;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +36,7 @@ public final class Collect extends Aspect implements Satisfiable {
 
         var random = builder.random();
         var multiplier = builder.modifier().negativeMultiplier();
+        var registryAccess = builder.registryAccess();
 
         // Resolve items from map.
         var items = (List<Map<String, Object>>)map.getOrDefault("items", List.of());
@@ -47,32 +47,10 @@ public final class Collect extends Aspect implements Satisfiable {
         var count = Math.min(items.size(), Helpers.getCountFromMap(map, multiplier, random));
         var criteria = new ArrayList<CollectItem>();
 
-        for (var i = 0; i < items.size(); i++) {
-            try {
-                var itemMap = items.get(i);
-                var itemId = (String) itemMap.get("item");
-                var itemWeight = (double) itemMap.getOrDefault("weight", 1.0d);
-                var itemStack = new ItemStack(Helpers.resolveItem(builder.registryAccess(), itemId, random));
-                var itemCount = Helpers.getCountFromMap(itemMap, multiplier, random);
+        Helpers.parseStandardItemsEntry(registryAccess, items, multiplier, random,
+            parsed -> criteria.add(new CollectItem(parsed.stack(), parsed.count(), parsed.weight())));
 
-                var enchantments = (List<Map<String, Object>>) itemMap.get("enchantments");
-                if (enchantments != null) {
-                    Helpers.applyEnchantments(builder.registryAccess(), itemStack, enchantments, random);
-                }
-
-                if (itemStack.isEmpty()) {
-                    throw new IllegalStateException("Item " + itemId + " could not be parsed");
-                }
-
-                criteria.add(new CollectItem(itemStack, itemCount, (int)itemWeight));
-            } catch (Exception e) {
-                log().warn(e.getMessage() + " at index " + i);
-            }
-        }
-
-        if (criteria.isEmpty()) {
-            return EMPTY;
-        }
+        if (criteria.isEmpty()) return EMPTY;
 
         var collectItems = Helpers.getRandomlyByWeight(criteria, count, random);
         return new Collect(collectItems);

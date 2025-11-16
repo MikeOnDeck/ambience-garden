@@ -25,6 +25,7 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.phys.AABB;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 public final class Helpers {
     /**
@@ -73,7 +74,35 @@ public final class Helpers {
         return selected;
     }
 
-    public static void applyEnchantments(RegistryAccess registryAccess, ItemStack stack, List<Map<String, Object>> enchantments, RandomSource random) {
+    @SuppressWarnings("unchecked")
+    public static void parseStandardItemsEntry(RegistryAccess registryAccess, List<Map<String, Object>> items,
+                                               double multiplier, RandomSource random, Consumer<ParsedItem> consumer) {
+        for (var i = 0; i < items.size(); i++) {
+            try {
+                var itemMap = items.get(i);
+                var itemId = (String) itemMap.get("item");
+                var itemWeight = (double) itemMap.getOrDefault("weight", 1.0d);
+                var itemStack = new ItemStack(Helpers.resolveItem(registryAccess, itemId, random));
+                var itemCount = Helpers.getCountFromMap(itemMap, multiplier, random);
+
+                var enchantments = (List<Map<String, Object>>) itemMap.get("enchantments");
+                if (enchantments != null) {
+                    Helpers.applyEnchantments(registryAccess, itemStack, enchantments, random);
+                }
+
+                if (itemStack.isEmpty()) {
+                    throw new IllegalStateException("Item " + itemId + " could not be parsed");
+                }
+
+                consumer.accept(new ParsedItem(itemStack, itemCount, (int)itemWeight));
+            } catch (Exception e) {
+                VillagerTasks.feature().log().warn(e.getMessage() + " at index " + i);
+            }
+        }
+    }
+
+    public static void applyEnchantments(RegistryAccess registryAccess, ItemStack stack,
+                                         List<Map<String, Object>> enchantments, RandomSource random) {
         var registry = registryAccess.lookupOrThrow(Registries.ENCHANTMENT);
 
         for (var enchantmentMap : enchantments) {
@@ -169,5 +198,8 @@ public final class Helpers {
 
     public static UUID emptyUuid() {
         return UUID.randomUUID(); // TODO: make actually empty
+    }
+
+    public record ParsedItem(ItemStack stack, int count, int weight) {
     }
 }
