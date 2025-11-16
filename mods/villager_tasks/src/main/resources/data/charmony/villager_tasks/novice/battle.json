@@ -2,7 +2,6 @@
   "title": "Battle",
   "level": 1,
   "battle": {
-    "exactly": 1,
     "distance": 256,
     "atmosphere": [
       "storm"
@@ -14,11 +13,72 @@
         "effects": [
           {
             "effect": "minecraft:health_boost",
-            "amplifier": 10
+            "amplifier": 5
+          },
+          {
+            "effect": "minecraft:regeneration",
+            "amplifier": 1
           },
           {
             "effect": "minecraft:speed",
             "amplifier": 1
+          }
+        ],
+        "equipment": [
+          {
+            "slot": "mainhand",
+            "item": "minecraft:stone_sword",
+            "enchantments": [
+              {
+                "enchantment": "random",
+                "level": 2,
+                "chance": 1.0
+              }
+            ]
+          },
+          {
+            "slot": "head",
+            "item": "minecraft:iron_helmet",
+            "enchantments": [
+              {
+                "enchantment": "random",
+                "level": 2,
+                "chance": 1.0
+              }
+            ]
+          },
+          {
+            "slot": "chest",
+            "item": "minecraft:iron_chestplate",
+            "enchantments": [
+              {
+                "enchantment": "random",
+                "level": 2,
+                "chance": 1.0
+              }
+            ]
+          },
+          {
+            "slot": "legs",
+            "item": "minecraft:iron_leggings",
+            "enchantments": [
+              {
+                "enchantment": "random",
+                "level": 2,
+                "chance": 1.0
+              }
+            ]
+          },
+          {
+            "slot": "feet",
+            "item": "minecraft:iron_boots",
+            "enchantments": [
+              {
+                "enchantment": "random",
+                "level": 2,
+                "chance": 1.0
+              }
+            ]
           }
         ]
       }

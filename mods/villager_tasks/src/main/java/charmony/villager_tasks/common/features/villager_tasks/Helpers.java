@@ -15,6 +15,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.Util;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
@@ -131,6 +132,38 @@ public final class Helpers {
         }
     }
 
+    @SuppressWarnings("unchecked")
+    public static void parseStandardEquipmentEntry(RegistryAccess registryAccess, List<Map<String, Object>> equipment, RandomSource random,
+                                                   Consumer<ParsedRequipment> consumer) {
+        for (var i = 0; i < equipment.size(); i++) {
+            try {
+                var map = equipment.get(i);
+
+                var chance = (double) map.getOrDefault("chance", 1.0d);
+                if (chance < random.nextDouble()) continue;
+
+                var slotStr = (String) map.get("slot");
+                var itemId = (String) map.get("item");
+
+                var slot = EquipmentSlot.valueOf(slotStr.toUpperCase(Locale.ROOT));
+                var stack = new ItemStack(Helpers.resolveItem(registryAccess, itemId, random));
+
+                if (stack.isEmpty()) {
+                    throw new IllegalStateException("Item " + itemId + " could not be parsed for equipment");
+                }
+
+                var enchantments = (List<Map<String, Object>>) map.get("enchantments");
+                if (enchantments != null) {
+                    applyEnchantments(registryAccess, stack, enchantments, random);
+                }
+
+                consumer.accept(new ParsedRequipment(slot, stack));
+            } catch (Exception e) {
+                VillagerTasks.feature().log().warn(e.getMessage() + " at index " + i);
+            }
+        }
+    }
+
     public static void applyEnchantments(RegistryAccess registryAccess, ItemStack stack,
                                          List<Map<String, Object>> enchantments, RandomSource random) {
         var registry = registryAccess.lookupOrThrow(Registries.ENCHANTMENT);
@@ -236,4 +269,6 @@ public final class Helpers {
     public record ParsedItem(ItemStack stack, int count, int weight) {}
 
     public record ParsedEffect(Identifier effect, int amplifier, int duration) {}
+
+    public record ParsedRequipment(EquipmentSlot slot, ItemStack stack) {}
 }

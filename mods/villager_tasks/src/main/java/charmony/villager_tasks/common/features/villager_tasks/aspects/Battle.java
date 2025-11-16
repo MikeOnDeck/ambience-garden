@@ -30,16 +30,19 @@ public final class Battle extends Aspect implements Satisfiable {
     private final List<BattleMob> mobs;
     private final List<BattleAtmosphere> atmosphere;
     private final BattleMobSpawn spawn;
+    private boolean defeated;
 
     public static final Codec<Battle> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         BattleMob.CODEC.listOf().fieldOf("mobs").forGetter(self -> self.mobs),
         BattleAtmosphere.CODEC.listOf().fieldOf("atmosphere").forGetter(self -> self.atmosphere),
-        BattleMobSpawn.CODEC.fieldOf("spawn").forGetter(self -> self.spawn)
+        BattleMobSpawn.CODEC.fieldOf("spawn").forGetter(self -> self.spawn),
+        Codec.BOOL.fieldOf("defeated").forGetter(self -> self.defeated)
     ).apply(instance, Battle::new));
 
-    public static final Battle EMPTY = new Battle(List.of(), List.of(), BattleMobSpawn.EMPTY);
+    public static final Battle EMPTY = new Battle(List.of(), List.of(), BattleMobSpawn.EMPTY, false);
 
-    public Battle(List<BattleMob> mobs, List<BattleAtmosphere> atmosphere, BattleMobSpawn spawn) {
+    public Battle(List<BattleMob> mobs, List<BattleAtmosphere> atmosphere, BattleMobSpawn spawn, boolean defeated) {
+        this.defeated = defeated;
         this.mobs = mobs;
         this.spawn = spawn;
         this.atmosphere = atmosphere;
@@ -102,7 +105,14 @@ public final class Battle extends Aspect implements Satisfiable {
                 Helpers.parseStandardEffectsEntry(effectsMap, random,
                     parsed -> effects.add(new Effect(parsed.effect(), parsed.amplifier(), MobEffectInstance.INFINITE_DURATION)));
 
-                var stats = new BattleMobData(mobId, effects);
+                // Parse equipment to add to these mobs.
+                var equipmentMap = (List<Map<String, Object>>) mobMap.getOrDefault("equipment", Map.of());
+                List<Equipment> equipment = new ArrayList<>();
+
+                Helpers.parseStandardEquipmentEntry(registryAccess, equipmentMap, random,
+                    parsed -> equipment.add(new Equipment(parsed.slot(), parsed.stack())));
+
+                var stats = new BattleMobData(mobId, effects, equipment);
                 criteria.add(new BattleMob(stats, uniqueId, dimension,  Optional.empty(), mobCount, 0, false));
             } catch (Exception e) {
                 log().warn(e.getMessage() + " at index " + i);
@@ -115,12 +125,12 @@ public final class Battle extends Aspect implements Satisfiable {
 
         Util.shuffle(criteria, random);
         var list = criteria.subList(0, Math.min(count, criteria.size()));
-        return new Battle(list, atmosphere, spawn);
+        return new Battle(list, atmosphere, spawn, false);
     }
 
     @Override
     public Battle copy() {
-        return new Battle(mobs.stream().map(BattleMob::copy).toList(), new ArrayList<>(atmosphere), spawn.copy());
+        return new Battle(mobs.stream().map(BattleMob::copy).toList(), new ArrayList<>(atmosphere), spawn.copy(), defeated);
     }
 
     @Override
@@ -159,24 +169,35 @@ public final class Battle extends Aspect implements Satisfiable {
     }
 
     @Override
-    public void onComplete(Task task, ServerPlayer player) {
-        super.onComplete(task, player);
-        mobs().forEach(mob -> mob.onFinish(task, player.level()));
-    }
-
-    @Override
-    public void onAbandon(Task task, ServerPlayer player) {
-        super.onAbandon(task, player);
-        mobs().forEach(mob -> mob.onFinish(task, player.level()));
-    }
-
-    @Override
     public void onTick(Task task, Player player) {
         super.onTick(task, player);
 
         if (player instanceof ServerPlayer serverPlayer) {
             var registryAccess = serverPlayer.level().registryAccess();
             mobs().forEach(mob -> mob.onTick(task, registryAccess, serverPlayer));
+        }
+
+        if (!defeated && player.level() instanceof ServerLevel level && isSatisfied()) {
+            defeated = true;
+            clearAtmosphere(level);
+        }
+    }
+
+    @Override
+    public void onComplete(Task task, ServerPlayer player) {
+        super.onComplete(task, player);
+
+        if (player.level() instanceof ServerLevel level) {
+            clearAtmosphere(level);
+        }
+    }
+
+    @Override
+    public void onAbandon(Task task, ServerPlayer player) {
+        super.onAbandon(task, player);
+
+        if (player.level() instanceof ServerLevel level) {
+            clearAtmosphere(level);
         }
     }
 
@@ -205,5 +226,11 @@ public final class Battle extends Aspect implements Satisfiable {
 
     public List<BattleMob> mobs() {
         return mobs;
+    }
+
+    private void clearAtmosphere(ServerLevel level) {
+        if (atmosphere().contains(BattleAtmosphere.Storm)) {
+            level.setWeatherParameters(12000, 24000, false, false);
+        }
     }
 }

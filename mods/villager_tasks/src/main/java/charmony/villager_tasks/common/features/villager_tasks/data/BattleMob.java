@@ -147,6 +147,10 @@ public class BattleMob implements Satisfiable {
                                 mob.addEffect(effect.mobEffectInstance(registryAccess));
                             }
 
+                            for (var equipment : data().equipment()) {
+                                mob.setItemSlot(equipment.slot(), equipment.stack());
+                            }
+
                             var lightningBolt = EntityType.LIGHTNING_BOLT.create(level, EntitySpawnReason.EVENT);
                             if (lightningBolt != null) {
                                 lightningBolt.snapTo(Vec3.atBottomCenterOf(spawnPos.get()));
@@ -186,13 +190,6 @@ public class BattleMob implements Satisfiable {
         var pos = task.battle.spawn().getSpawnPosition(level, playerPos, task.random());
 
         this.pos = Optional.of(pos);
-    }
-
-    public void onFinish(Task task, ServerLevel level) {
-        var atmosphere = task.battle.atmosphere();
-        if (atmosphere.contains(BattleAtmosphere.Storm)) {
-            level.setWeatherParameters(12000, 24000, false, false);
-        }
     }
 
     public boolean onEntityKilled(RegistryAccess registryAccess, LivingEntity entity) {

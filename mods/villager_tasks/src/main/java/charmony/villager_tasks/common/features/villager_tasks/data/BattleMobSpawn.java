@@ -65,7 +65,8 @@ public record BattleMobSpawn(BattleMobLocation type, String identifier, double d
         var registryAccess = level.registryAccess();
 
         if (distance > 0) {
-            startPos =  WorldHelper.addRandomOffset(level, startPos, random, (int)distance / 2, (int)distance);
+            var d = distance / 2;
+            startPos =  WorldHelper.addRandomOffset(level, startPos, random, (int)d / 2, (int)d);
         }
 
         var locatePos = switch (type) {

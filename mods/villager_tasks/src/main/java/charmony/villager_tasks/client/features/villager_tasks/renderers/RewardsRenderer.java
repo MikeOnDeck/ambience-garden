@@ -109,7 +109,7 @@ public final class RewardsRenderer extends BaseRenderer {
                 var item = rewards.items.get(i);
                 var stack = item.stack();
 
-                // Reconstruct the item tooltip
+                // Reconstruct the stack tooltip
                 var itemTooltip = itemTooltip(stack);
                 List<Component> tooltip = new ArrayList<>(List.of(
                     Resources.YOU_RECEIVE,
