@@ -1,9 +1,9 @@
 package charmony.villager_tasks.common.features.villager_tasks;
 
 import charmony.core.base.Setup;
+import charmony.villager_tasks.common.features.villager_tasks.data.TreasureLootFunction;
 import charmony.villager_tasks.common.features.villager_tasks.enums.TaskModifier;
 import charmony.villager_tasks.common.features.villager_tasks.enums.TaskQuery;
-import charmony.villager_tasks.common.features.villager_tasks.requirements.TreasureLootFunction;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.fabricmc.fabric.api.loot.v3.LootTableSource;
 import net.minecraft.core.HolderLookup;

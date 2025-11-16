@@ -5,11 +5,11 @@ import charmony.villager_tasks.common.features.villager_tasks.Aspect;
 import charmony.villager_tasks.common.features.villager_tasks.Helpers;
 import charmony.villager_tasks.common.features.villager_tasks.Resources;
 import charmony.villager_tasks.common.features.villager_tasks.Task;
+import charmony.villager_tasks.common.features.villager_tasks.data.BattleMob;
+import charmony.villager_tasks.common.features.villager_tasks.data.BattleMobData;
+import charmony.villager_tasks.common.features.villager_tasks.data.BattleMobSpawn;
+import charmony.villager_tasks.common.features.villager_tasks.data.Effect;
 import charmony.villager_tasks.common.features.villager_tasks.interfaces.Satisfiable;
-import charmony.villager_tasks.common.features.villager_tasks.requirements.BattleMob;
-import charmony.villager_tasks.common.features.villager_tasks.requirements.BattleMobData;
-import charmony.villager_tasks.common.features.villager_tasks.requirements.BattleMobEffect;
-import charmony.villager_tasks.common.features.villager_tasks.requirements.BattleMobSpawn;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.chat.Component;
@@ -18,6 +18,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Util;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 
@@ -84,10 +85,10 @@ public final class Battle extends Aspect implements Satisfiable {
 
                 // Parse effects to apply to these mobs.
                 var effectsMap = (List<Map<String, Object>>) mobMap.getOrDefault("effects", List.of());
-                List<BattleMobEffect> effects = new ArrayList<>();
+                List<Effect> effects = new ArrayList<>();
 
                 Helpers.parseStandardEffectsEntry(effectsMap, random,
-                    parsed -> effects.add(new BattleMobEffect(parsed.effect(), parsed.amplifier(), parsed.duration())));
+                    parsed -> effects.add(new Effect(parsed.effect(), parsed.amplifier(), MobEffectInstance.INFINITE_DURATION)));
 
                 var stats = new BattleMobData(mobId, (int)health, effects);
                 criteria.add(new BattleMob(stats, uniqueId, dimension,  Optional.empty(), mobCount, 0, false));

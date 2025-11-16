@@ -1,4 +1,4 @@
-package charmony.villager_tasks.common.features.villager_tasks.requirements;
+package charmony.villager_tasks.common.features.villager_tasks.data;
 
 import net.minecraft.util.StringRepresentable;
 

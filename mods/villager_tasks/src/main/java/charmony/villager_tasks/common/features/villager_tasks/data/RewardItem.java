@@ -1,4 +1,4 @@
-package charmony.villager_tasks.common.features.villager_tasks.rewards;
+package charmony.villager_tasks.common.features.villager_tasks.data;
 
 import charmony.villager_tasks.common.features.villager_tasks.interfaces.HasWeight;
 import com.mojang.serialization.Codec;

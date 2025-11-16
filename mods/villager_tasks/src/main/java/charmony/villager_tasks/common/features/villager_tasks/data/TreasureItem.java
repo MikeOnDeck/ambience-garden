@@ -1,4 +1,4 @@
-package charmony.villager_tasks.common.features.villager_tasks.requirements;
+package charmony.villager_tasks.common.features.villager_tasks.data;
 
 import charmony.core.base.Log;
 import charmony.villager_tasks.common.features.villager_tasks.Task;

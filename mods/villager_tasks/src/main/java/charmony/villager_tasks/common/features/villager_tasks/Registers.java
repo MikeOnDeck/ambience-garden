@@ -5,7 +5,7 @@ import charmony.api.events.ItemPickupCallback;
 import charmony.api.events.PlayerTickCallback;
 import charmony.core.base.Setup;
 import charmony.core.common.CommonRegistry;
-import charmony.villager_tasks.common.features.villager_tasks.requirements.TreasureLootFunction;
+import charmony.villager_tasks.common.features.villager_tasks.data.TreasureLootFunction;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;

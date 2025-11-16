@@ -2,8 +2,8 @@ package charmony.villager_tasks.common.features.villager_tasks;
 
 import charmony.core.helpers.EnchantmentsHelper;
 import charmony.core.helpers.TagHelper;
+import charmony.villager_tasks.common.features.villager_tasks.data.TreasureItem;
 import charmony.villager_tasks.common.features.villager_tasks.interfaces.HasWeight;
-import charmony.villager_tasks.common.features.villager_tasks.requirements.TreasureItem;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponents;

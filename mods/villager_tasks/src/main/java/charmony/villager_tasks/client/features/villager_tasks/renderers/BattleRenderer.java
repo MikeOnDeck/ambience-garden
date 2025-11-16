@@ -6,18 +6,29 @@ import charmony.villager_tasks.client.features.villager_tasks.component.AspectBo
 import charmony.villager_tasks.common.features.villager_tasks.Resources;
 import charmony.villager_tasks.common.features.villager_tasks.Task;
 import com.mojang.datafixers.util.Pair;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.LodestoneTracker;
 
+import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
 
 public final class BattleRenderer extends BaseRenderer {
+    private @Nullable RegistryAccess registryAccess;
+
     public BattleRenderer(Task task) {
         super(task);
+
+        var level = Minecraft.getInstance().level;
+        if (level != null) {
+            this.registryAccess = level.registryAccess();
+        }
     }
 
     @Override
@@ -62,6 +73,7 @@ public final class BattleRenderer extends BaseRenderer {
 
             for (var i = 0; i < battle.mobs().size(); i++) {
                 var mob = battle.mobs().get(i);
+                var effects = mob.effects();
                 var spriteRenderer = new MobSpriteRenderer(mob.mob());
 
                 var regularCompass = new ItemStack(Items.COMPASS);
@@ -69,10 +81,22 @@ public final class BattleRenderer extends BaseRenderer {
                 var tracker = new LodestoneTracker(mob.globalPos(), true);
                 trackedCompass.set(DataComponents.LODESTONE_TRACKER, tracker);
 
-                List<Component> tooltips = List.of(
+                List<Component> tooltips = new ArrayList<>(List.of(
                     Resources.YOU_MUST_DEFEAT,
                     nameAndTotal(spriteRenderer.getName(), mob.total())
-                );
+                ));
+
+                if (registryAccess != null && !effects.isEmpty()) {
+                    tooltips.add(Component.empty());
+                    tooltips.add(Resources.EFFECTS);
+                    for (var effect : effects) {
+                        var potion = effect.makePotion(registryAccess);
+                        var itemTooltip = itemTooltip(potion);
+                        if (itemTooltip.size() > 1) {
+                            tooltips.add(itemTooltip.get(1));
+                        }
+                    }
+                }
 
                 var box = new AspectBoxBuilder()
                     .withSpriteRenderer(spriteRenderer)

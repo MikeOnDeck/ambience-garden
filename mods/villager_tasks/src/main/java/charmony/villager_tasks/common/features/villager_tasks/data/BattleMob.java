@@ -1,4 +1,4 @@
-package charmony.villager_tasks.common.features.villager_tasks.requirements;
+package charmony.villager_tasks.common.features.villager_tasks.data;
 
 import charmony.core.base.Log;
 import charmony.core.helpers.MobHelper;
@@ -23,6 +23,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.levelgen.Heightmap;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -101,6 +102,10 @@ public class BattleMob implements Satisfiable {
         return data;
     }
 
+    public List<Effect> effects() {
+        return data.effects();
+    }
+
     @SuppressWarnings("unchecked")
     public void onTick(Task task, RegistryAccess registryAccess, ServerPlayer player) {
         var level = player.level();
@@ -117,7 +122,6 @@ public class BattleMob implements Satisfiable {
 
         if (playerInRange && !spawned) {
             var entityRegistry = registryAccess.lookup(Registries.ENTITY_TYPE).orElseThrow();
-            var effectRegistry = registryAccess.lookup(Registries.MOB_EFFECT).orElseThrow();
             spawned = true;
 
             // Spawn all mobs in a radius around the player.
@@ -141,7 +145,7 @@ public class BattleMob implements Satisfiable {
                             mob.setHealth(health);
 
                             for (var effect : data().effects()) {
-                                mob.addEffect(effect.mobEffectInstance(effectRegistry));
+                                mob.addEffect(effect.mobEffectInstance(registryAccess));
                             }
                         });
                         if (result) {

@@ -1,4 +1,4 @@
-package charmony.villager_tasks.common.features.villager_tasks.rewards;
+package charmony.villager_tasks.common.features.villager_tasks.data;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -14,12 +14,12 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
 
-public record RewardEffect(Identifier effect, int amplifier, int duration) {
-    public static final Codec<RewardEffect> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+public record Effect(Identifier effect, int amplifier, int duration) {
+    public static final Codec<Effect> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         Identifier.CODEC.fieldOf("effect").forGetter(self -> self.effect),
         Codec.INT.fieldOf("amplifier").forGetter(self -> self.amplifier),
         Codec.INT.fieldOf("duration").forGetter(self -> self.duration)
-    ).apply(instance, RewardEffect::new));
+    ).apply(instance, Effect::new));
 
     public MobEffectInstance mobEffectInstance(RegistryAccess registryAccess) {
         var registry = registryAccess.lookupOrThrow(Registries.MOB_EFFECT);

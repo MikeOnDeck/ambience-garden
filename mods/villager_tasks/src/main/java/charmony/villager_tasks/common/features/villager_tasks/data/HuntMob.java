@@ -1,4 +1,4 @@
-package charmony.villager_tasks.common.features.villager_tasks.requirements;
+package charmony.villager_tasks.common.features.villager_tasks.data;
 
 import charmony.villager_tasks.common.features.villager_tasks.interfaces.HasWeight;
 import charmony.villager_tasks.common.features.villager_tasks.interfaces.Satisfiable;
@@ -6,8 +6,8 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 

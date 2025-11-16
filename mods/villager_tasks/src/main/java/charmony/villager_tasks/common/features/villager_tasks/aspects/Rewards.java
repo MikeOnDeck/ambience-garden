@@ -4,8 +4,8 @@ import charmony.villager_tasks.common.features.villager_tasks.Aspect;
 import charmony.villager_tasks.common.features.villager_tasks.Helpers;
 import charmony.villager_tasks.common.features.villager_tasks.Resources;
 import charmony.villager_tasks.common.features.villager_tasks.Task;
-import charmony.villager_tasks.common.features.villager_tasks.rewards.RewardEffect;
-import charmony.villager_tasks.common.features.villager_tasks.rewards.RewardItem;
+import charmony.villager_tasks.common.features.villager_tasks.data.Effect;
+import charmony.villager_tasks.common.features.villager_tasks.data.RewardItem;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.chat.Component;
@@ -23,18 +23,18 @@ public final class Rewards extends Aspect {
     public static final String ID = "reward";
 
     public final List<RewardItem> items = new ArrayList<>();
-    public final List<RewardEffect> effects = new ArrayList<>();
+    public final List<Effect> effects = new ArrayList<>();
     public final int experience;
 
     public static final Codec<Rewards> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         Codec.INT.fieldOf("experience").forGetter(reward -> reward.experience),
         RewardItem.CODEC.listOf().fieldOf("items").forGetter(reward -> reward.items),
-        RewardEffect.CODEC.listOf().fieldOf("effects").forGetter(reward -> reward.effects)
+        Effect.CODEC.listOf().fieldOf("effects").forGetter(reward -> reward.effects)
     ).apply(instance, Rewards::new));
 
     public static final Rewards EMPTY = new Rewards(0, List.of(), List.of());
 
-    public Rewards(int experience, List<RewardItem> items, List<RewardEffect> effects) {
+    public Rewards(int experience, List<RewardItem> items, List<Effect> effects) {
         this.experience = experience;
         this.items.addAll(items);
         this.effects.addAll(effects);
@@ -63,7 +63,7 @@ public final class Rewards extends Aspect {
         return items;
     }
 
-    public List<RewardEffect> effects() {
+    public List<Effect> effects() {
         return effects;
     }
 
@@ -80,10 +80,10 @@ public final class Rewards extends Aspect {
 
         // Resolve effects from map.
         var effectsMap = (List<Map<String, Object>>) map.getOrDefault("effects", List.of());
-        List<RewardEffect> rewardEffects = new ArrayList<>();
+        List<Effect> effects = new ArrayList<>();
 
         Helpers.parseStandardEffectsEntry(effectsMap, random,
-            parsed -> rewardEffects.add(new RewardEffect(parsed.effect(), parsed.amplifier(), parsed.duration())));
+            parsed -> effects.add(new Effect(parsed.effect(), parsed.amplifier(), parsed.duration())));
 
         // Resolve items from map.
         var items = (List<Map<String, Object>>)map.getOrDefault("items", List.of());
@@ -96,7 +96,7 @@ public final class Rewards extends Aspect {
         if (parsedItems.isEmpty()) return EMPTY;
         var rewardItems = Helpers.getRandomlyByWeight(parsedItems, itemCount, random);
 
-        return new Rewards(experience, rewardItems, rewardEffects);
+        return new Rewards(experience, rewardItems, effects);
     }
 
     @Override
