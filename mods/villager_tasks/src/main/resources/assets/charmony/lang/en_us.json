@@ -24,6 +24,7 @@
   "gui.charmony.villager_tasks.confirm": "Confirm",
   "gui.charmony.villager_tasks.confirm_abandon":  "Are you sure you wish to abandon this task?",
   "gui.charmony.villager_tasks.details": "Details",
+  "gui.charmony.villager_tasks.distance": "Distance: %s blocks",
   "gui.charmony.villager_tasks.doing_task": "You are currently working on this task.",
   "gui.charmony.villager_tasks.done_task": "You can now hand this task in to a villager.",
   "gui.charmony.villager_tasks.done_task_with_loyalty": "Handing the task to this villager increases your loyalty.",

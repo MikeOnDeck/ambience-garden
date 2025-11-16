@@ -3,12 +3,19 @@
   "level": 1,
   "battle": {
     "exactly": 1,
-    "structure": "#minecraft:village",
+    "distance": 256,
+    "atmosphere": [
+      "storm"
+    ],
     "mobs": [
       {
         "entity": "minecraft:wither_skeleton",
         "exactly": 2,
         "effects": [
+          {
+            "effect": "minecraft:health_boost",
+            "amplifier": 10
+          },
           {
             "effect": "minecraft:speed",
             "amplifier": 1

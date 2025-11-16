@@ -5,10 +5,7 @@ import charmony.villager_tasks.common.features.villager_tasks.Aspect;
 import charmony.villager_tasks.common.features.villager_tasks.Helpers;
 import charmony.villager_tasks.common.features.villager_tasks.Resources;
 import charmony.villager_tasks.common.features.villager_tasks.Task;
-import charmony.villager_tasks.common.features.villager_tasks.data.BattleMob;
-import charmony.villager_tasks.common.features.villager_tasks.data.BattleMobData;
-import charmony.villager_tasks.common.features.villager_tasks.data.BattleMobSpawn;
-import charmony.villager_tasks.common.features.villager_tasks.data.Effect;
+import charmony.villager_tasks.common.features.villager_tasks.data.*;
 import charmony.villager_tasks.common.features.villager_tasks.interfaces.Satisfiable;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -31,18 +28,21 @@ public final class Battle extends Aspect implements Satisfiable {
     public static final String ID = "battle";
 
     private final List<BattleMob> mobs;
+    private final List<BattleAtmosphere> atmosphere;
     private final BattleMobSpawn spawn;
 
     public static final Codec<Battle> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         BattleMob.CODEC.listOf().fieldOf("mobs").forGetter(self -> self.mobs),
+        BattleAtmosphere.CODEC.listOf().fieldOf("atmosphere").forGetter(self -> self.atmosphere),
         BattleMobSpawn.CODEC.fieldOf("spawn").forGetter(self -> self.spawn)
     ).apply(instance, Battle::new));
 
-    public static final Battle EMPTY = new Battle(List.of(), BattleMobSpawn.EMPTY);
+    public static final Battle EMPTY = new Battle(List.of(), List.of(), BattleMobSpawn.EMPTY);
 
-    public Battle(List<BattleMob> mobs, BattleMobSpawn spawn) {
+    public Battle(List<BattleMob> mobs, List<BattleAtmosphere> atmosphere, BattleMobSpawn spawn) {
         this.mobs = mobs;
         this.spawn = spawn;
+        this.atmosphere = atmosphere;
     }
 
     @SuppressWarnings("unchecked")
@@ -70,6 +70,19 @@ public final class Battle extends Aspect implements Satisfiable {
         var biome = (String) map.getOrDefault("biome", "");
         var spawn = BattleMobSpawn.make(registryAccess, distance, structure, biome, random);
 
+        // Get atmosphere entries.
+        var atmosphereList = (List<Object>) map.getOrDefault("atmosphere", List.of());
+        List<BattleAtmosphere> atmosphere = new ArrayList<>();
+
+        for (var i = 0; i < atmosphereList.size(); i++) {
+            try {
+                var str = (String) atmosphereList.get(i);
+                BattleAtmosphere.fromString(str).ifPresent(atmosphere::add);
+            } catch (Exception e) {
+                log().warn(e.getMessage() + " at index " + i);
+            }
+        }
+
         for (var i = 0; i < mobs.size(); i++) {
             try {
                 // Parse mob entry.
@@ -81,7 +94,6 @@ public final class Battle extends Aspect implements Satisfiable {
                 }
                 var mobCount = Helpers.getCountFromMap(mobMap, multiplier, random);
                 var uniqueId = UuidHelper.fromRandom(random);
-                var health = (double) mobMap.getOrDefault("health", 20.0d);
 
                 // Parse effects to apply to these mobs.
                 var effectsMap = (List<Map<String, Object>>) mobMap.getOrDefault("effects", List.of());
@@ -90,7 +102,7 @@ public final class Battle extends Aspect implements Satisfiable {
                 Helpers.parseStandardEffectsEntry(effectsMap, random,
                     parsed -> effects.add(new Effect(parsed.effect(), parsed.amplifier(), MobEffectInstance.INFINITE_DURATION)));
 
-                var stats = new BattleMobData(mobId, (int)health, effects);
+                var stats = new BattleMobData(mobId, effects);
                 criteria.add(new BattleMob(stats, uniqueId, dimension,  Optional.empty(), mobCount, 0, false));
             } catch (Exception e) {
                 log().warn(e.getMessage() + " at index " + i);
@@ -103,12 +115,12 @@ public final class Battle extends Aspect implements Satisfiable {
 
         Util.shuffle(criteria, random);
         var list = criteria.subList(0, Math.min(count, criteria.size()));
-        return new Battle(list, spawn);
+        return new Battle(list, atmosphere, spawn);
     }
 
     @Override
     public Battle copy() {
-        return new Battle(mobs.stream().map(BattleMob::copy).toList(), spawn.copy());
+        return new Battle(mobs.stream().map(BattleMob::copy).toList(), new ArrayList<>(atmosphere), spawn.copy());
     }
 
     @Override
@@ -147,6 +159,18 @@ public final class Battle extends Aspect implements Satisfiable {
     }
 
     @Override
+    public void onComplete(Task task, ServerPlayer player) {
+        super.onComplete(task, player);
+        mobs().forEach(mob -> mob.onFinish(task, player.level()));
+    }
+
+    @Override
+    public void onAbandon(Task task, ServerPlayer player) {
+        super.onAbandon(task, player);
+        mobs().forEach(mob -> mob.onFinish(task, player.level()));
+    }
+
+    @Override
     public void onTick(Task task, Player player) {
         super.onTick(task, player);
 
@@ -173,6 +197,10 @@ public final class Battle extends Aspect implements Satisfiable {
 
     public BattleMobSpawn spawn() {
         return spawn;
+    }
+
+    public List<BattleAtmosphere> atmosphere() {
+        return atmosphere;
     }
 
     public List<BattleMob> mobs() {

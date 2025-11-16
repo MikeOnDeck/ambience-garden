@@ -22,6 +22,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 import java.util.Optional;
@@ -136,16 +137,21 @@ public class BattleMob implements Satisfiable {
 
                 try {
                     if (spawnPos.isPresent()) {
-                        var health = data().health();
                         var result = MobHelper.spawn((EntityType<? extends Mob>) entityType, level, spawnPos.get(), spawnReason, (mob) -> {
                             mob.addTag(BATTLE_TAG + "_" + uniqueId.toString());
                             mob.setTarget(player);
                             mob.setPersistenceRequired();
                             mob.setAggressive(true);
-                            mob.setHealth(health);
 
                             for (var effect : data().effects()) {
                                 mob.addEffect(effect.mobEffectInstance(registryAccess));
+                            }
+
+                            var lightningBolt = EntityType.LIGHTNING_BOLT.create(level, EntitySpawnReason.EVENT);
+                            if (lightningBolt != null) {
+                                lightningBolt.snapTo(Vec3.atBottomCenterOf(spawnPos.get()));
+                                lightningBolt.setVisualOnly(true);
+                                level.addFreshEntity(lightningBolt);
                             }
                         });
                         if (result) {
@@ -161,6 +167,12 @@ public class BattleMob implements Satisfiable {
             if (successfullySpawned == 0) {
                 log().warn("No mobs spawned, abandoning task");
                 VillagerTasks.feature().handlers.abandonTask(player, task);
+                return;
+            }
+
+            var atmosphere = task.battle.atmosphere();
+            if (atmosphere.contains(BattleAtmosphere.Storm)) {
+                level.setWeatherParameters(0, 12000, true, true);
             }
         }
     }
@@ -174,6 +186,13 @@ public class BattleMob implements Satisfiable {
         var pos = task.battle.spawn().getSpawnPosition(level, playerPos, task.random());
 
         this.pos = Optional.of(pos);
+    }
+
+    public void onFinish(Task task, ServerLevel level) {
+        var atmosphere = task.battle.atmosphere();
+        if (atmosphere.contains(BattleAtmosphere.Storm)) {
+            level.setWeatherParameters(12000, 24000, false, false);
+        }
     }
 
     public boolean onEntityKilled(RegistryAccess registryAccess, LivingEntity entity) {
@@ -197,8 +216,8 @@ public class BattleMob implements Satisfiable {
     private Optional<BlockPos> findRandomSpawnPos(EntityType<?> entity, ServerLevel level, BlockPos pos) {
         var random = RandomSource.create();
         for (int i = 0; i < 20; i++) {
-            var x = pos.getX() + random.nextInt(24) - 8;
-            var z = pos.getZ() + random.nextInt(24) - 8;
+            var x = pos.getX() + random.nextInt(16) - 8;
+            var z = pos.getZ() + random.nextInt(16) - 8;
             var y = level.getHeight(Heightmap.Types.WORLD_SURFACE, x, z);
             var p = new BlockPos(x, y, z).below();
             var s = level.getBlockState(p);

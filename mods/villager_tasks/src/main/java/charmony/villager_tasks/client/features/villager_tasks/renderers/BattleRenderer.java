@@ -11,6 +11,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.LodestoneTracker;
@@ -21,11 +22,17 @@ import java.util.List;
 
 public final class BattleRenderer extends BaseRenderer {
     private @Nullable RegistryAccess registryAccess;
+    private @Nullable Player player;
 
     public BattleRenderer(Task task) {
         super(task);
 
         var level = Minecraft.getInstance().level;
+        var player = Minecraft.getInstance().player;
+
+        if (player != null) {
+            this.player = player;
+        }
         if (level != null) {
             this.registryAccess = level.registryAccess();
         }
@@ -85,6 +92,13 @@ public final class BattleRenderer extends BaseRenderer {
                     Resources.YOU_MUST_DEFEAT,
                     nameAndTotal(spriteRenderer.getName(), mob.total())
                 ));
+
+                var globalPos = mob.globalPos().orElse(null);
+                if (player != null && globalPos != null) {
+                    var pos = globalPos.pos();
+                    var dist = pos.distManhattan(player.blockPosition());
+                    tooltips.add(Component.translatable("gui.charmony.villager_tasks.distance", dist));
+                }
 
                 if (registryAccess != null && !effects.isEmpty()) {
                     tooltips.add(Component.empty());
