@@ -5,6 +5,8 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.util.RandomSource;
+import net.minecraft.util.Util;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -16,6 +18,7 @@ import net.minecraft.world.item.enchantment.ItemEnchantments;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @SuppressWarnings("unused")
 public final class EnchantmentsHelper {
@@ -99,5 +102,30 @@ public final class EnchantmentsHelper {
         if (aa == null && bb == null) return true;
 
         return containsSameEnchantments(aa, bb);
+    }
+
+    public static Optional<Holder<Enchantment>> getRandomEnchantment(RegistryAccess registryAccess, ItemStack stack, RandomSource random) {
+        var registry = registryAccess.lookupOrThrow(Registries.ENCHANTMENT);
+        List<Holder<Enchantment>> available = new ArrayList<>();
+
+        registry.listElements().forEach(holder -> {
+            var ench = holder.value();
+            if (ench.canEnchant(stack)) {
+                available.add(holder);
+            }
+        });
+
+        if (available.isEmpty()) {
+            return Optional.empty();
+        }
+
+        Util.shuffle(available, random);
+        return Optional.of(available.getFirst());
+    }
+
+    public static void enchantRandomlyWithLevel(RegistryAccess registryAccess, ItemStack stack, int level, RandomSource random) {
+        getRandomEnchantment(registryAccess, stack, random).ifPresent(ench ->
+            stack.enchant(ench, Math.min(level, ench.value().getMaxLevel())
+        ));
     }
 }

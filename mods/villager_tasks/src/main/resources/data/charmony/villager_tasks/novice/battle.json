@@ -26,6 +26,13 @@
         "item": "minecraft:emerald_block",
         "exactly": 3
       }
+    ],
+    "effects": [
+      {
+        "effect": "minecraft:strength",
+        "amplifier": 3,
+        "duration": 1200
+      }
     ]
   }
 }

@@ -1,5 +1,6 @@
 package charmony.villager_tasks.common.features.villager_tasks;
 
+import charmony.core.helpers.EnchantmentsHelper;
 import charmony.core.helpers.TagHelper;
 import charmony.villager_tasks.common.features.villager_tasks.interfaces.HasWeight;
 import charmony.villager_tasks.common.features.villager_tasks.requirements.TreasureItem;
@@ -101,24 +102,39 @@ public final class Helpers {
         }
     }
 
+    public static void parseStandardEffectsEntry(List<Map<String, Object>> effects, Consumer<ParsedEffect> consumer) {
+        for (var j = 0; j < effects.size(); j++) {
+            var effectMap = effects.get(j);
+            var effectStr = (String) effectMap.get("effect");
+            var amplifier = (double) effectMap.getOrDefault("amplifier", 0.0d);
+            var duration = (double) effectMap.getOrDefault("duration", 24000.0d);
+            var effectId = Identifier.tryParse(effectStr);
+            if (effectId == null) {
+                throw new IllegalStateException("Invalid effect ID " + effectStr);
+            }
+
+            consumer.accept(new ParsedEffect(effectId, (int)amplifier, (int)duration));
+        }
+    }
+
     public static void applyEnchantments(RegistryAccess registryAccess, ItemStack stack,
                                          List<Map<String, Object>> enchantments, RandomSource random) {
         var registry = registryAccess.lookupOrThrow(Registries.ENCHANTMENT);
 
         for (var enchantmentMap : enchantments) {
             Holder<Enchantment> ench;
-            var name = (String) enchantmentMap.get("enchantment");
-            if (!name.equals("random")) {
-                var key = ResourceKey.create(Registries.ENCHANTMENT, Identifier.parse(name));
-                ench = registry.get(key).orElse(null);
-            } else {
-                ench = registry.getRandom(random).orElse(null);
-            }
-
-            if (ench == null) continue;
 
             var level = (int) (double) enchantmentMap.getOrDefault("level", 1.0d);
-            if (ench.value().canEnchant(stack)) {
+            var name = (String) enchantmentMap.get("enchantment");
+
+            if (name.equals("random")) {
+                ench = EnchantmentsHelper.getRandomEnchantment(registryAccess, stack, random).orElse(null);
+            } else {
+                var key = ResourceKey.create(Registries.ENCHANTMENT, Identifier.parse(name));
+                ench = registry.get(key).orElse(null);
+            }
+
+            if (ench != null && ench.value().canEnchant(stack)) {
                 stack.enchant(ench, Math.min(level, ench.value().getMaxLevel()));
             }
         }
@@ -200,6 +216,7 @@ public final class Helpers {
         return UUID.randomUUID(); // TODO: make actually empty
     }
 
-    public record ParsedItem(ItemStack stack, int count, int weight) {
-    }
+    public record ParsedItem(ItemStack stack, int count, int weight) {}
+
+    public record ParsedEffect(Identifier effect, int amplifier, int duration) {}
 }

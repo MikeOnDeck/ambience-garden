@@ -5,17 +5,28 @@ import charmony.villager_tasks.client.features.villager_tasks.component.AspectBo
 import charmony.villager_tasks.common.features.villager_tasks.Resources;
 import charmony.villager_tasks.common.features.villager_tasks.Task;
 import com.mojang.datafixers.util.Pair;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 public final class RewardsRenderer extends BaseRenderer {
+    private @Nullable RegistryAccess registryAccess;
+
     public RewardsRenderer(Task task) {
         super(task);
+
+        var level = Minecraft.getInstance().level;
+        if (level != null) {
+            this.registryAccess = level.registryAccess();
+        }
     }
 
     @Override
@@ -28,40 +39,47 @@ public final class RewardsRenderer extends BaseRenderer {
 
         var xp = task.rewards.experience;
         var items = task.rewards.items;
-        var rows = Math.min(maxShown, items.size());
-        var showEllipsis = items.size() > maxShown;
+        var effects = task.rewards.effects;
+        var rows = 0;
 
-        if (xp > 0 || !items.isEmpty()) {
-            guiGraphics.drawString(font, Resources.REWARD_ASPECT, x, y + calcHeight, new Color(0xffffff).getArgbColor(), false);
-            calcHeight += margin;
+        List<Function<Integer, Integer>> renderers = new ArrayList<>();
 
-            // Items
-            for (var i = 0; i < rows; i++) {
-                var item = items.get(i);
-                calcWidth = Math.max(calcWidth, renderItemInTooltip(guiGraphics, item.stack(), Component.literal("" + item.total()), x, y + calcHeight + (i * rowHeight)));
-            }
-
-            if (showEllipsis) {
-                renderEllipsisInTooltip(guiGraphics, items.size() - maxShown, x, y + calcHeight + (rows * rowHeight));
-                rows += 1;
-            }
-
-            // XP
-            if (xp > 0) {
-                var component = Component.translatable("gui.charmony.villager_tasks.experience_levels", task.rewards.experience);
-                calcWidth = Math.max(calcWidth, renderItemInTooltip(guiGraphics, new ItemStack(Items.EXPERIENCE_BOTTLE), component, x, y + calcHeight + (rows * rowHeight), false));
-                rows += 1;
-            }
-
-            calcHeight += (rows * rowHeight) + margin;
+        for (var item : items) {
+            renderers.add(yy -> renderItemInTooltip(guiGraphics, item.stack(), Component.literal("" + item.total()), x, yy));
         }
 
+        if (xp > 0) {
+            renderers.add(yy -> {
+                var component = Component.translatable("gui.charmony.villager_tasks.experience_levels", task.rewards.experience);
+                return renderItemInTooltip(guiGraphics, new ItemStack(Items.EXPERIENCE_BOTTLE), component, x, yy, false);
+            });
+        }
+
+        if (registryAccess != null) {
+            for (var effect : effects) {
+                renderers.add(yy -> renderItemInTooltip(guiGraphics, effect.makePotion(registryAccess), effect.name(registryAccess), x, yy, false));
+            }
+        }
+
+        for (var i = 0; i < Math.min(maxShown, renderers.size()); i++) {
+            var renderer = renderers.get(i);
+            calcWidth = Math.max(calcWidth, renderer.apply(y + calcHeight + (rows * rowHeight)));
+            ++rows;
+        }
+
+        if (maxShown < renderers.size()) {
+            renderEllipsisInTooltip(guiGraphics, renderers.size() - maxShown, x, y + calcHeight + (rows * rowHeight));
+            ++rows;
+        }
+
+        calcHeight += (rows * rowHeight) + margin;
         return Pair.of(calcWidth, calcHeight);
     }
 
     @Override
     public Pair<Integer, Integer> renderPanel(GuiGraphics guiGraphics, int x, int y, int xx, int yy, int maxWidth, int mouseX, int mouseY) {
         var rewards = task.rewards;
+
         if (rewards.isEmpty()) {
             return Pair.of(xx, yy);
         }
@@ -104,6 +122,34 @@ public final class RewardsRenderer extends BaseRenderer {
                     .withItemStack(item.stack())
                     .withFillColor(new Color(0x4090c0))
                     .withTooltipText(tooltip);
+
+                box.render(guiGraphics, font, x + xx, y + yy, mouseX, mouseY);
+                var width = box.width();
+                var height = box.height();
+
+                xx += width + boxMargin;
+                if (xx >= maxWidth) {
+                    // Move to next row
+                    xx = 0;
+                    yy += height + boxMargin;
+                }
+            }
+        }
+
+        // Reward effects
+        if (registryAccess != null && !rewards.effects.isEmpty()) {
+            for (var effect : rewards.effects) {
+                var name = effect.name(registryAccess);
+                var potion = effect.makePotion(registryAccess);
+                var itemTooltip = itemTooltip(potion);
+                List<Component> tooltips = new ArrayList<>(List.of(Resources.YOU_RECEIVE));
+                tooltips.addAll(itemTooltip.subList(1, itemTooltip.size()));
+
+                var box = new AspectBoxBuilder()
+                    .withText(name)
+                    .withItemStack(potion)
+                    .withFillColor(new Color(0x6040c0))
+                    .withTooltipText(tooltips);
 
                 box.render(guiGraphics, font, x + xx, y + yy, mouseX, mouseY);
                 var width = box.width();

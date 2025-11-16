@@ -83,23 +83,13 @@ public final class Battle extends Aspect implements Satisfiable {
                 var health = (double) mobMap.getOrDefault("health", 20.0d);
 
                 // Parse effects to apply to these mobs.
-                var effects = (List<Map<String, Object>>) mobMap.getOrDefault("effects", List.of());
-                List<BattleMobEffect> effectList = new ArrayList<>();
+                var effectsMap = (List<Map<String, Object>>) mobMap.getOrDefault("effects", List.of());
+                List<BattleMobEffect> effects = new ArrayList<>();
 
-                for (var j = 0; j < effects.size(); j++) {
-                    var effectMap = effects.get(j);
-                    var effectStr = (String) effectMap.get("effect");
-                    var amplifier = (double) effectMap.getOrDefault("amplifier", 0.0d);
-                    var duration = (double) effectMap.getOrDefault("duration", 288000.0d);
-                    var effectId = Identifier.tryParse(effectStr);
-                    if (effectId == null) {
-                        throw new IllegalStateException("Invalid effect ID " + effectStr);
-                    }
+                Helpers.parseStandardEffectsEntry(effectsMap,
+                    parsed -> effects.add(new BattleMobEffect(parsed.effect(), parsed.amplifier(), parsed.duration())));
 
-                    effectList.add(new BattleMobEffect(effectId, (int)amplifier, (int)duration));
-                }
-
-                var stats = new BattleMobData(mobId, (int)health, effectList);
+                var stats = new BattleMobData(mobId, (int)health, effects);
                 criteria.add(new BattleMob(stats, uniqueId, dimension,  Optional.empty(), mobCount, 0, false));
             } catch (Exception e) {
                 log().warn(e.getMessage() + " at index " + i);

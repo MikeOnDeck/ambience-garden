@@ -63,6 +63,10 @@ public final class Rewards extends Aspect {
         return items;
     }
 
+    public List<RewardEffect> effects() {
+        return effects;
+    }
+
     public static Rewards make(Task.AspectBuilder builder) {
         var map = builder.definition().rewards;
         if (map.isEmpty()) return EMPTY;
@@ -74,32 +78,40 @@ public final class Rewards extends Aspect {
         // Resolve experience from map.
         var experience = (int) Math.round((double) map.getOrDefault("experience", 0.0d) * multiplier);
 
+        // Resolve effects from map.
+        var effectsMap = (List<Map<String, Object>>) map.getOrDefault("effects", List.of());
+        List<RewardEffect> rewardEffects = new ArrayList<>();
+
+        Helpers.parseStandardEffectsEntry(effectsMap,
+            parsed -> rewardEffects.add(new RewardEffect(parsed.effect(), parsed.amplifier(), parsed.duration())));
+
         // Resolve items from map.
         var items = (List<Map<String, Object>>)map.getOrDefault("items", List.of());
-        if (items.isEmpty()) {
-            throw new IllegalStateException("Aspect requires at least one item.");
-        }
-
-        var count = Math.min(items.size(), Helpers.getCountFromMap(map, multiplier, random));
-        var criteria = new ArrayList<RewardItem>();
+        var itemCount = Math.min(items.size(), Helpers.getCountFromMap(map, multiplier, random));
+        var parsedItems = new ArrayList<RewardItem>();
 
         Helpers.parseStandardItemsEntry(registryAccess, items, multiplier, random,
-            parsed -> criteria.add(new RewardItem(parsed.stack(), parsed.count(), parsed.weight())));
+            parsed -> parsedItems.add(new RewardItem(parsed.stack(), parsed.count(), parsed.weight())));
 
-        if (criteria.isEmpty()) return EMPTY;
+        if (parsedItems.isEmpty()) return EMPTY;
+        var rewardItems = Helpers.getRandomlyByWeight(parsedItems, itemCount, random);
 
-        var rewardItems = Helpers.getRandomlyByWeight(criteria, count, random);
-        return new Rewards(experience, rewardItems, List.of());
+        return new Rewards(experience, rewardItems, rewardEffects);
     }
 
     @Override
     public void onComplete(Task task, ServerPlayer player) {
         var level = player.level();
+        var registryAccess = level.registryAccess();
         var stacks = new ArrayList<ItemStack>();
 
         if (experience > 0) {
             player.giveExperienceLevels(experience);
             level.playSound(null, player, SoundEvents.PLAYER_LEVELUP, SoundSource.PLAYERS, 0.25f, 1.0f);
+        }
+
+        for (var effect : effects()) {
+            player.addEffect(effect.mobEffectInstance(registryAccess));
         }
 
         for (var item : items()) {
