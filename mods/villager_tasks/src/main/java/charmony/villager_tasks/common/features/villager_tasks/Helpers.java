@@ -80,40 +80,54 @@ public final class Helpers {
                                                double multiplier, RandomSource random, Consumer<ParsedItem> consumer) {
         for (var i = 0; i < items.size(); i++) {
             try {
-                var itemMap = items.get(i);
-                var itemId = (String) itemMap.get("item");
-                var itemWeight = (double) itemMap.getOrDefault("weight", 1.0d);
-                var itemStack = new ItemStack(Helpers.resolveItem(registryAccess, itemId, random));
-                var itemCount = Helpers.getCountFromMap(itemMap, multiplier, random);
+                var map = items.get(i);
 
-                var enchantments = (List<Map<String, Object>>) itemMap.get("enchantments");
+                var chance = (double) map.getOrDefault("chance", 1.0d);
+                if (chance < random.nextDouble()) continue;
+
+                var id = (String) map.get("item");
+                var weight = (double) map.getOrDefault("weight", 1.0d);
+                var stack = new ItemStack(Helpers.resolveItem(registryAccess, id, random));
+                var count = Helpers.getCountFromMap(map, multiplier, random);
+
+                var enchantments = (List<Map<String, Object>>) map.get("enchantments");
                 if (enchantments != null) {
-                    Helpers.applyEnchantments(registryAccess, itemStack, enchantments, random);
+                    Helpers.applyEnchantments(registryAccess, stack, enchantments, random);
                 }
 
-                if (itemStack.isEmpty()) {
-                    throw new IllegalStateException("Item " + itemId + " could not be parsed");
+                if (stack.isEmpty()) {
+                    throw new IllegalStateException("Item " + id + " could not be parsed");
                 }
 
-                consumer.accept(new ParsedItem(itemStack, itemCount, (int)itemWeight));
+                consumer.accept(new ParsedItem(stack, count, (int)weight));
             } catch (Exception e) {
                 VillagerTasks.feature().log().warn(e.getMessage() + " at index " + i);
             }
         }
     }
 
-    public static void parseStandardEffectsEntry(List<Map<String, Object>> effects, Consumer<ParsedEffect> consumer) {
-        for (var j = 0; j < effects.size(); j++) {
-            var effectMap = effects.get(j);
-            var effectStr = (String) effectMap.get("effect");
-            var amplifier = (double) effectMap.getOrDefault("amplifier", 0.0d);
-            var duration = (double) effectMap.getOrDefault("duration", 24000.0d);
-            var effectId = Identifier.tryParse(effectStr);
-            if (effectId == null) {
-                throw new IllegalStateException("Invalid effect ID " + effectStr);
-            }
+    public static void parseStandardEffectsEntry(List<Map<String, Object>> effects, RandomSource random,
+                                                 Consumer<ParsedEffect> consumer) {
+        for (var i = 0; i < effects.size(); i++) {
+            try {
+                var map = effects.get(i);
 
-            consumer.accept(new ParsedEffect(effectId, (int)amplifier, (int)duration));
+                var chance = (double) map.getOrDefault("chance", 1.0d);
+                if (chance < random.nextDouble()) continue;
+
+                var idStr = (String) map.get("effect");
+                var amplifier = (double) map.getOrDefault("amplifier", 0.0d);
+                var duration = (double) map.getOrDefault("duration", 24000.0d);
+
+                var id = Identifier.tryParse(idStr);
+                if (id == null) {
+                    throw new IllegalStateException("Invalid effect ID " + idStr);
+                }
+
+                consumer.accept(new ParsedEffect(id, (int)amplifier, (int)duration));
+            } catch (Exception e) {
+                VillagerTasks.feature().log().warn(e.getMessage() + " at index " + i);
+            }
         }
     }
 
@@ -121,11 +135,14 @@ public final class Helpers {
                                          List<Map<String, Object>> enchantments, RandomSource random) {
         var registry = registryAccess.lookupOrThrow(Registries.ENCHANTMENT);
 
-        for (var enchantmentMap : enchantments) {
+        for (var map : enchantments) {
             Holder<Enchantment> ench;
 
-            var level = (int) (double) enchantmentMap.getOrDefault("level", 1.0d);
-            var name = (String) enchantmentMap.get("enchantment");
+            var chance = (double) map.getOrDefault("chance", 1.0d);
+            if (chance < random.nextDouble()) continue;
+
+            var level = (int) (double) map.getOrDefault("level", 1.0d);
+            var name = (String) map.get("enchantment");
 
             if (name.equals("random")) {
                 ench = EnchantmentsHelper.getRandomEnchantment(registryAccess, stack, random).orElse(null);

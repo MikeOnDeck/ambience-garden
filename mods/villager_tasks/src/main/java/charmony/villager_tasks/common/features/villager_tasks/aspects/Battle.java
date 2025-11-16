@@ -86,7 +86,7 @@ public final class Battle extends Aspect implements Satisfiable {
                 var effectsMap = (List<Map<String, Object>>) mobMap.getOrDefault("effects", List.of());
                 List<BattleMobEffect> effects = new ArrayList<>();
 
-                Helpers.parseStandardEffectsEntry(effectsMap,
+                Helpers.parseStandardEffectsEntry(effectsMap, random,
                     parsed -> effects.add(new BattleMobEffect(parsed.effect(), parsed.amplifier(), parsed.duration())));
 
                 var stats = new BattleMobData(mobId, (int)health, effects);
