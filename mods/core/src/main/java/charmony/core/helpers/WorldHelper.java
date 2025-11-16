@@ -73,10 +73,8 @@ public final class WorldHelper {
         var s = random.nextInt(max - min) + min;
         var w = random.nextInt(max - min) + min;
 
-        pos = pos.north(random.nextBoolean() ? n : -n);
-        pos = pos.east(random.nextBoolean() ? e : -e);
-        pos = pos.south(random.nextBoolean() ? s : -s);
-        pos = pos.west(random.nextBoolean() ? w : -w);
+        pos = pos.north(random.nextBoolean() ? n : s);
+        pos = pos.east(random.nextBoolean() ? e : w);
 
         // World border checking
         var border = level.getWorldBorder();
