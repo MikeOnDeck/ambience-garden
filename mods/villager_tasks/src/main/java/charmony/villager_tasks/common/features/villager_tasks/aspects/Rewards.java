@@ -82,7 +82,7 @@ public final class Rewards extends Aspect {
         var effectsMap = (List<Map<String, Object>>) map.getOrDefault("effects", List.of());
         List<RewardEffect> rewardEffects = new ArrayList<>();
 
-        Helpers.parseStandardEffectsEntry(effectsMap,
+        Helpers.parseStandardEffectsEntry(effectsMap, random,
             parsed -> rewardEffects.add(new RewardEffect(parsed.effect(), parsed.amplifier(), parsed.duration())));
 
         // Resolve items from map.
