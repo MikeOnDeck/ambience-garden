@@ -36,7 +36,8 @@ public final class TreasureRenderer extends BaseRenderer {
             for (var i = 0; i < rows; i++) {
                 var item = items.get(i);
                 var spriteRenderer = new LootTableSpriteRenderer(item.lootTable());
-                calcWidth = Math.max(calcWidth, renderItemAndSpriteInTooltip(guiGraphics, item.stack(), spriteRenderer, Component.literal("" + item.total()), x, y + calcHeight + (i * rowHeight), false));
+                calcWidth = Math.max(calcWidth, renderItemAndSpriteInTooltip(guiGraphics, item.stack(), spriteRenderer,
+                    Component.literal("" + item.total()), x, y + calcHeight + (i * rowHeight), true));
             }
 
             if (showEllipsis) {

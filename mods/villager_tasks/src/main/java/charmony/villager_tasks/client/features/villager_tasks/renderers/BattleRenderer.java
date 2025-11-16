@@ -64,9 +64,10 @@ public final class BattleRenderer extends BaseRenderer {
                 var mob = battle.mobs().get(i);
                 var spriteRenderer = new MobSpriteRenderer(mob.mob());
 
-                var compass = new ItemStack(Items.COMPASS);
+                var regularCompass = new ItemStack(Items.COMPASS);
+                var trackedCompass = regularCompass.copy();
                 var tracker = new LodestoneTracker(mob.globalPos(), true);
-                compass.set(DataComponents.LODESTONE_TRACKER, tracker);
+                trackedCompass.set(DataComponents.LODESTONE_TRACKER, tracker);
 
                 List<Component> tooltips = List.of(
                     Resources.YOU_MUST_DEFEAT,
@@ -75,9 +76,9 @@ public final class BattleRenderer extends BaseRenderer {
 
                 var box = new AspectBoxBuilder()
                     .withSpriteRenderer(spriteRenderer)
-                    .withItemStack(compass)
                     .withGraphicOrder(AspectBoxBuilder.GraphicOrder.SPRITE_FIRST)
                     .withTooltipText(tooltips)
+                    .withItemStack(task.isStarted() ? trackedCompass : regularCompass)
                     .withRequirement(mob);
 
                 box.render(guiGraphics, font, x + xx, y + yy, mouseX, mouseY);
