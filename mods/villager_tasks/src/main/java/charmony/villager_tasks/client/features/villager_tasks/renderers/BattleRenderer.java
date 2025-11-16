@@ -82,6 +82,7 @@ public final class BattleRenderer extends BaseRenderer {
                 var mob = battle.mobs().get(i);
                 var effects = mob.effects();
                 var spriteRenderer = new MobSpriteRenderer(mob.mob());
+                var allDefeated = battle.allDefeated();
 
                 var regularCompass = new ItemStack(Items.COMPASS);
                 var trackedCompass = regularCompass.copy();
@@ -94,7 +95,7 @@ public final class BattleRenderer extends BaseRenderer {
                 ));
 
                 var globalPos = mob.globalPos().orElse(null);
-                if (player != null && globalPos != null) {
+                if (player != null && globalPos != null && !allDefeated) {
                     var pos = globalPos.pos();
                     var dist = pos.distManhattan(player.blockPosition());
                     tooltips.add(Component.translatable("gui.charmony.villager_tasks.distance", dist));
@@ -115,9 +116,9 @@ public final class BattleRenderer extends BaseRenderer {
                 var box = new AspectBoxBuilder()
                     .withSpriteRenderer(spriteRenderer)
                     .withGraphicOrder(AspectBoxBuilder.GraphicOrder.SPRITE_FIRST)
-                    .withTooltipText(tooltips)
+                    .withRequirement(mob)
                     .withItemStack(task.isStarted() ? trackedCompass : regularCompass)
-                    .withRequirement(mob);
+                    .withTooltipText(tooltips);
 
                 box.render(guiGraphics, font, x + xx, y + yy, mouseX, mouseY);
                 var width = box.width();

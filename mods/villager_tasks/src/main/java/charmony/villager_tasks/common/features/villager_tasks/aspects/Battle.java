@@ -1,23 +1,29 @@
 package charmony.villager_tasks.common.features.villager_tasks.aspects;
 
+import charmony.core.helpers.MobHelper;
 import charmony.core.helpers.UuidHelper;
-import charmony.villager_tasks.common.features.villager_tasks.Aspect;
-import charmony.villager_tasks.common.features.villager_tasks.Helpers;
-import charmony.villager_tasks.common.features.villager_tasks.Resources;
-import charmony.villager_tasks.common.features.villager_tasks.Task;
+import charmony.villager_tasks.common.features.villager_tasks.*;
 import charmony.villager_tasks.common.features.villager_tasks.data.*;
 import charmony.villager_tasks.common.features.villager_tasks.interfaces.Satisfiable;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.RandomSource;
 import net.minecraft.util.Util;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +32,8 @@ import java.util.Optional;
 
 public final class Battle extends Aspect implements Satisfiable {
     public static final String ID = "battle";
+    public static final String BATTLE_TAG = "charmony_battle";
+    public static final int TRIGGER_DISTANCE = 32;
 
     private final List<BattleMob> mobs;
     private final List<BattleAtmosphere> atmosphere;
@@ -128,6 +136,68 @@ public final class Battle extends Aspect implements Satisfiable {
         return new Battle(list, atmosphere, spawn, false);
     }
 
+    @SuppressWarnings("unchecked")
+    public void spawnMobs(BattleMob entry, Task task, ServerPlayer player, BlockPos pos) {
+        var level = player.level();
+        var registryAccess = level.registryAccess();
+        var entityRegistry = registryAccess.lookup(Registries.ENTITY_TYPE).orElseThrow();
+
+        // Spawn mobs near to the player.
+        var successfullySpawned = 0;
+
+        for (int i = 0; i < total(); i++) {
+            var entityType = entityRegistry.getOptional(entry.mobKey()).orElse(null);
+            if (entityType == null) continue;
+
+            var spawnReason = EntitySpawnReason.TRIGGERED;
+            var spawnPos = findRandomSpawnPos(entityType, level, pos);
+
+            try {
+                if (spawnPos.isPresent()) {
+                    var result = MobHelper.spawn((EntityType<? extends Mob>) entityType, level, spawnPos.get(), spawnReason,
+                        (mob) -> {
+                            mob.addTag(BATTLE_TAG + "_" + entry.uniqueId().toString());
+                            mob.setTarget(player);
+                            mob.setPersistenceRequired();
+                            mob.setAggressive(true);
+
+                            for (var effect : entry.data().effects()) {
+                                mob.addEffect(effect.mobEffectInstance(registryAccess));
+                            }
+
+                            for (var equipment : entry.data().equipment()) {
+                                mob.setItemSlot(equipment.slot(), equipment.stack());
+                            }
+
+                            var lightningBolt = EntityType.LIGHTNING_BOLT.create(level, EntitySpawnReason.EVENT);
+                            if (lightningBolt != null) {
+                                lightningBolt.snapTo(Vec3.atBottomCenterOf(spawnPos.get()));
+                                lightningBolt.setVisualOnly(true);
+                                level.addFreshEntity(lightningBolt);
+                            }
+                        });
+                    if (result) {
+                        log().debug("Spawned mob " + entry.mob() + " at " + spawnPos.get());
+                        successfullySpawned++;
+                    }
+                }
+            } catch (Exception e) {
+                log().warn("Error spawning mob: " + e.getMessage());
+            }
+        }
+
+        if (successfullySpawned == 0) {
+            log().warn("No mobs spawned, abandoning task");
+            VillagerTasks.feature().handlers.abandonTask(player, task);
+            return;
+        }
+
+        var atmosphere = task.battle.atmosphere();
+        if (atmosphere.contains(BattleAtmosphere.Storm)) {
+            level.setWeatherParameters(0, 12000, true, true);
+        }
+    }
+
     @Override
     public Battle copy() {
         return new Battle(mobs.stream().map(BattleMob::copy).toList(), new ArrayList<>(atmosphere), spawn.copy(), defeated);
@@ -173,8 +243,7 @@ public final class Battle extends Aspect implements Satisfiable {
         super.onTick(task, player);
 
         if (player instanceof ServerPlayer serverPlayer) {
-            var registryAccess = serverPlayer.level().registryAccess();
-            mobs().forEach(mob -> mob.onTick(task, registryAccess, serverPlayer));
+            mobs().forEach(mob -> mob.onTick(task, serverPlayer));
         }
 
         if (!defeated && player.level() instanceof ServerLevel level && isSatisfied()) {
@@ -208,7 +277,7 @@ public final class Battle extends Aspect implements Satisfiable {
         }
 
         for (var req : mobs()) {
-            if (req.onEntityKilled(level.registryAccess(), entity)) {
+            if (req.onEntityKilled(task, level.registryAccess(), entity)) {
                 return true;
             }
         }
@@ -228,9 +297,28 @@ public final class Battle extends Aspect implements Satisfiable {
         return mobs;
     }
 
+    public boolean allDefeated() {
+        return defeated;
+    }
+
     private void clearAtmosphere(ServerLevel level) {
         if (atmosphere().contains(BattleAtmosphere.Storm)) {
             level.setWeatherParameters(12000, 24000, false, false);
         }
+    }
+
+    private Optional<BlockPos> findRandomSpawnPos(EntityType<?> entity, ServerLevel level, BlockPos pos) {
+        var random = RandomSource.create();
+        for (int i = 0; i < 20; i++) {
+            var x = pos.getX() + random.nextInt(16) - 8;
+            var z = pos.getZ() + random.nextInt(16) - 8;
+            var y = level.getHeight(Heightmap.Types.WORLD_SURFACE, x, z);
+            var p = new BlockPos(x, y, z).below();
+            var s = level.getBlockState(p);
+            if (s.isValidSpawn(level, p, entity)) {
+                return Optional.of(p.above());
+            }
+        }
+        return Optional.empty();
     }
 }
