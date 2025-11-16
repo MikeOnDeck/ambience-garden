@@ -23,6 +23,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
@@ -309,7 +310,7 @@ public final class Battle extends Aspect implements Satisfiable {
 
     private Optional<BlockPos> findRandomSpawnPos(EntityType<?> entity, ServerLevel level, BlockPos pos) {
         var random = RandomSource.create();
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 10; i++) {
             var x = pos.getX() + random.nextInt(16) - 8;
             var z = pos.getZ() + random.nextInt(16) - 8;
             var y = level.getHeight(Heightmap.Types.WORLD_SURFACE, x, z);
@@ -319,6 +320,18 @@ public final class Battle extends Aspect implements Satisfiable {
                 return Optional.of(p.above());
             }
         }
+
+        for (int i = 0; i < 10; i++) {
+            var x = pos.getX() + random.nextInt(16) - 8;
+            var z = pos.getZ() + random.nextInt(16) - 8;
+            var y = level.getHeight(Heightmap.Types.WORLD_SURFACE, x, z);
+            var p = new BlockPos(x, y, z).below();
+            var s = level.getBlockState(p);
+            if (s.getFluidState().is(Fluids.WATER)) {
+                return Optional.of(p.above());
+            }
+        }
+
         return Optional.empty();
     }
 }
