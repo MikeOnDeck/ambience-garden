@@ -130,7 +130,7 @@ public class BattleMob implements Satisfiable {
         this.pos = Optional.of(pos);
     }
 
-    public boolean onEntityKilled(Task task, RegistryAccess registryAccess, LivingEntity entity) {
+    public boolean onEntityKilled(RegistryAccess registryAccess, LivingEntity entity) {
         var entityRegistry = registryAccess.lookup(Registries.ENTITY_TYPE).orElseThrow();
 
         var isValidMob = entityRegistry.getOptional(mobKey())

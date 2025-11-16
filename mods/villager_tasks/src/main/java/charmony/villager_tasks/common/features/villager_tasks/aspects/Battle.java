@@ -277,7 +277,7 @@ public final class Battle extends Aspect implements Satisfiable {
         }
 
         for (var req : mobs()) {
-            if (req.onEntityKilled(task, level.registryAccess(), entity)) {
+            if (req.onEntityKilled(level.registryAccess(), entity)) {
                 return true;
             }
         }
