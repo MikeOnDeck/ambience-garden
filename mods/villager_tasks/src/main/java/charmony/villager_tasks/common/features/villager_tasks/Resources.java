@@ -44,6 +44,7 @@ public final class Resources {
     public static final Component REQUIREMENTS = Component.translatable("gui.charmony.villager_tasks.requirements");
     public static final Component REWARDS = Component.translatable("gui.charmony.villager_tasks.rewards");
     public static final Component TREASURE_ASPECT = Component.translatable("gui.charmony.villager_tasks.aspect.treasure");
+    public static final Component TREASURE_PREFIXES = Component.translatable("gui.charmony.villager_tasks.treasure_prefixes");
 
     public static final MutableComponent YOU_MUST_COLLECT = Component.translatable("gui.charmony.villager_tasks.you_must_collect").withStyle(ChatFormatting.YELLOW);
     public static final MutableComponent YOU_MUST_DEFEAT = Component.translatable("gui.charmony.villager_tasks.you_must_defeat").withStyle(ChatFormatting.YELLOW);

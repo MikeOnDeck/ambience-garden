@@ -45,6 +45,8 @@
   "gui.charmony.villager_tasks.requirements_remaining": "%s/%s requirements completed",
   "gui.charmony.villager_tasks.rewards": "Rewards",
   "gui.charmony.villager_tasks.tasks": "Tasks",
+  "gui.charmony.villager_tasks.treasure_prefixed_name": "%s %s",
+  "gui.charmony.villager_tasks.treasure_prefixes": "Aged,Alluring,Ancient,Antique,Archaic,Astonishing,Attractive,Beautiful,Bizarre,Broken,Bulky,Burnished,Charmed,Charming,Corrupted,Cracked,Cryptic,Curious,Damaged,Deadly,Decorated,Discarded,Distinctive,Durable,Dubious,Dusty,Elaborate,Embellished,Enchanted,Engraved,Exceptional,Exotic,Extraordinary,Fabled,Faded,Famed,Fancy,Fantastical,Fascinating,Fetching,Forgotten,Gilded,Gleaming,Glinting,Glistening,Glowing,Harmful,Heavy,Hefty,Hidden,Incredible,Interesting,Intriguing,Iridescent,Jagged,Jewelled,Legendary,Light,Lost,Lucent,Lustrous,Magical,Marvellous,Mislaid,Mysterious,Mystic,Mystical,Mythic,Mythical,Notable,Obscure,Occult,Odd,Outlandish,Patterned,Peculiar,Pretty,Prized,Polished,Precious,Radiant,Ragged,Rare,Remarkable,Risky,Rough,Rugged,Runic,Scratched,Secret,Serrated,Sharp,Shiny,Sparkling,Special,Strange,Superior,Suspicious,Uncommon,Unique,Unsettling,Unusual,Valuable,Vibrant,Weird,Wonderful,Wonderous,Worn",
   "gui.charmony.villager_tasks.you_must_collect": "You must collect",
   "gui.charmony.villager_tasks.you_must_defeat": "You must defeat",
   "gui.charmony.villager_tasks.you_must_discover": "You must discover",

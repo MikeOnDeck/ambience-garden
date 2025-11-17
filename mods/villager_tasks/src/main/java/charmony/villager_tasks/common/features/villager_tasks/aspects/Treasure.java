@@ -8,6 +8,10 @@ import charmony.villager_tasks.common.features.villager_tasks.Task;
 import charmony.villager_tasks.common.features.villager_tasks.data.TreasureItem;
 import charmony.villager_tasks.common.features.villager_tasks.interfaces.Satisfiable;
 import com.mojang.serialization.Codec;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
@@ -15,11 +19,10 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.util.Util;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.component.CustomData;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public final class Treasure extends Aspect implements Satisfiable {
     public static final String ID = "treasure";
@@ -58,7 +61,7 @@ public final class Treasure extends Aspect implements Satisfiable {
                 var itemId = (String) itemMap.get("item");
                 var lootTable = (String) itemMap.get("loot_table");
                 var chance = (double) itemMap.getOrDefault("chance", 1.0d);
-                var itemStack = Helpers.createTreasureItemStack(builder.registryAccess(), itemId, uniqueId, random);
+                var itemStack = createTreasureItemStack(builder.registryAccess(), itemId, uniqueId, random);
 
                 if (itemStack.isEmpty()) {
                     throw new IllegalStateException("Item " + itemId + " could not be parsed");
@@ -77,6 +80,27 @@ public final class Treasure extends Aspect implements Satisfiable {
         Util.shuffle(criteria, random);
         var list = criteria.subList(0, Math.min(count, criteria.size()));
         return new Treasure(list);
+    }
+
+    private static ItemStack createTreasureItemStack(RegistryAccess registryAccess, String itemId, UUID uniqueId, RandomSource random) {
+        var stack = new ItemStack(Helpers.resolveItem(registryAccess, itemId, random));
+        var registry = registryAccess.lookupOrThrow(Registries.ENCHANTMENT);
+
+        var enchantment = registry.getRandom(random).orElseThrow();
+        stack.enchant(enchantment, 1);
+
+        var prefixes = Arrays.stream(Resources.TREASURE_PREFIXES.getString().split(",")).toList();
+        var prefix = prefixes.get(random.nextInt(prefixes.size()));
+        var name = stack.getItem().getName(stack);
+        var newName = Component.translatable("gui.charmony.villager_tasks.treasure_prefixed_name", prefix, name);
+
+        var tag = new CompoundTag();
+        tag.putString(TreasureItem.TREASURE_TAG, uniqueId.toString());
+        stack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
+        stack.set(DataComponents.CUSTOM_NAME, newName);
+        stack.set(DataComponents.RARITY, Rarity.RARE);
+
+        return stack;
     }
 
     @Override
