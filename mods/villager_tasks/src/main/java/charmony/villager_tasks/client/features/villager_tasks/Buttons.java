@@ -13,6 +13,7 @@ public final class Buttons {
     public static final WidgetSprites ABANDON_BUTTON = makeButton("abandon");
     public static final WidgetSprites COMPLETE_BUTTON = makeButtonWithDisabled("complete");
     public static final WidgetSprites DETAILS_BUTTON = makeButton("details");
+    public static final WidgetSprites PIN_BUTTON = makeButton("pin");
 
     public static class ActiveTasksButton extends Button.Plain {
         public static final int WIDTH = 120;
@@ -137,6 +138,42 @@ public final class Buttons {
         public DetailsButton(int x, int y, OnPress onPress) {
             super(x, y, WIDTH, HEIGHT, SPRITES, onPress);
             setTooltip(Tooltip.create(TEXT));
+        }
+    }
+
+    public static class PinImageButton extends ImageButton {
+        public static int WIDTH = 20;
+        public static int HEIGHT = 18;
+        static WidgetSprites SPRITES = PIN_BUTTON;
+        static Component TOOLTIP = Resources.PIN_BUTTON_TOOLTIP;
+
+        public PinImageButton(int x, int y, OnPress onPress) {
+            super(x, y, WIDTH, HEIGHT, SPRITES, onPress);
+            setTooltip(Tooltip.create(TOOLTIP));
+        }
+    }
+
+    public static class PinButton extends Button.Plain {
+        public static final int WIDTH = 80;
+        public static final int HEIGHT = 20;
+        static Component TEXT = Resources.PIN_BUTTON_TITLE;
+        static Component TOOLTIP = Resources.PIN_BUTTON_TOOLTIP;
+
+        public PinButton(int x, int y, OnPress onPress) {
+            super(x, y, WIDTH, HEIGHT, TEXT, onPress, DEFAULT_NARRATION);
+            setTooltip(Tooltip.create(TOOLTIP));
+        }
+    }
+
+    public static class UnpinButton extends Button.Plain {
+        public static final int WIDTH = 80;
+        public static final int HEIGHT = 20;
+        static Component TEXT = Resources.UNPIN_BUTTON_TITLE;
+        static Component TOOLTIP = Resources.UNPIN_BUTTON_TOOLTIP;
+
+        public UnpinButton(int x, int y, OnPress onPress) {
+            super(x, y, WIDTH, HEIGHT, TEXT, onPress, DEFAULT_NARRATION);
+            setTooltip(Tooltip.create(TOOLTIP));
         }
     }
 

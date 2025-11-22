@@ -40,12 +40,15 @@ public final class Resources {
     public static final Component HUNT_ASPECT = Component.translatable("gui.charmony.villager_tasks.aspect.hunt");
     public static final Component MISSINGNO = Component.translatable("gui.charmony.villager_tasks.missingno");
     public static final Component NO_AVAILABLE_TASKS = Component.translatable("gui.charmony.villager_tasks.no_available_tasks");
+    public static final Component PIN_BUTTON_TITLE = Component.translatable("gui.charmony.villager_tasks.pin.button");
+    public static final Component PIN_BUTTON_TOOLTIP = Component.translatable("gui.charmony.villager_tasks.pin.tooltip");
     public static final Component REWARD_ASPECT = Component.translatable("gui.charmony.villager_tasks.aspect.reward");
     public static final Component REQUIREMENTS = Component.translatable("gui.charmony.villager_tasks.requirements");
     public static final Component REWARDS = Component.translatable("gui.charmony.villager_tasks.rewards");
     public static final Component TREASURE_ASPECT = Component.translatable("gui.charmony.villager_tasks.aspect.treasure");
     public static final Component TREASURE_PREFIXES = Component.translatable("gui.charmony.villager_tasks.treasure_prefixes");
-
+    public static final Component UNPIN_BUTTON_TITLE = Component.translatable("gui.charmony.villager_tasks.unpin.button");
+    public static final Component UNPIN_BUTTON_TOOLTIP = Component.translatable("gui.charmony.villager_tasks.unpin.tooltip");
     public static final MutableComponent YOU_MUST_COLLECT = Component.translatable("gui.charmony.villager_tasks.you_must_collect").withStyle(ChatFormatting.YELLOW);
     public static final MutableComponent YOU_MUST_DEFEAT = Component.translatable("gui.charmony.villager_tasks.you_must_defeat").withStyle(ChatFormatting.YELLOW);
     public static final MutableComponent YOU_MUST_HUNT = Component.translatable("gui.charmony.villager_tasks.you_must_hunt").withStyle(ChatFormatting.YELLOW);
