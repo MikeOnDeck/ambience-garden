@@ -13,7 +13,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.RandomSource;
 import net.minecraft.util.Util;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -23,7 +22,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
@@ -115,7 +113,7 @@ public final class Battle extends Aspect implements Satisfiable {
                     parsed -> effects.add(new Effect(parsed.effect(), parsed.amplifier(), MobEffectInstance.INFINITE_DURATION)));
 
                 // Parse equipment to add to these mobs.
-                var equipmentMap = (List<Map<String, Object>>) mobMap.getOrDefault("equipment", Map.of());
+                var equipmentMap = (List<Map<String, Object>>) mobMap.getOrDefault("equipment", List.of());
                 List<Equipment> equipment = new ArrayList<>();
 
                 Helpers.parseStandardEquipmentEntry(registryAccess, equipmentMap, random,
@@ -151,36 +149,34 @@ public final class Battle extends Aspect implements Satisfiable {
             if (entityType == null) continue;
 
             var spawnReason = EntitySpawnReason.TRIGGERED;
-            var spawnPos = findRandomSpawnPos(entityType, level, pos);
+            var spawnPos = new BlockPos(pos.getX(), level.getHeight(Heightmap.Types.MOTION_BLOCKING, pos.getX(), pos.getZ()), pos.getZ());
 
             try {
-                if (spawnPos.isPresent()) {
-                    var result = MobHelper.spawn((EntityType<? extends Mob>) entityType, level, spawnPos.get(), spawnReason,
-                        (mob) -> {
-                            mob.addTag(BATTLE_TAG + "_" + entry.uniqueId().toString());
-                            mob.setTarget(player);
-                            mob.setPersistenceRequired();
-                            mob.setAggressive(true);
+                var result = MobHelper.spawn((EntityType<? extends Mob>) entityType, level, spawnPos, 20, 16, 0, spawnReason,
+                    (mob, mpos) -> {
+                        mob.addTag(BATTLE_TAG + "_" + entry.uniqueId().toString());
+                        mob.setTarget(player);
+                        mob.setPersistenceRequired();
+                        mob.setAggressive(true);
 
-                            for (var effect : entry.data().effects()) {
-                                mob.addEffect(effect.mobEffectInstance(registryAccess));
-                            }
+                        for (var effect : entry.data().effects()) {
+                            mob.addEffect(effect.mobEffectInstance(registryAccess));
+                        }
 
-                            for (var equipment : entry.data().equipment()) {
-                                mob.setItemSlot(equipment.slot(), equipment.stack());
-                            }
+                        for (var equipment : entry.data().equipment()) {
+                            mob.setItemSlot(equipment.slot(), equipment.stack());
+                        }
 
-                            var lightningBolt = EntityType.LIGHTNING_BOLT.create(level, EntitySpawnReason.EVENT);
-                            if (lightningBolt != null) {
-                                lightningBolt.snapTo(Vec3.atBottomCenterOf(spawnPos.get()));
-                                lightningBolt.setVisualOnly(true);
-                                level.addFreshEntity(lightningBolt);
-                            }
-                        });
-                    if (result) {
-                        log().debug("Spawned mob " + entry.mob() + " at " + spawnPos.get());
-                        successfullySpawned++;
-                    }
+                        var lightningBolt = EntityType.LIGHTNING_BOLT.create(level, EntitySpawnReason.EVENT);
+                        if (lightningBolt != null) {
+                            lightningBolt.snapTo(Vec3.atBottomCenterOf(mpos));
+                            lightningBolt.setVisualOnly(true);
+                            level.addFreshEntity(lightningBolt);
+                        }
+                    });
+                if (result) {
+                    log().debug("Spawned mob " + entry.mob() + " near " + pos);
+                    successfullySpawned++;
                 }
             } catch (Exception e) {
                 log().warn("Error spawning mob: " + e.getMessage());
@@ -308,30 +304,4 @@ public final class Battle extends Aspect implements Satisfiable {
         }
     }
 
-    private Optional<BlockPos> findRandomSpawnPos(EntityType<?> entity, ServerLevel level, BlockPos pos) {
-        var random = RandomSource.create();
-        for (int i = 0; i < 10; i++) {
-            var x = pos.getX() + random.nextInt(16) - 8;
-            var z = pos.getZ() + random.nextInt(16) - 8;
-            var y = level.getHeight(Heightmap.Types.WORLD_SURFACE, x, z);
-            var p = new BlockPos(x, y, z).below();
-            var s = level.getBlockState(p);
-            if (s.isValidSpawn(level, p, entity)) {
-                return Optional.of(p.above());
-            }
-        }
-
-        for (int i = 0; i < 10; i++) {
-            var x = pos.getX() + random.nextInt(16) - 8;
-            var z = pos.getZ() + random.nextInt(16) - 8;
-            var y = level.getHeight(Heightmap.Types.WORLD_SURFACE, x, z);
-            var p = new BlockPos(x, y, z).below();
-            var s = level.getBlockState(p);
-            if (s.getFluidState().is(Fluids.WATER)) {
-                return Optional.of(p.above());
-            }
-        }
-
-        return Optional.empty();
-    }
 }

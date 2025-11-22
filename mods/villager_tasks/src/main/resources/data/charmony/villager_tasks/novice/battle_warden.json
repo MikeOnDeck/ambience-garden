@@ -1,0 +1,34 @@
+{
+  "title": "Battle Warden",
+  "level": 1,
+  "battle": {
+    "distance": 128,
+    "atmosphere": [
+      "storm"
+    ],
+    "mobs": [
+      {
+        "entity": "minecraft:warden",
+        "exactly": 1
+      }
+    ]
+  },
+  "rewards": {
+    "min": 1,
+    "max": 2,
+    "experience": 15,
+    "items": [
+      {
+        "item": "minecraft:diamond_block",
+        "exactly": 3
+      }
+    ],
+    "effects": [
+      {
+        "effect": "minecraft:regeneration",
+        "amplifier": 3,
+        "duration": 24000
+      }
+    ]
+  }
+}

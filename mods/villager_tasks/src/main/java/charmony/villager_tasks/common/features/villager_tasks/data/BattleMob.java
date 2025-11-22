@@ -13,6 +13,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 
@@ -125,7 +126,8 @@ public class BattleMob implements Satisfiable {
 
         var level = player.level();
         var playerPos = player.blockPosition();
-        var pos = task.battle.spawn().getSpawnPosition(level, playerPos, task.random());
+        var rand = RandomSource.create(level.getGameTime());
+        var pos = task.battle.spawn().getSpawnPosition(level, playerPos, rand);
 
         this.pos = Optional.of(pos);
     }

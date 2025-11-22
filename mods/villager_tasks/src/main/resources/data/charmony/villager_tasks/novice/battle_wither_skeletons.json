@@ -1,8 +1,8 @@
 {
-  "title": "Battle",
+  "title": "Battle Wither Skeletons",
   "level": 1,
   "battle": {
-    "distance": 256,
+    "distance": 128,
     "atmosphere": [
       "storm"
     ],
@@ -17,6 +17,10 @@
           },
           {
             "effect": "minecraft:regeneration",
+            "amplifier": 1
+          },
+          {
+            "effect": "minecraft:resistance",
             "amplifier": 1
           },
           {
@@ -38,7 +42,7 @@
           },
           {
             "slot": "head",
-            "item": "minecraft:iron_helmet",
+            "item": "minecraft:netherite_helmet",
             "enchantments": [
               {
                 "enchantment": "random",
@@ -49,7 +53,7 @@
           },
           {
             "slot": "chest",
-            "item": "minecraft:iron_chestplate",
+            "item": "minecraft:netherite_chestplate",
             "enchantments": [
               {
                 "enchantment": "random",
@@ -60,7 +64,7 @@
           },
           {
             "slot": "legs",
-            "item": "minecraft:iron_leggings",
+            "item": "minecraft:netherite_leggings",
             "enchantments": [
               {
                 "enchantment": "random",
@@ -71,7 +75,7 @@
           },
           {
             "slot": "feet",
-            "item": "minecraft:iron_boots",
+            "item": "minecraft:netherite_boots",
             "enchantments": [
               {
                 "enchantment": "random",
