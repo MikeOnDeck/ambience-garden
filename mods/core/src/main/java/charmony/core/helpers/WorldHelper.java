@@ -68,13 +68,13 @@ public final class WorldHelper {
     }
 
     public static BlockPos addRandomOffset(Level level, BlockPos pos, RandomSource random, int min, int max) {
+        random.nextDouble();
+
         var n = random.nextInt(max - min) + min;
         var e = random.nextInt(max - min) + min;
-        var s = random.nextInt(max - min) + min;
-        var w = random.nextInt(max - min) + min;
 
-        pos = pos.north(random.nextBoolean() ? n : s);
-        pos = pos.east(random.nextBoolean() ? e : w);
+        pos = pos.north(random.nextBoolean() ? n : -n);
+        pos = pos.east(random.nextBoolean() ? e : -e);
 
         // World border checking
         var border = level.getWorldBorder();
