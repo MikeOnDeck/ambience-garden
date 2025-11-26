@@ -1,17 +1,17 @@
 package charmony.core.client.features.wood;
 
-import net.minecraft.client.model.BoatModel;
+import charmony.core.base.Setup;
+import charmony.core.client.ClientRegistry;
+import charmony.core.common.features.wood.CustomWood;
+import charmony.core.common.features.wood.WoodRegistry;
 import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.model.object.boat.BoatModel;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.entity.BoatRenderer;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
-import charmony.core.base.Setup;
-import charmony.core.client.ClientRegistry;
-import charmony.core.common.features.wood.CustomWood;
-import charmony.core.common.features.wood.WoodRegistry;
 
 import java.util.ArrayList;
 import java.util.List;

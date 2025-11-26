@@ -5,13 +5,13 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.entity.npc.VillagerProfession;
-import net.minecraft.world.entity.npc.VillagerTrades;
+import net.minecraft.world.entity.npc.villager.VillagerProfession;
+import net.minecraft.world.entity.npc.villager.VillagerTrades;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static net.minecraft.world.entity.npc.VillagerTrades.TRADES;
+import static net.minecraft.world.entity.npc.villager.VillagerTrades.TRADES;
 
 public final class VillagerHelper {
     public static final Log LOGGER = new Log("VillagerHelper");

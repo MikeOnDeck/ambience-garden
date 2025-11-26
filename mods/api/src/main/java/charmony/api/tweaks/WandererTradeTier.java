@@ -1,6 +1,6 @@
 package charmony.api.tweaks;
 
-import net.minecraft.world.entity.npc.VillagerTrades;
+import net.minecraft.world.entity.npc.villager.VillagerTrades;
 
 import java.util.List;
 

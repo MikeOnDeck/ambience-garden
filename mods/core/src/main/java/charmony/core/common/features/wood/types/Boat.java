@@ -1,19 +1,19 @@
 package charmony.core.common.features.wood.types;
 
-import net.minecraft.core.dispenser.BoatDispenseItemBehavior;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.item.BoatItem;
-import net.minecraft.world.item.Item;
 import charmony.core.common.features.wood.CustomWood;
 import charmony.core.common.features.wood.CustomWoodType;
 import charmony.core.common.features.wood.WoodMaterial;
 import charmony.core.common.features.wood.WoodRegistry;
+import net.minecraft.core.dispenser.BoatDispenseItemBehavior;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.BoatItem;
+import net.minecraft.world.item.Item;
 
 import java.util.function.Supplier;
 
 public class Boat extends CustomWoodType {
-    public Supplier<EntityType<net.minecraft.world.entity.vehicle.Boat>> boat;
-    public Supplier<EntityType<net.minecraft.world.entity.vehicle.ChestBoat>> chestBoat;
+    public Supplier<EntityType<net.minecraft.world.entity.vehicle.boat.Boat>> boat;
+    public Supplier<EntityType<net.minecraft.world.entity.vehicle.boat.ChestBoat>> chestBoat;
     public final Supplier<Item> boatItem;
     public final Supplier<Item> chestBoatItem;
 

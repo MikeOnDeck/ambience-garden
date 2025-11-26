@@ -15,7 +15,7 @@ import com.google.common.collect.Table;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
-import net.minecraft.world.entity.vehicle.ChestBoat;
+import net.minecraft.world.entity.vehicle.boat.ChestBoat;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.CeilingHangingSignBlock;
@@ -62,11 +62,11 @@ public final class WoodRegistry {
         return boat;
     }
 
-    public Registerable<EntityType<net.minecraft.world.entity.vehicle.Boat>> boatEntity(WoodMaterial material, Supplier<Item> boatItem) {
+    public Registerable<EntityType<net.minecraft.world.entity.vehicle.boat.Boat>> boatEntity(WoodMaterial material, Supplier<Item> boatItem) {
         var id = material.getSerializedName() + "_boat";
 
-        EntityType.EntityFactory<net.minecraft.world.entity.vehicle.Boat> factory =
-            (entityType, level) -> new net.minecraft.world.entity.vehicle.Boat(entityType, level, boatItem);
+        EntityType.EntityFactory<net.minecraft.world.entity.vehicle.boat.Boat> factory =
+            (entityType, level) -> new net.minecraft.world.entity.vehicle.boat.Boat(entityType, level, boatItem);
 
         var boatBuilder = EntityType.Builder.of(factory, MobCategory.MISC)
             .noLootTable()
@@ -81,10 +81,10 @@ public final class WoodRegistry {
         return new Button(this, material);
     }
 
-    public Registerable<EntityType<net.minecraft.world.entity.vehicle.ChestBoat>> chestBoatEntity(WoodMaterial material, Supplier<Item> chestBoatItem) {
+    public Registerable<EntityType<net.minecraft.world.entity.vehicle.boat.ChestBoat>> chestBoatEntity(WoodMaterial material, Supplier<Item> chestBoatItem) {
         var id = material.getSerializedName() + "_chest_boat";
 
-        EntityType.EntityFactory<net.minecraft.world.entity.vehicle.ChestBoat> factory =
+        EntityType.EntityFactory<net.minecraft.world.entity.vehicle.boat.ChestBoat> factory =
             (entityType, level) -> new ChestBoat(entityType, level, chestBoatItem);
 
         var chestBoatBuilder = EntityType.Builder.of(factory, MobCategory.MISC)

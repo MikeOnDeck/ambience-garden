@@ -10,12 +10,12 @@ accessible method net/minecraft/core/component/DataComponents register (Ljava/la
 accessible method net/minecraft/client/particle/ParticleResources register (Lnet/minecraft/core/particles/ParticleType;Lnet/minecraft/client/particle/ParticleResources$SpriteParticleRegistration;)V
 accessible field net/minecraft/world/item/Item components Lnet/minecraft/core/component/DataComponentMap;
 accessible field net/minecraft/world/level/block/entity/BlockEntityType validBlocks Ljava/util/Set;
-accessible field net/minecraft/world/entity/npc/VillagerTrades WANDERING_TRADER_TRADES Ljava/util/List;
 mutable    field net/minecraft/world/item/Item components Lnet/minecraft/core/component/DataComponentMap;
 mutable    field net/minecraft/world/level/block/entity/BlockEntityType validBlocks Ljava/util/Set;
 accessible field net/minecraft/world/entity/ai/attributes/AttributeSupplier instances Ljava/util/Map;
 mutable    field net/minecraft/world/entity/ai/attributes/AttributeSupplier instances Ljava/util/Map;
-mutable    field net/minecraft/world/entity/npc/VillagerTrades WANDERING_TRADER_TRADES Ljava/util/List;
+accessible field net/minecraft/world/entity/npc/villager/VillagerTrades WANDERING_TRADER_TRADES Ljava/util/List;
+mutable    field net/minecraft/world/entity/npc/villager/VillagerTrades WANDERING_TRADER_TRADES Ljava/util/List;
 accessible field net/minecraft/world/entity/ai/village/poi/PoiTypes TYPE_BY_STATE Ljava/util/Map;
 mutable    field net/minecraft/world/entity/ai/village/poi/PoiTypes TYPE_BY_STATE Ljava/util/Map;
 accessible field net/minecraft/world/item/AxeItem STRIPPABLES Ljava/util/Map;
@@ -27,7 +27,7 @@ mutable    field net/minecraft/world/item/BlockItem block Lnet/minecraft/world/l
 accessible field net/minecraft/world/level/block/Block item Lnet/minecraft/world/item/Item;
 accessible method net/minecraft/world/level/block/state/properties/BlockSetType register (Lnet/minecraft/world/level/block/state/properties/BlockSetType;)Lnet/minecraft/world/level/block/state/properties/BlockSetType;
 accessible method net/minecraft/world/level/block/state/properties/WoodType register (Lnet/minecraft/world/level/block/state/properties/WoodType;)Lnet/minecraft/world/level/block/state/properties/WoodType;
-accessible method net/minecraft/world/entity/npc/AbstractVillager addOffersFromItemListings (Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/item/trading/MerchantOffers;[Lnet/minecraft/world/entity/npc/VillagerTrades$ItemListing;I)V
+accessible method net/minecraft/world/entity/npc/villager/AbstractVillager addOffersFromItemListings (Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/item/trading/MerchantOffers;[Lnet/minecraft/world/entity/npc/villager/VillagerTrades$ItemListing;I)V
 accessible field net/minecraft/server/level/ServerPlayer isChangingDimension Z
 accessible field net/minecraft/server/level/ServerPlayer lastSentExp I
 accessible field net/minecraft/server/level/ServerPlayer lastSentHealth F
