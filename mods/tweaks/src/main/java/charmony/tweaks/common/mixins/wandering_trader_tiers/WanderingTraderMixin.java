@@ -1,11 +1,11 @@
 package charmony.tweaks.common.mixins.wandering_trader_tiers;
 
-import net.minecraft.world.entity.npc.WanderingTrader;
+import charmony.tweaks.common.features.wandering_trader_tiers.WanderingTraderTiers;
+import net.minecraft.world.entity.npc.wanderingtrader.WanderingTrader;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import charmony.tweaks.common.features.wandering_trader_tiers.WanderingTraderTiers;
 
 @Mixin(WanderingTrader.class)
 public class WanderingTraderMixin {

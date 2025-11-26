@@ -1,11 +1,13 @@
 package charmony.tweaks.common.features.pigs_find_mushrooms;
 
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.animal.Pig;
-import net.minecraft.world.level.Level;
 import charmony.core.base.Setup;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.animal.pig.Pig;
+import net.minecraft.world.level.Level;
 
-import java.util.*;
+import java.util.Map;
+import java.util.UUID;
+import java.util.WeakHashMap;
 
 public class Handlers extends Setup<PigsFindMushrooms> {
     public final Map<UUID, Integer> eating = new WeakHashMap<>();

@@ -1,11 +1,11 @@
 package charmony.tweaks.client.features.piglin_pointing;
 
-import net.minecraft.client.model.PiglinModel;
+import charmony.core.base.Environment;
+import charmony.core.base.Setup;
+import net.minecraft.client.model.monster.piglin.PiglinModel;
 import net.minecraft.client.renderer.entity.state.PiglinRenderState;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.monster.piglin.Piglin;
-import charmony.core.base.Environment;
-import charmony.core.base.Setup;
 
 import java.util.Map;
 import java.util.UUID;

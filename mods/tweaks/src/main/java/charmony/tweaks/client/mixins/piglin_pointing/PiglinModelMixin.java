@@ -1,14 +1,14 @@
 package charmony.tweaks.client.mixins.piglin_pointing;
 
-import net.minecraft.client.model.PiglinModel;
+import charmony.core.base.Environment;
+import charmony.tweaks.client.features.piglin_pointing.PiglinPointing;
+import net.minecraft.client.model.monster.piglin.PiglinModel;
 import net.minecraft.client.renderer.entity.state.PiglinRenderState;
 import net.minecraft.world.entity.monster.piglin.Piglin;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import charmony.core.base.Environment;
-import charmony.tweaks.client.features.piglin_pointing.PiglinPointing;
 
 @Mixin(PiglinModel.class)
 public class PiglinModelMixin {

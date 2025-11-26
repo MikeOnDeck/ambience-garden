@@ -2,8 +2,8 @@ package charmony.tweaks.common.features.wandering_trader_tiers;
 
 import charmony.core.base.Setup;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.npc.VillagerTrades;
-import net.minecraft.world.entity.npc.WanderingTrader;
+import net.minecraft.world.entity.npc.villager.VillagerTrades;
+import net.minecraft.world.entity.npc.wanderingtrader.WanderingTrader;
 
 public class Handlers extends Setup<WanderingTraderTiers> {
     public Handlers(WanderingTraderTiers feature) {

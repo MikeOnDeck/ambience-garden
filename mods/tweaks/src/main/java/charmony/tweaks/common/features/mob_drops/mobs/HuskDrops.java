@@ -1,15 +1,15 @@
 package charmony.tweaks.common.features.mob_drops.mobs;
 
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.monster.Husk;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import charmony.core.base.Setup;
 import charmony.core.helpers.EnchantmentsHelper;
 import charmony.tweaks.common.features.mob_drops.DropProvider;
 import charmony.tweaks.common.features.mob_drops.MobDrops;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.monster.zombie.Husk;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 import java.util.Optional;
 

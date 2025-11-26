@@ -1,11 +1,11 @@
 package charmony.tweaks.common.features.wandering_trader_tiers;
 
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.entity.npc.VillagerTrades;
 import charmony.api.tweaks.WandererTradeProvider;
 import charmony.core.Api;
 import charmony.core.base.Setup;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.entity.npc.villager.VillagerTrades;
 
 import java.util.HashMap;
 import java.util.List;

@@ -1,13 +1,13 @@
 package charmony.tweaks.client.mixins.pigs_find_mushrooms;
 
-import net.minecraft.client.model.PigModel;
-import net.minecraft.client.model.QuadrupedModel;
-import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.renderer.entity.state.PigRenderState;
-import net.minecraft.world.entity.animal.Pig;
-import org.spongepowered.asm.mixin.Mixin;
 import charmony.core.base.Environment;
 import charmony.tweaks.client.features.pigs_find_mushrooms.PigsFindMushrooms;
+import net.minecraft.client.model.QuadrupedModel;
+import net.minecraft.client.model.animal.pig.PigModel;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.renderer.entity.state.PigRenderState;
+import net.minecraft.world.entity.animal.pig.Pig;
+import org.spongepowered.asm.mixin.Mixin;
 
 /**
  * Extend the pig model with additional animation methods.

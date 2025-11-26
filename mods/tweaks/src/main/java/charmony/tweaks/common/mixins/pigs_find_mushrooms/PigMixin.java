@@ -1,12 +1,12 @@
 package charmony.tweaks.common.mixins.pigs_find_mushrooms;
 
+import charmony.tweaks.common.features.pigs_find_mushrooms.PigsFindMushrooms;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.animal.Animal;
-import net.minecraft.world.entity.animal.Pig;
+import net.minecraft.world.entity.animal.pig.Pig;
 import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
-import charmony.tweaks.common.features.pigs_find_mushrooms.PigsFindMushrooms;
 
 @Mixin(Pig.class)
 public abstract class PigMixin extends Animal {

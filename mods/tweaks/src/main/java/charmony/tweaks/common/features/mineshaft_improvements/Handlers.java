@@ -1,10 +1,12 @@
 package charmony.tweaks.common.features.mineshaft_improvements;
 
+import charmony.core.base.Setup;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.vehicle.*;
+import net.minecraft.world.entity.vehicle.minecart.AbstractMinecart;
+import net.minecraft.world.entity.vehicle.minecart.MinecartChest;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LanternBlock;
@@ -17,7 +19,6 @@ import net.minecraft.world.level.levelgen.structure.StructurePiece;
 import net.minecraft.world.level.levelgen.structure.structures.MineshaftPieces;
 import net.minecraft.world.level.levelgen.structure.structures.MineshaftPieces.MineShaftCorridor;
 import net.minecraft.world.level.levelgen.structure.structures.MineshaftStructure;
-import charmony.core.base.Setup;
 
 import java.util.List;
 

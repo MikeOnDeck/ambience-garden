@@ -8,7 +8,7 @@ accessible method net/minecraft/client/particle/SingleQuadParticle setAlpha (F)V
 accessible class net/minecraft/client/particle/ParticleResources$SpriteParticleRegistration
 
 # AnimalReviving
-accessible field net/minecraft/world/entity/animal/horse/AbstractHorse inventory Lnet/minecraft/world/SimpleContainer;
+accessible field net/minecraft/world/entity/animal/equine/AbstractHorse inventory Lnet/minecraft/world/SimpleContainer;
 
 # ItemTidying
 accessible field net/minecraft/client/gui/screens/inventory/AbstractContainerScreen leftPos I
@@ -71,4 +71,4 @@ accessible method net/minecraft/world/level/block/state/BlockBehaviour$BlockStat
 accessible method net/minecraft/client/gui/screens/inventory/AbstractRecipeBookScreen slotClicked (Lnet/minecraft/world/inventory/Slot;IILnet/minecraft/world/inventory/ClickType;)V
 
 # WanderingTraderTiers
-accessible method net/minecraft/world/entity/npc/AbstractVillager addOffersFromItemListings (Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/item/trading/MerchantOffers;[Lnet/minecraft/world/entity/npc/VillagerTrades$ItemListing;I)V
+accessible method net/minecraft/world/entity/npc/villager/AbstractVillager addOffersFromItemListings (Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/item/trading/MerchantOffers;[Lnet/minecraft/world/entity/npc/villager/VillagerTrades$ItemListing;I)V

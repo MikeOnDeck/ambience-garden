@@ -1,9 +1,9 @@
 package charmony.tweaks.client.features.pigs_find_mushrooms;
 
-import net.minecraft.util.Mth;
-import net.minecraft.world.entity.animal.Pig;
 import charmony.core.base.Environment;
 import charmony.core.base.Setup;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.animal.pig.Pig;
 
 public class Handlers extends Setup<PigsFindMushrooms> {
     // Reference to the currently rendering mob.

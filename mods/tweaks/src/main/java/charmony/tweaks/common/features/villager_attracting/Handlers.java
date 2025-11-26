@@ -1,15 +1,15 @@
 package charmony.tweaks.common.features.villager_attracting;
 
+import charmony.core.base.Setup;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.goal.TemptGoal;
-import net.minecraft.world.entity.npc.Villager;
+import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
-import charmony.core.base.Setup;
 
 import java.util.function.Predicate;
 
