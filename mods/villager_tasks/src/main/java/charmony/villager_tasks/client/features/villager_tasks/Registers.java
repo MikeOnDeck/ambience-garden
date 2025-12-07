@@ -1,5 +1,6 @@
 package charmony.villager_tasks.client.features.villager_tasks;
 
+import charmony.api.events.HudDisplayCallback;
 import charmony.api.events.SetupScreenCallback;
 import charmony.core.base.Setup;
 import charmony.core.client.ClientRegistry;
@@ -9,8 +10,11 @@ import charmony.villager_tasks.common.features.villager_tasks.Networking.S2CSend
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 
 public class Registers extends Setup<VillagerTasks> {
+    public final HudRenderer hudRenderer;
+
     public Registers(VillagerTasks feature) {
         super(feature);
+        hudRenderer = new HudRenderer();
 
         var registry = ClientRegistry.forFeature(feature);
 
@@ -24,6 +28,7 @@ public class Registers extends Setup<VillagerTasks> {
         return () -> {
             ClientTickEvents.END_CLIENT_TICK.register(feature().handlers::clientTick);
             SetupScreenCallback.EVENT.register(feature().handlers::setupScreen);
+            HudDisplayCallback.EVENT.register(feature().handlers::hudRender);
         };
     }
 }

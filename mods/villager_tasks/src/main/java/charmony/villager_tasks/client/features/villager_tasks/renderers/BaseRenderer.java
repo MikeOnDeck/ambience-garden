@@ -6,6 +6,7 @@ import charmony.villager_tasks.client.features.villager_tasks.Handlers;
 import charmony.villager_tasks.client.features.villager_tasks.VillagerTasks;
 import charmony.villager_tasks.common.features.villager_tasks.Task;
 import com.mojang.datafixers.util.Pair;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -97,6 +98,10 @@ public abstract class BaseRenderer {
 
     public Pair<Integer, Integer> renderTaskHoverTooltip(GuiGraphics guiGraphics, int x, int y) {
         return Pair.of(0, 0);
+    }
+
+    public int renderHud(GuiGraphics guiGraphics, DeltaTracker deltaTracker, int x, int y) {
+        return 0;
     }
 
     public List<Component> itemTooltip(ItemStack stack) {

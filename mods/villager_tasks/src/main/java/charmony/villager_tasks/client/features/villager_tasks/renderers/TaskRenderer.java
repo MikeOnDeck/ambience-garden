@@ -5,6 +5,7 @@ import charmony.villager_tasks.client.features.villager_tasks.component.Indented
 import charmony.villager_tasks.client.features.villager_tasks.tooltips.BaseTooltip;
 import charmony.villager_tasks.common.features.villager_tasks.Resources;
 import charmony.villager_tasks.common.features.villager_tasks.Task;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -169,6 +170,50 @@ public final class TaskRenderer extends BaseRenderer {
         if (mouseX >= x0 && mouseX <= x1 && mouseY >= y0 && mouseY <= y1) {
             var component = Component.translatable("gui.charmony.villager_tasks.requirements_remaining", completed, total);
             guiGraphics.setTooltipForNextFrame(component, mouseX, mouseY);
+        }
+    }
+
+    public Component getTextPercentageComplete() {
+        var total = task.total();
+        var remaining = task.remaining();
+
+        if (total == 0) {
+            return Component.literal("??");
+        }
+
+        var completed = total - remaining;
+        var percent = ((double) completed /total) * 100d;
+
+        return Component.translatable("gui.charmony.villager_tasks.percentage_complete", Component.literal((remaining == 0 ? 100 : (int)percent) + "%"));
+    }
+
+    public void renderHud(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
+        var minecraft = Minecraft.getInstance();
+        var gui = minecraft.gui;
+        var window = minecraft.getWindow();
+        var font = gui.getFont();
+        var baseX = window.getGuiScaledWidth() - 170;
+        var baseY = 12;
+        var offset = 0;
+        var color = new Color(0xffffff);
+
+        Component comp;
+
+        var name = task.getTitle().getString();
+        if (name.length() > 28) {
+            comp = Component.literal(name.substring(0, 28));
+        } else {
+            comp = task.getTitle();
+        }
+
+        guiGraphics.drawString(font, comp, baseX, baseY, color.getArgbColor());
+        guiGraphics.drawString(font, getTextPercentageComplete(), baseX, baseY + 12, color.getArgbColor());
+        renderProgressBar(guiGraphics, baseX, baseY + 23, 138, 2, 0, 0);
+        offset += 32;
+
+        for (var renderer : aspectRenderers) {
+            var hudY = baseY + offset;
+            offset += renderer.renderHud(guiGraphics, deltaTracker, baseX, hudY);
         }
     }
 

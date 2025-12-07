@@ -6,6 +6,7 @@ import charmony.villager_tasks.client.features.villager_tasks.component.AspectBo
 import charmony.villager_tasks.common.features.villager_tasks.Resources;
 import charmony.villager_tasks.common.features.villager_tasks.Task;
 import com.mojang.datafixers.util.Pair;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.RegistryAccess;
@@ -23,6 +24,7 @@ import java.util.List;
 public final class BattleRenderer extends BaseRenderer {
     private @Nullable RegistryAccess registryAccess;
     private @Nullable Player player;
+    private final ItemStack regularCompass = new ItemStack(Items.COMPASS);
 
     public BattleRenderer(Task task) {
         super(task);
@@ -84,7 +86,6 @@ public final class BattleRenderer extends BaseRenderer {
                 var spriteRenderer = new MobSpriteRenderer(mob.mob());
                 var allDefeated = battle.allDefeated();
 
-                var regularCompass = new ItemStack(Items.COMPASS);
                 var trackedCompass = regularCompass.copy();
                 var tracker = new LodestoneTracker(mob.globalPos(), true);
                 trackedCompass.set(DataComponents.LODESTONE_TRACKER, tracker);
@@ -134,5 +135,43 @@ public final class BattleRenderer extends BaseRenderer {
         }
 
         return Pair.of(xx, yy);
+    }
+
+    @Override
+    public int renderHud(GuiGraphics guiGraphics, DeltaTracker deltaTracker, int x, int y) {
+        if (task.battle.isEmpty() || player == null) {
+            return 0;
+        }
+
+        var mobs = task.battle.mobs();
+        var mob = mobs.stream().filter(m -> !m.isSatisfied()).findFirst().orElse(null);
+        if (mob == null) {
+            return 0;
+        }
+
+        var globalPos = mob.globalPos().orElse(null);
+        if (globalPos == null) {
+            return 0;
+        }
+
+        var trackedCompass = regularCompass.copy();
+        var tracker = new LodestoneTracker(mob.globalPos(), true);
+        trackedCompass.set(DataComponents.LODESTONE_TRACKER, tracker);
+
+        if (!player.level().dimension().equals(globalPos.dimension())) {
+            return 0;
+        }
+
+        var minecraft = Minecraft.getInstance();
+        var dist = globalPos.pos().distManhattan(player.blockPosition());
+        var distanceText = Component.translatable("gui.charmony.villager_tasks.distance", dist);
+        var gui = minecraft.gui;
+        var font = gui.getFont();
+        var color = new Color(0xffffff);
+
+        guiGraphics.renderItem(trackedCompass, x - 2, y - 4);
+        guiGraphics.drawString(font, distanceText, x + 16, y, color.getArgbColor());
+
+        return 15;
     }
 }

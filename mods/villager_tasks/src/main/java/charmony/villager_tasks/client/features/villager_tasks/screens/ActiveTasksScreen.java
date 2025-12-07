@@ -46,7 +46,7 @@ public class ActiveTasksScreen extends BaseScreen {
                 var task = activeTasks.tasks().get(i);
                 var isPinnedTask = handlers.isPinnedTask(task);
 
-                    var renderer = renderers.computeIfAbsent(task, TaskRenderer::new);
+                var renderer = renderers.computeIfAbsent(task, TaskRenderer::new);
                 var tooltip = tooltips.computeIfAbsent(task, t -> new AvailableTaskTooltip(renderer));
 
                 renderer.updateTask(task);

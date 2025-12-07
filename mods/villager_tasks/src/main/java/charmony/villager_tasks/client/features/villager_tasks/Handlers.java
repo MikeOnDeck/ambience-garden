@@ -1,6 +1,7 @@
 package charmony.villager_tasks.client.features.villager_tasks;
 
 import charmony.core.base.Setup;
+import charmony.villager_tasks.client.features.villager_tasks.renderers.TaskRenderer;
 import charmony.villager_tasks.client.features.villager_tasks.screens.ActiveTasksScreen;
 import charmony.villager_tasks.client.features.villager_tasks.screens.AvailableTasksScreen;
 import charmony.villager_tasks.client.features.villager_tasks.screens.BaseScreen;
@@ -10,7 +11,9 @@ import charmony.villager_tasks.common.features.villager_tasks.Networking;
 import charmony.villager_tasks.common.features.villager_tasks.Task;
 import charmony.villager_tasks.common.features.villager_tasks.Tasks;
 import charmony.villager_tasks.common.features.villager_tasks.enums.TaskQuery;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
@@ -19,6 +22,8 @@ import net.minecraft.client.gui.screens.inventory.MerchantScreen;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.entity.player.Player;
 
+import javax.annotation.Nullable;
+import java.util.Optional;
 import java.util.UUID;
 
 public class Handlers extends Setup<VillagerTasks> {
@@ -26,6 +31,7 @@ public class Handlers extends Setup<VillagerTasks> {
     private Tasks availableTasks = Tasks.EMPTY;
     private UUID lastVillagerInteraction = Helpers.emptyUuid();
     private Task pinnedTask = Task.EMPTY;
+    private @Nullable TaskRenderer pinnedTaskRenderer = null;
 
     public Handlers(VillagerTasks feature) {
         super(feature);
@@ -41,13 +47,23 @@ public class Handlers extends Setup<VillagerTasks> {
             if (player.level().getGameTime() % 15 == 0) {
                 highlightTaskOwners();
             }
-        }
 
-        // Check the pinned task to make sure that it's still valid.
-        if (minecraft.level != null && minecraft.level.getGameTime() % 10 == 0
-            && !pinnedTask.isEmpty() && !isPinnedTaskValid()) {
-            clearPinnedTask();
+            if (!pinnedTask.isEmpty() && player.level().getGameTime() % 30 == 0) {
+                updateActiveTasks(); // We have to request the server for up-to-date state.
+                if (isValidPinnedTask()) {
+                    updatePinnedTask();
+                } else {
+                    clearPinnedTask();
+                }
+            }
+
+            // Render the player hud.
+            feature().registers.hudRenderer.tick(player);
         }
+    }
+
+    public void hudRender(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
+        feature().registers.hudRenderer.render(guiGraphics, deltaTracker);
     }
 
     public void setupScreen(Screen screen) {
@@ -161,19 +177,37 @@ public class Handlers extends Setup<VillagerTasks> {
     }
 
     public void clearPinnedTask() {
+        feature().log().debug("Clearing pinned task");
         this.pinnedTask = Task.EMPTY;
+        this.pinnedTaskRenderer = null;
+    }
+
+    public Optional<TaskRenderer> getPinnedTaskRenderer() {
+        return Optional.ofNullable(pinnedTaskRenderer);
+    }
+
+    public void updatePinnedTask() {
+        getActiveTasks().getTaskById(pinnedTask.id).ifPresent(
+            task -> getPinnedTaskRenderer().ifPresent(
+                renderer -> {
+                    this.pinnedTask = task;
+                    renderer.updateTask(task);
+                }));
     }
 
     public void setPinnedTask(Task task) {
         this.pinnedTask = task;
+        this.pinnedTaskRenderer = new TaskRenderer(task);
     }
 
     public boolean isPinnedTask(Task task) {
-        return this.pinnedTask.id == task.id;
+        var isPinned = this.pinnedTask.id.equals(task.id);
+        return isPinned;
     }
 
-    public boolean isPinnedTaskValid() {
-        return pinnedTask.isStarted() && activeTasks.tasks().stream().anyMatch(t -> t.id == pinnedTask.id);
+    public boolean isValidPinnedTask() {
+        var isValid = pinnedTask.isStarted() && activeTasks.tasks().stream().anyMatch(t -> t.id.equals(pinnedTask.id));
+        return isValid;
     }
 
     public void refreshScreen(Minecraft minecraft) {

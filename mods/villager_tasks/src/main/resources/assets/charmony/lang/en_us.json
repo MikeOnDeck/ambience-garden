@@ -42,6 +42,7 @@
   "gui.charmony.villager_tasks.missingno": "missingno",
   "gui.charmony.villager_tasks.name_and_number": "%s: %s",
   "gui.charmony.villager_tasks.no_available_tasks": "No available tasks",
+  "gui.charmony.villager_tasks.percentage_complete": "%s complete",
   "gui.charmony.villager_tasks.pin.button": "Pin this task",
   "gui.charmony.villager_tasks.pin.tooltip": "Pin task details to the main screen",
   "gui.charmony.villager_tasks.requirements": "Requirements",
