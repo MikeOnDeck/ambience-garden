@@ -27,7 +27,7 @@ public class CompleteTasksScreen extends BaseScreen {
     @Override
     protected void init() {
         super.init();
-        addCloseButton();
+        addButtons();
         refresh();
     }
 

@@ -116,7 +116,7 @@ public final class TaskRenderer extends BaseRenderer {
         guiGraphics.drawString(font, title, tx, ty, textColor.getArgbColor(), false);
 
         // Mouse over title shows requirements of the task.
-        if (mouseX >= tx && mouseX <= right - 44 && mouseY >= top + 1 && mouseY <= top + 20) {
+        if (mouseX >= tx && mouseX <= right - 66 && mouseY >= top + 1 && mouseY <= top + 20) {
             var titleComponent = Component.literal(title.getString());
             guiGraphics.setTooltipForNextFrame(font, List.of(titleComponent), Optional.of(tooltip), mouseX, mouseY);
         }

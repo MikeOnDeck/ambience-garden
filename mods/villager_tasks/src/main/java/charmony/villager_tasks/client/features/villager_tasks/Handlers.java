@@ -25,19 +25,28 @@ public class Handlers extends Setup<VillagerTasks> {
     private Tasks activeTasks = Tasks.EMPTY;
     private Tasks availableTasks = Tasks.EMPTY;
     private UUID lastVillagerInteraction = Helpers.emptyUuid();
+    private Task pinnedTask = Task.EMPTY;
 
     public Handlers(VillagerTasks feature) {
         super(feature);
     }
 
     public void clientTick(Minecraft minecraft) {
-        if (minecraft != null && minecraft.player instanceof Player player) {
+        if (minecraft == null) return;
+
+        if (minecraft.player instanceof Player player) {
             activeTasks.tasks().forEach(task -> task.onTick(task, player));
 
             // Villagers who own completed tasks will show particles.
             if (player.level().getGameTime() % 15 == 0) {
                 highlightTaskOwners();
             }
+        }
+
+        // Check the pinned task to make sure that it's still valid.
+        if (minecraft.level != null && minecraft.level.getGameTime() % 10 == 0
+            && !pinnedTask.isEmpty() && !isPinnedTaskValid()) {
+            clearPinnedTask();
         }
     }
 
@@ -149,6 +158,22 @@ public class Handlers extends Setup<VillagerTasks> {
 
     public void clearLastVillagerInteraction() {
         lastVillagerInteraction = Helpers.emptyUuid();
+    }
+
+    public void clearPinnedTask() {
+        this.pinnedTask = Task.EMPTY;
+    }
+
+    public void setPinnedTask(Task task) {
+        this.pinnedTask = task;
+    }
+
+    public boolean isPinnedTask(Task task) {
+        return this.pinnedTask.id == task.id;
+    }
+
+    public boolean isPinnedTaskValid() {
+        return pinnedTask.isStarted() && activeTasks.tasks().stream().anyMatch(t -> t.id == pinnedTask.id);
     }
 
     public void refreshScreen(Minecraft minecraft) {

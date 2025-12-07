@@ -28,7 +28,7 @@ public class ActiveTasksScreen extends BaseScreen {
     protected void init() {
         super.init();
         handlers.clearLastVillagerInteraction();
-        addCloseButton();
+        addButtons();
         refresh();
     }
 
@@ -44,8 +44,9 @@ public class ActiveTasksScreen extends BaseScreen {
             for (var i = 0; i < activeTasks.tasks().size(); i++) {
                 var rh = i * rowHeight;
                 var task = activeTasks.tasks().get(i);
+                var isPinnedTask = handlers.isPinnedTask(task);
 
-                var renderer = renderers.computeIfAbsent(task, TaskRenderer::new);
+                    var renderer = renderers.computeIfAbsent(task, TaskRenderer::new);
                 var tooltip = tooltips.computeIfAbsent(task, t -> new AvailableTaskTooltip(renderer));
 
                 renderer.updateTask(task);
@@ -56,13 +57,23 @@ public class ActiveTasksScreen extends BaseScreen {
                     var buttonY = top + rh + 2;
                     // var idComponent = Tooltip.create(Component.literal(String.valueOf(task.id)));
 
-                    var details = new Buttons.DetailsButton(right - 44, buttonY,
+                    var details = new Buttons.DetailsButton(right - 66, buttonY,
                         b -> minecraft.setScreen(new TaskDetailsScreen(task, this)));
+
+                    var pin = new Buttons.PinImageButton(right - 44, buttonY,
+                        b -> {
+                            handlers.setPinnedTask(task);
+                            refresh();
+                        });
+
+                    if (isPinnedTask) {
+                        pin.active = false;
+                    }
 
                     var abandon = new Buttons.AbandonButton(right - 22, buttonY,
                         b -> minecraft.setScreen(new ConfirmAbandonScreen(task)));
 
-                    buttons.addAll(List.of(details, abandon));
+                    buttons.addAll(List.of(details, pin, abandon));
                     buttons.forEach(this::addRenderableWidget);
                 }
             }

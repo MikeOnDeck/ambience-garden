@@ -7,16 +7,16 @@ import charmony.villager_tasks.common.features.villager_tasks.Resources;
 import charmony.villager_tasks.common.features.villager_tasks.Task;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 
-import javax.annotation.Nullable;
-
 public class TaskDetailsScreen extends BaseScreen {
-    private final @Nullable Screen parent;
+    private final Screen parent;
     private final Task task;
     private final TaskRenderer taskRenderer;
+    private Button pinButton;
 
-    public TaskDetailsScreen(Task task, @Nullable Screen parent) {
+    public TaskDetailsScreen(Task task, Screen parent) {
         super(task.getTitle());
         this.task = task;
         this.parent = parent;
@@ -26,16 +26,7 @@ public class TaskDetailsScreen extends BaseScreen {
     @Override
     protected void init() {
         super.init();
-
-        if (parent != null) {
-            var backToTask = new Buttons.BackToTaskButton(midX - (Buttons.BackToTaskButton.WIDTH / 2), midY + 94,
-                b -> minecraft.setScreen(parent));
-
-            addRenderableWidget(backToTask);
-        } else {
-            addCloseButton();
-        }
-
+        addButtons();
     }
 
     @Override
@@ -95,5 +86,39 @@ public class TaskDetailsScreen extends BaseScreen {
         for (var renderer : taskRenderer.rewardRenderers) {
             renderer.renderPanel(guiGraphics, px, py, 0, 0, maxWidth, mouseX, mouseY);
         }
+    }
+
+    @Override
+    protected void addButtons() {
+        if (task.isStarted()) {
+            addPinButton();
+        }
+
+        var closeButton = new Buttons.BackToTaskButton(midX + (task.isStarted() ? 5 : -(Buttons.BackToTaskButton.WIDTH / 2)), midY + bottomButtonY,
+                b -> minecraft.setScreen(parent));
+
+        addRenderableWidget(closeButton);
+    }
+
+    protected void addPinButton() {
+        if (pinButton != null) {
+            removeWidget(pinButton);
+        }
+
+        if (handlers.isPinnedTask(task)) {
+            pinButton = new Buttons.UnpinButton(midX - (5 + Buttons.UnpinButton.WIDTH), midY + bottomButtonY,
+                b -> {
+                    handlers.clearPinnedTask();
+                    addPinButton();
+                });
+        } else {
+            pinButton = new Buttons.PinButton(midX - (5 + Buttons.PinButton.WIDTH), midY + bottomButtonY,
+                b -> {
+                    handlers.setPinnedTask(task);
+                    addPinButton();
+                });
+        }
+
+        addRenderableWidget(pinButton);
     }
 }

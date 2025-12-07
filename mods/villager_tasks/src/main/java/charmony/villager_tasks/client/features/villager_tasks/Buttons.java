@@ -13,7 +13,7 @@ public final class Buttons {
     public static final WidgetSprites ABANDON_BUTTON = makeButton("abandon");
     public static final WidgetSprites COMPLETE_BUTTON = makeButtonWithDisabled("complete");
     public static final WidgetSprites DETAILS_BUTTON = makeButton("details");
-    public static final WidgetSprites PIN_BUTTON = makeButton("pin");
+    public static final WidgetSprites PIN_BUTTON = makeButtonWithDisabled("pin");
 
     public static class ActiveTasksButton extends Button.Plain {
         public static final int WIDTH = 120;
@@ -53,7 +53,7 @@ public final class Buttons {
         public static int WIDTH = 20;
         public static int HEIGHT = 18;
         static WidgetSprites SPRITES = ABANDON_BUTTON;
-        static Component TEXT = Resources.ABANDON;
+        static Component TEXT = Resources.ABANDON_TOOLTIP;
 
         public AbandonButton(int x, int y, OnPress onPress) {
             super(x, y, WIDTH, HEIGHT, SPRITES, onPress);
@@ -65,9 +65,11 @@ public final class Buttons {
         public static final int WIDTH = 120;
         public static final int HEIGHT = 20;
         static Component TEXT = Resources.BACK_TO_TASKS;
+        static Component TOOLTIP = Resources.BACK_TO_TASKS_TOOLTIP;
 
         public BackToTaskButton(int x, int y, OnPress onPress) {
             super(x, y, WIDTH, HEIGHT, TEXT, onPress, DEFAULT_NARRATION);
+            setTooltip(Tooltip.create(TOOLTIP));
         }
     }
 
@@ -133,7 +135,7 @@ public final class Buttons {
         public static int WIDTH = 20;
         public static int HEIGHT = 18;
         static WidgetSprites SPRITES = DETAILS_BUTTON;
-        static Component TEXT = Resources.DETAILS;
+        static Component TEXT = Resources.DETAILS_TOOLTIP;
 
         public DetailsButton(int x, int y, OnPress onPress) {
             super(x, y, WIDTH, HEIGHT, SPRITES, onPress);
@@ -154,7 +156,7 @@ public final class Buttons {
     }
 
     public static class PinButton extends Button.Plain {
-        public static final int WIDTH = 80;
+        public static final int WIDTH = 120;
         public static final int HEIGHT = 20;
         static Component TEXT = Resources.PIN_BUTTON_TITLE;
         static Component TOOLTIP = Resources.PIN_BUTTON_TOOLTIP;
@@ -166,7 +168,7 @@ public final class Buttons {
     }
 
     public static class UnpinButton extends Button.Plain {
-        public static final int WIDTH = 80;
+        public static final int WIDTH = 120;
         public static final int HEIGHT = 20;
         static Component TEXT = Resources.UNPIN_BUTTON_TITLE;
         static Component TOOLTIP = Resources.UNPIN_BUTTON_TOOLTIP;

@@ -29,7 +29,7 @@ public class AvailableTasksScreen extends BaseScreen {
     @Override
     protected void init() {
         super.init();
-        addCloseButton();
+        addButtons();
         refresh();
     }
 

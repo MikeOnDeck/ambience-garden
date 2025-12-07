@@ -16,6 +16,7 @@ public abstract class BaseScreen extends Screen {
 
     protected int midX;
     protected int midY;
+    protected int bottomButtonY;
 
     protected Color titleColor;
     protected Color textColor;
@@ -31,6 +32,7 @@ public abstract class BaseScreen extends Screen {
     protected void init() {
         super.init();
 
+        bottomButtonY = 94;
         midX = width / 2;
         midY = height / 2;
 
@@ -69,8 +71,8 @@ public abstract class BaseScreen extends Screen {
         TextComponentHelper.drawCenteredString(guiGraphics, font, getTitle(), midX, midY - 80, titleColor.getArgbColor());
     }
 
-    protected void addCloseButton() {
-        var closeButton = new Buttons.CloseButton(midX - (Buttons.CloseButton.WIDTH / 2), midY + 94,
+    protected void addButtons() {
+        var closeButton = new Buttons.CloseButton(midX - (Buttons.CloseButton.WIDTH / 2), midY + bottomButtonY,
             b -> minecraft.setScreen(null));
 
         addRenderableWidget(closeButton);
