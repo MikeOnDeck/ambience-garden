@@ -32,7 +32,8 @@ import java.util.Optional;
 public final class Battle extends Aspect implements Satisfiable {
     public static final String ID = "battle";
     public static final String BATTLE_TAG = "charmony_battle";
-    public static final int TRIGGER_DISTANCE = 32;
+    public static final int TRIGGER_DISTANCE = 16;
+    public static final int MOB_SPAWN_DISTANCE = 16;
 
     private final List<BattleMob> mobs;
     private final List<BattleAtmosphere> atmosphere;
@@ -152,7 +153,7 @@ public final class Battle extends Aspect implements Satisfiable {
             var spawnPos = new BlockPos(pos.getX(), level.getHeight(Heightmap.Types.MOTION_BLOCKING, pos.getX(), pos.getZ()), pos.getZ());
 
             try {
-                var result = MobHelper.spawn((EntityType<? extends Mob>) entityType, level, spawnPos, 20, 16, 0, spawnReason,
+                var result = MobHelper.spawn((EntityType<? extends Mob>) entityType, level, spawnPos, 20, MOB_SPAWN_DISTANCE, 0, spawnReason,
                     (mob, mpos) -> {
                         mob.addTag(BATTLE_TAG + "_" + entry.uniqueId().toString());
                         mob.setTarget(player);

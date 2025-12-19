@@ -162,8 +162,9 @@ public final class BattleRenderer extends BaseRenderer {
             return 0;
         }
 
+        var normalizedPlayerPos = player.blockPosition().atY(0);
         var minecraft = Minecraft.getInstance();
-        var dist = globalPos.pos().distManhattan(player.blockPosition());
+        var dist = globalPos.pos().distManhattan(normalizedPlayerPos);
         var distanceText = Component.translatable("gui.charmony.villager_tasks.distance", dist);
         var gui = minecraft.gui;
         var font = gui.getFont();
