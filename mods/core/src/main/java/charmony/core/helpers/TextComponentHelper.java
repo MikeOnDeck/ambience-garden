@@ -7,10 +7,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
-import org.apache.commons.lang3.text.WordUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @SuppressWarnings("unused")
@@ -20,7 +18,7 @@ public final class TextComponentHelper {
         int lineSize = 0;
         StringBuilder buffer = new StringBuilder();
         Function<String, Component> convertText =
-            s -> Component.literal(s.trim().replace("\n", " "));
+            s -> Component.literal(s != null ? s.trim().replace("\n", " ") : "");
 
         for (int i = 0; i < string.length(); i++) {
             var currentChar = string.charAt(i);
@@ -64,12 +62,37 @@ public final class TextComponentHelper {
 
     /**
      * Wrap string at a sensible line length and converts into a list of components.
-     * This uses an old version of WordUtils which may be problematic?
      */
-    @SuppressWarnings("deprecation")
     public static List<Component> wrap(String str) {
-        var wrapped = WordUtils.wrap(str, 30);
-        return Arrays.stream(wrapped.split("\n")).map(s -> (Component) Component.literal(s)).toList();
+        List<Component> out = new ArrayList<>();
+        // Split by newlines to preserve manual formatting
+        for (String line : str.split("\n")) {
+            StringBuilder lineBuffer = new StringBuilder();
+            int currentLineLength = 0;
+
+            // Split by space to find wrap points
+            String[] words = line.split(" ", -1);
+            for (String word : words) {
+                // If adding this word exceeds 30 chars, and we aren't at the start of a line
+                if (currentLineLength + word.length() > 30 && currentLineLength > 0) {
+                    out.add(Component.literal(lineBuffer.toString()));
+                    lineBuffer = new StringBuilder();
+                    currentLineLength = 0;
+                }
+
+                if (currentLineLength > 0) {
+                    lineBuffer.append(" ");
+                    currentLineLength++;
+                }
+
+                lineBuffer.append(word);
+                currentLineLength += word.length();
+            }
+            if (!lineBuffer.isEmpty() || line.isEmpty()) {
+                out.add(Component.literal(lineBuffer.toString()));
+            }
+        }
+        return out;
     }
 
     public static void drawCenteredString(GuiGraphics guiGraphics, Font font, Component component, int x, int y, int color) {
