@@ -1,8 +1,8 @@
 package charmony.core.base;
 
+import charmony.core.common.features.core.Core;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
-import charmony.core.common.features.core.Core;
 
 @SuppressWarnings("unused")
 public final class Environment {
@@ -30,7 +30,8 @@ public final class Environment {
 
     /**
      * Checks if the client is using a charmony server.
-     * Don't call this on the server!
+     * - Don't call this on the server!
+     * - Don't call this before the client has initialized!
      */
     @net.fabricmc.api.Environment(EnvType.CLIENT)
     public static boolean usesCharmonyServer() {
