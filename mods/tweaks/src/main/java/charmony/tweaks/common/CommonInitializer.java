@@ -1,6 +1,5 @@
 package charmony.tweaks.common;
 
-import net.fabricmc.api.ModInitializer;
 import charmony.api.core.Side;
 import charmony.tweaks.TweaksMod;
 import charmony.tweaks.common.features.animal_armor_grinding.AnimalArmorGrinding;
@@ -26,6 +25,7 @@ import charmony.tweaks.common.features.pigs_find_mushrooms.PigsFindMushrooms;
 import charmony.tweaks.common.features.repair_cost_unlimited.RepairCostUnlimited;
 import charmony.tweaks.common.features.respawn_anchors_work_everywhere.RespawnAnchorsWorkEverywhere;
 import charmony.tweaks.common.features.shulker_box_transferring.ShulkerBoxTransferring;
+import charmony.tweaks.common.features.shulker_boxes_show_contents.ShulkerBoxesShowContents;
 import charmony.tweaks.common.features.spawners_drop_items.SpawnersDropItems;
 import charmony.tweaks.common.features.suspicious_block_creating.SuspiciousBlockCreating;
 import charmony.tweaks.common.features.torchflowers_emit_light.TorchflowersEmitLight;
@@ -33,6 +33,7 @@ import charmony.tweaks.common.features.totems_work_from_inventory.TotemsWorkFrom
 import charmony.tweaks.common.features.trade_improvements.TradeImprovements;
 import charmony.tweaks.common.features.villager_attracting.VillagerAttracting;
 import charmony.tweaks.common.features.wandering_trader_tiers.WanderingTraderTiers;
+import net.fabricmc.api.ModInitializer;
 
 import java.util.List;
 
@@ -67,6 +68,7 @@ public class CommonInitializer implements ModInitializer {
             PigsFindMushrooms.class,
             RepairCostUnlimited.class,
             RespawnAnchorsWorkEverywhere.class,
+            ShulkerBoxesShowContents.class,
             ShulkerBoxTransferring.class,
             SpawnersDropItems.class,
             SuspiciousBlockCreating.class,
