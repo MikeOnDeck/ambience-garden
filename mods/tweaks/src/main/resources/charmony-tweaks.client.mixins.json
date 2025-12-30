@@ -22,10 +22,10 @@
     "shulker_box_menu_colors.ShulkerBoxScreenMixin",
     "shulker_box_transferring.AbstractContainerScreenMixin",
     "spyglass_scope_hiding.GuiMixin",
-    "telemetry.ClientTelemetryManagerMixin",
-    "telemetry.DisableToastMixin",
-    "telemetry.RealmsAvailabilityMixin",
-    "telemetry.WorldOpenFlowsMixin",
+    "telemetry_disable.ClientTelemetryManagerMixin",
+    "telemetry_disable.DisableToastMixin",
+    "telemetry_disable.RealmsAvailabilityMixin",
+    "telemetry_disable.WorldOpenFlowsMixin",
     "totem_emergency_swap.InventoryScreenMixin",
     "totem_emergency_swap.KeyMappingMixin"
   ]

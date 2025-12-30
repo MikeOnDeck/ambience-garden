@@ -1,11 +1,11 @@
-package charmony.tweaks.client.features.shulker_boxes_show_contents_when_hovering;
+package charmony.tweaks.client.features.shulker_boxes_show_contents;
 
-import charmony.core.base.Setup;
 import charmony.api.events.HoverOverItemTooltipCallback;
 import charmony.api.events.RenderTooltipComponentCallback;
+import charmony.core.base.Setup;
 
-public class Registers extends Setup<ShulkerBoxesShowContentsWhenHovering> {
-    public Registers(ShulkerBoxesShowContentsWhenHovering feature) {
+public class Registers extends Setup<ShulkerBoxesShowContents> {
+    public Registers(ShulkerBoxesShowContents feature) {
         super(feature);
     }
 

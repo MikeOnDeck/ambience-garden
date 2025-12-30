@@ -1,11 +1,11 @@
-package charmony.tweaks.client.features.telemetry;
+package charmony.tweaks.client.features.telemetry_disable;
 
 import charmony.api.core.Configurable;
 import charmony.api.core.FeatureDefinition;
+import charmony.api.core.Side;
 import charmony.core.base.Environment;
 import charmony.core.base.Mod;
 import charmony.core.base.SidedFeature;
-import charmony.api.core.Side;
 
 /**
  * This feature exposes its configuration via static methods.
@@ -15,7 +15,7 @@ import charmony.api.core.Side;
     Disables telemetry and hides some nag messages.
     Some data removal may be considered controversial so this feature is disabled by default.""")
 @SuppressWarnings({"FieldMayBeFinal", "FieldCanBeLocal"})
-public final class Telemetry extends SidedFeature {
+public final class TelemetryDisable extends SidedFeature {
     @Configurable(name = "Disable telemetry", description = """
         If true, prevents the client telemetry manager from ever sending any messages back to the mothership.
         Telemetry includes your game session, game version, operating system and launcher.""")
@@ -35,7 +35,7 @@ public final class Telemetry extends SidedFeature {
         Setting this to true doesn't do anything if you are playing in a launcher.""")
     private static boolean disableDevEnvironmentConnections = true;
 
-    public Telemetry(Mod mod) {
+    public TelemetryDisable(Mod mod) {
         super(mod);
     }
 

@@ -1,5 +1,6 @@
-package charmony.tweaks.client.features.shulker_boxes_show_contents_when_hovering;
+package charmony.tweaks.client.features.shulker_boxes_show_contents;
 
+import charmony.core.base.Setup;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
@@ -10,14 +11,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.ShulkerBoxBlock;
-import charmony.core.base.Setup;
 
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
 
-public class Handlers extends Setup<ShulkerBoxesShowContentsWhenHovering> {
-    public Handlers(ShulkerBoxesShowContentsWhenHovering feature) {
+public class Handlers extends Setup<ShulkerBoxesShowContents> {
+    public Handlers(ShulkerBoxesShowContents feature) {
         super(feature);
     }
 
@@ -41,7 +41,7 @@ public class Handlers extends Setup<ShulkerBoxesShowContentsWhenHovering> {
                 } else {
                     textColor = color.getTextColor();
                 }
-                mutableTitle = mutableTitle.withColor(textColor);
+                mutableTitle.withColor(textColor);
                 components.addFirst(mutableTitle);
             } else {
                 components.addFirst(title);

@@ -1,12 +1,12 @@
-package charmony.tweaks.client.mixins.telemetry;
+package charmony.tweaks.client.mixins.telemetry_disable;
 
+import charmony.tweaks.client.features.telemetry_disable.TelemetryDisable;
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.components.toasts.ToastManager;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import charmony.tweaks.client.features.telemetry.Telemetry;
 
 @Mixin(ClientPacketListener.class)
 public class DisableToastMixin {
@@ -18,6 +18,6 @@ public class DisableToastMixin {
         )
     )
     private boolean hookDisableChatNag(ToastManager instance, Toast toast) {
-        return !Telemetry.disableChatMessageVerification();
+        return !TelemetryDisable.disableChatMessageVerification();
     }
 }

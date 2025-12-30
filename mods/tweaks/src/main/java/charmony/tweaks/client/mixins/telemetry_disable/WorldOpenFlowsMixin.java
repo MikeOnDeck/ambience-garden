@@ -1,5 +1,6 @@
-package charmony.tweaks.client.mixins.telemetry;
+package charmony.tweaks.client.mixins.telemetry_disable;
 
+import charmony.tweaks.client.features.telemetry_disable.TelemetryDisable;
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.mojang.serialization.Lifecycle;
@@ -7,7 +8,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.worldselection.CreateWorldScreen;
 import net.minecraft.client.gui.screens.worldselection.WorldOpenFlows;
 import org.spongepowered.asm.mixin.Mixin;
-import charmony.tweaks.client.features.telemetry.Telemetry;
 
 @Mixin(WorldOpenFlows.class)
 public abstract class WorldOpenFlowsMixin {
@@ -15,7 +15,7 @@ public abstract class WorldOpenFlowsMixin {
         method = "confirmWorldCreation"
     )
     private static void hookConfirmWorldCreation(Minecraft minecraft, CreateWorldScreen createWorldScreen, Lifecycle lifecycle, Runnable runnable, boolean bl, Operation<Void> original) {
-        if (Telemetry.disableExperimental() && lifecycle == Lifecycle.experimental()) {
+        if (TelemetryDisable.disableExperimental() && lifecycle == Lifecycle.experimental()) {
             runnable.run();
             return;
         }

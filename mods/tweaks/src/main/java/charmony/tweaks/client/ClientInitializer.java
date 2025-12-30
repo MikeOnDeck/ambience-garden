@@ -1,6 +1,5 @@
 package charmony.tweaks.client;
 
-import net.fabricmc.api.ClientModInitializer;
 import charmony.api.core.Side;
 import charmony.tweaks.TweaksMod;
 import charmony.tweaks.client.features.burning_has_reduced_view_blocking.BurningHasReducedViewBlocking;
@@ -20,10 +19,11 @@ import charmony.tweaks.client.features.repair_cost_visible.RepairCostVisible;
 import charmony.tweaks.client.features.shields_have_reduced_view_blocking.ShieldsHaveReducedViewBlocking;
 import charmony.tweaks.client.features.shulker_box_menu_colors.ShulkerBoxMenuColors;
 import charmony.tweaks.client.features.shulker_box_transferring.ShulkerBoxTransferring;
-import charmony.tweaks.client.features.shulker_boxes_show_contents_when_hovering.ShulkerBoxesShowContentsWhenHovering;
+import charmony.tweaks.client.features.shulker_boxes_show_contents.ShulkerBoxesShowContents;
 import charmony.tweaks.client.features.spyglass_scope_hiding.SpyglassScopeHiding;
-import charmony.tweaks.client.features.telemetry.Telemetry;
+import charmony.tweaks.client.features.telemetry_disable.TelemetryDisable;
 import charmony.tweaks.client.features.totem_emergency_swap.TotemEmergencySwap;
+import net.fabricmc.api.ClientModInitializer;
 
 import java.util.List;
 
@@ -53,9 +53,9 @@ public class ClientInitializer implements ClientModInitializer {
             ShieldsHaveReducedViewBlocking.class,
             ShulkerBoxMenuColors.class,
             ShulkerBoxTransferring.class,
-            ShulkerBoxesShowContentsWhenHovering.class,
+            ShulkerBoxesShowContents.class,
             SpyglassScopeHiding.class,
-            Telemetry.class,
+            TelemetryDisable.class,
             TotemEmergencySwap.class
         ));
         tweaks.run(Side.Client);

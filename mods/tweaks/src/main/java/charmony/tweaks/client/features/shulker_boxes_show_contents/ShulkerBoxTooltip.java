@@ -1,13 +1,13 @@
-package charmony.tweaks.client.features.shulker_boxes_show_contents_when_hovering;
+package charmony.tweaks.client.features.shulker_boxes_show_contents;
 
-import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import net.minecraft.world.item.ItemStack;
 import charmony.api.core.Sprite;
 import charmony.core.client.ItemContainerTooltip;
 import charmony.core.client.SlotSprite;
 import charmony.tweaks.client.features.shulker_box_transferring.ShulkerBoxTransferring;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
 
