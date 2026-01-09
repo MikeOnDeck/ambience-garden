@@ -27,13 +27,14 @@ public class Handlers extends Setup<ShulkerBoxesShowContents> {
         if (!(player instanceof ServerPlayer serverPlayer)) return;
 
         if (blockEntity instanceof ShulkerBoxBlockEntity shulkerBox) {
+            var name = shulkerBox.getDisplayName();
             var items = new ArrayList<ItemStack>();
 
             for (var i = 0; i < shulkerBox.getContainerSize(); i++) {
                 items.add(shulkerBox.getItem(i));
             }
 
-            Networking.S2CShowContents.send(serverPlayer, items);
+            Networking.S2CShowContents.send(serverPlayer, name.getString(), items);
         }
     }
 }

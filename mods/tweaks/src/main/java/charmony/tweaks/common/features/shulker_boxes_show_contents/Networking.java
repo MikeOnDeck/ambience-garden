@@ -22,13 +22,13 @@ public class Networking extends Setup<ShulkerBoxesShowContents> {
     }
 
     // Server-to-client
-    public record S2CShowContents(List<ItemStack> items) implements CustomPacketPayload {
+    public record S2CShowContents(String name, List<ItemStack> items) implements CustomPacketPayload {
         public static final String ITEMS_TAG = "items";
         public static Type<S2CShowContents> TYPE = new Type<>(Charmony.id("show_shulker_box_contents"));
         static StreamCodec<RegistryFriendlyByteBuf, S2CShowContents> CODEC = StreamCodec.of(S2CShowContents::encode, S2CShowContents::decode);
 
-        public static void send(ServerPlayer player, List<ItemStack> items) {
-            ServerPlayNetworking.send(player, new S2CShowContents(items));
+        public static void send(ServerPlayer player, String name, List<ItemStack> items) {
+            ServerPlayNetworking.send(player, new S2CShowContents(name, items));
         }
 
         @Override
@@ -41,6 +41,7 @@ public class Networking extends Setup<ShulkerBoxesShowContents> {
         }
 
         private static S2CShowContents decode(RegistryFriendlyByteBuf buf) {
+            var name = buf.readUtf();
             var nbt = buf.readNbt();
 
             if (nbt == null) {
@@ -48,10 +49,11 @@ public class Networking extends Setup<ShulkerBoxesShowContents> {
             }
 
             var items = nbt.read(ITEMS_TAG, ItemStack.OPTIONAL_CODEC.listOf(), RegistryOps.create(NbtOps.INSTANCE, buf.registryAccess())).orElseThrow();
-            return new S2CShowContents(items);
+            return new S2CShowContents(name, items);
         }
 
         private static void encode(RegistryFriendlyByteBuf buf, S2CShowContents self) {
+            buf.writeUtf(self.name);
             var nbt = new CompoundTag();
             nbt.store(ITEMS_TAG, ItemStack.OPTIONAL_CODEC.listOf(), RegistryOps.create(NbtOps.INSTANCE, buf.registryAccess()), self.items);
             buf.writeNbt(nbt);

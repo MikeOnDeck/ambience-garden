@@ -28,29 +28,44 @@ public class HudRenderer extends BaseHudRenderer {
         ticksBackoff = 2;
 
         var feature = ShulkerBoxesShowContents.feature();
-        var item = feature.handlers.getLastShulkerBoxType();
-        var count = feature.handlers.getLastShulkerBoxCount();
+        var shulkerBox = feature.handlers.getLastShulkerBoxData();
+        if (shulkerBox.isEmpty()) {
+            ticksFade = 0;
+            return;
+        }
 
-        var stack = new ItemStack(item);
-        var name = stack.getHoverName().getString() + " x" + count;
-        var strLength = name.length();
+        var map = shulkerBox.itemsAndCounts();
+
+        var name = shulkerBox.name();
         var font = minecraft.font;
         var midX = (int)(window.getGuiScaledWidth() / 2.0f);
         var alpha = Math.max(4, Math.min(MAX_FADE_TICKS, ticksFade)) << 24 & 0xff000000;
-        var scale = Math.max(0f, Math.min(1.0f, (ticksFade / (float) MAX_FADE_TICKS)));
+        var scale = Math.max(0f, Math.min(1.0f, (ticksFade / 80.0f)));
 
         var y = 54;
-        var lineHeight = 14;
+        var lineHeight = 17;
 
         y += lineHeight;
 
-        var component = Component.literal(name);
-        TextComponentHelper.drawCenteredString(guiGraphics, font, component, midX + 18, y, 0xf8f8ff | alpha, false);
+        if (!name.isEmpty()) {
+            var nameComponent = Component.literal(name);
+            TextComponentHelper.drawCenteredString(guiGraphics, font, nameComponent, midX, y, 0xf8f8ff | alpha, true);
+            y += lineHeight + 4;
+        }
 
-        ix = midX - (strLength * 2) - 16;
-        iy = y - 5;
+        ix = midX - 64;
 
-        renderScaledGuiItem(guiGraphics, stack, ix, iy, scale, scale);
+        for (var item : map.keySet()) {
+            var stack = new ItemStack(item);
+            var count = map.get(item);
+            var label = Component.literal(stack.getHoverName().getString() + " x" + count);
+            guiGraphics.drawString(font, label, midX - 42, y, 0xf8f8ff | alpha, true);
+
+            iy = y - 5;
+            renderScaledGuiItem(guiGraphics, stack, ix, iy, scale, scale);
+
+            y += lineHeight;
+        }
 
         doFadeTicks();
     }
@@ -58,7 +73,7 @@ public class HudRenderer extends BaseHudRenderer {
     @Override
     protected boolean isValid(Player player) {
         var feature = ShulkerBoxesShowContents.feature();
-        return feature.handlers.isLookingAtShulkerBox();
+        return feature.handlers.isLookingAtShulkerBox() && !feature.handlers.getLastShulkerBoxData().isEmpty();
     }
 
     @Override

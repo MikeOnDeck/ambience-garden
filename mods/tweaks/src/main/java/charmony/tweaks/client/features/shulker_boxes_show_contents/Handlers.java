@@ -14,19 +14,19 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.ShulkerBoxBlock;
 import net.minecraft.world.level.block.entity.ShulkerBoxBlockEntity;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class Handlers extends Setup<ShulkerBoxesShowContents> {
-    private Item lastShulkerBoxType = Items.AIR;
-    private int lastShulkerBoxCount = 0;
+    private ShulkerBoxData lastShulkerBoxData = ShulkerBoxData.EMPTY;
     private long lastShulkerBoxCheck = 0;
     private boolean lookingAtShulkerBox = false;
 
@@ -85,24 +85,25 @@ public class Handlers extends Setup<ShulkerBoxesShowContents> {
         // Iterate through the items removing any that are empty.
         items.removeIf(ItemStack::isEmpty);
 
-        // Reduce the items to a single stack if they are all the same item.
-        var stack = items.stream().reduce((a, b) -> a.getItem() == b.getItem() ? a : ItemStack.EMPTY).orElse(ItemStack.EMPTY);
-        var count = items.stream().mapToInt(ItemStack::getCount).sum();
+        Map<Item, Integer> itemCountMap = new HashMap<>();
 
-        setLastShulkerBoxContents(stack, count);
+        // Iterate through items, reducing the same item into a count.
+        for (ItemStack itemStack : items) {
+            var item = itemStack.getItem();
+            var count = itemStack.getCount();
+
+            itemCountMap.put(item, itemCountMap.getOrDefault(item, 0) + count);
+        }
+
+        setLastShulkerBoxData(itemCountMap, payload.name());
     }
 
-    public void setLastShulkerBoxContents(ItemStack stack, int count) {
-        lastShulkerBoxType = stack.getItem();
-        lastShulkerBoxCount = count;
+    public void setLastShulkerBoxData(Map<Item, Integer> itemsAndCounts, String name) {
+        lastShulkerBoxData = new ShulkerBoxData(itemsAndCounts, name);
     }
 
-    public Item getLastShulkerBoxType() {
-        return lastShulkerBoxType;
-    }
-
-    public int getLastShulkerBoxCount() {
-        return lastShulkerBoxCount;
+    public ShulkerBoxData getLastShulkerBoxData() {
+        return lastShulkerBoxData;
     }
 
     /**
@@ -159,5 +160,16 @@ public class Handlers extends Setup<ShulkerBoxesShowContents> {
             return shulkerBoxBlock;
         }
         return null;
+    }
+
+    public record ShulkerBoxData(
+        Map<Item, Integer> itemsAndCounts,
+        String name
+    ) {
+        public static final ShulkerBoxData EMPTY = new ShulkerBoxData(Map.of(), "");
+
+        public boolean isEmpty() {
+            return itemsAndCounts.isEmpty();
+        }
     }
 }
