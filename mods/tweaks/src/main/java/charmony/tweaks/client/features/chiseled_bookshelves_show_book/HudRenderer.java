@@ -1,5 +1,6 @@
-package charmony.tweaks.client.features.chiseled_bookshelves_show_book_on_hover;
+package charmony.tweaks.client.features.chiseled_bookshelves_show_book;
 
+import charmony.core.client.BaseHudRenderer;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -9,7 +10,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.block.entity.ChiseledBookShelfBlockEntity;
-import charmony.core.client.BaseHudRenderer;
 
 public class HudRenderer extends BaseHudRenderer {
     private ItemStack hitStack; // A reference to the item stack currently being pointed at.
@@ -29,7 +29,7 @@ public class HudRenderer extends BaseHudRenderer {
         var font = minecraft.font;
         var midX = (int)(window.getGuiScaledWidth() / 2.0f);
         var alpha = Math.max(4, Math.min(MAX_FADE_TICKS, ticksFade)) << 24 & 0xff000000;
-        var scale = Math.max(0f, Math.min(1.0f, (ticksFade / (float) MAX_FADE_TICKS)));
+        var scale = Math.max(0f, Math.min(1.0f, (ticksFade / 80.0f)));
         var top = (window.getGuiScaledHeight() / 2) + feature().offsetFromCenter();
 
         if (hitStack != null && !hitStack.isEmpty()) {
@@ -74,7 +74,7 @@ public class HudRenderer extends BaseHudRenderer {
         scaleX = scaleY = 1.0f;
     }
 
-    private ChiseledBookshelvesShowBookOnHover feature() {
-        return ChiseledBookshelvesShowBookOnHover.feature();
+    private ChiseledBookshelvesShowBook feature() {
+        return ChiseledBookshelvesShowBook.feature();
     }
 }

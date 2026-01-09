@@ -1,15 +1,15 @@
-package charmony.tweaks.client.features.chiseled_bookshelves_show_book_on_hover;
+package charmony.tweaks.client.features.chiseled_bookshelves_show_book;
 
-import net.minecraft.util.Mth;
 import charmony.api.core.Configurable;
 import charmony.api.core.FeatureDefinition;
+import charmony.api.core.Side;
 import charmony.core.base.Mod;
 import charmony.core.base.SidedFeature;
-import charmony.api.core.Side;
+import net.minecraft.util.Mth;
 
 @FeatureDefinition(side = Side.Client, canBeDisabledInConfig = false)
 @SuppressWarnings({"FieldMayBeFinal", "FieldCanBeLocal"})
-public final class ChiseledBookshelvesShowBookOnHover extends SidedFeature {
+public final class ChiseledBookshelvesShowBook extends SidedFeature {
     public final Registers registers;
     public final Handlers handlers;
 
@@ -20,14 +20,14 @@ public final class ChiseledBookshelvesShowBookOnHover extends SidedFeature {
     )
     private static int offsetFromCenter = 20;
 
-    public ChiseledBookshelvesShowBookOnHover(Mod mod) {
+    public ChiseledBookshelvesShowBook(Mod mod) {
         super(mod);
         this.registers = new Registers(this);
         this.handlers = new Handlers(this);
     }
 
-    public static ChiseledBookshelvesShowBookOnHover feature() {
-        return Mod.getSidedFeature(ChiseledBookshelvesShowBookOnHover.class);
+    public static ChiseledBookshelvesShowBook feature() {
+        return Mod.getSidedFeature(ChiseledBookshelvesShowBook.class);
     }
 
     public int offsetFromCenter() {

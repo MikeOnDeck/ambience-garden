@@ -1,13 +1,13 @@
-package charmony.tweaks.client.features.chiseled_bookshelves_show_book_on_hover;
+package charmony.tweaks.client.features.chiseled_bookshelves_show_book;
 
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import charmony.api.events.HudDisplayCallback;
 import charmony.core.base.Setup;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 
-public class Registers extends Setup<ChiseledBookshelvesShowBookOnHover> {
+public class Registers extends Setup<ChiseledBookshelvesShowBook> {
     public final HudRenderer hudRenderer;
 
-    public Registers(ChiseledBookshelvesShowBookOnHover feature) {
+    public Registers(ChiseledBookshelvesShowBook feature) {
         super(feature);
         this.hudRenderer = new HudRenderer();
     }

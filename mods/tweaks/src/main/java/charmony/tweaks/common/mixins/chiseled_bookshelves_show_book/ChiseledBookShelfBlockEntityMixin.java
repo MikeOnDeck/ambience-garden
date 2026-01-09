@@ -1,5 +1,6 @@
-package charmony.tweaks.common.mixins.chiseled_bookshelves_show_book_on_hover;
+package charmony.tweaks.common.mixins.chiseled_bookshelves_show_book;
 
+import charmony.tweaks.client.features.chiseled_bookshelves_show_book.ChiseledBookshelvesShowBook;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -14,7 +15,6 @@ import net.minecraft.world.level.block.entity.ChiseledBookShelfBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.TagValueOutput;
 import org.spongepowered.asm.mixin.Mixin;
-import charmony.tweaks.client.features.chiseled_bookshelves_show_book_on_hover.ChiseledBookshelvesShowBookOnHover;
 
 import javax.annotation.Nullable;
 
@@ -26,7 +26,7 @@ public class ChiseledBookShelfBlockEntityMixin extends BlockEntity {
 
     @Override
     public CompoundTag getUpdateTag(HolderLookup.Provider provider) {
-        var logger = ChiseledBookshelvesShowBookOnHover.feature().log().getLogger();
+        var logger = ChiseledBookshelvesShowBook.feature().log().getLogger();
         try (ProblemReporter.ScopedCollector scopedCollector = new ProblemReporter.ScopedCollector(this.problemPath(), logger)) {
             var valueOutput = TagValueOutput.createWithContext(scopedCollector, provider);
             saveAdditional(valueOutput);

@@ -6,7 +6,7 @@ import charmony.tweaks.common.features.animal_armor_grinding.AnimalArmorGrinding
 import charmony.tweaks.common.features.animal_damage_immunity.AnimalDamageImmunity;
 import charmony.tweaks.common.features.animal_reviving.AnimalReviving;
 import charmony.tweaks.common.features.campfires_heal_players.CampfiresHealPlayers;
-import charmony.tweaks.common.features.chiseled_bookshelves_show_book_on_hover.ChiseledBookshelvesShowBookOnHover;
+import charmony.tweaks.common.features.chiseled_bookshelves_show_book.ChiseledBookshelvesShowBook;
 import charmony.tweaks.common.features.compact_recipes.CompactRecipes;
 import charmony.tweaks.common.features.crop_feather_falling.CropFeatherFalling;
 import charmony.tweaks.common.features.crop_replanting.CropReplanting;
@@ -50,7 +50,7 @@ public class CommonInitializer implements ModInitializer {
             AnimalDamageImmunity.class,
             AnimalReviving.class,
             CampfiresHealPlayers.class,
-            ChiseledBookshelvesShowBookOnHover.class,
+            ChiseledBookshelvesShowBook.class,
             CompactRecipes.class,
             CropFeatherFalling.class,
             CropReplanting.class,

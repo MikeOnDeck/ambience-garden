@@ -12,7 +12,7 @@
     "animal_reviving.LivingEntityMixin",
     "animal_reviving.NameTagItemMixin",
     "campfires_heal_players.CampfireBlockEntityMixin",
-    "chiseled_bookshelves_show_book_on_hover.ChiseledBookShelfBlockEntityMixin",
+    "chiseled_bookshelves_show_book.ChiseledBookShelfBlockEntityMixin",
     "crop_feather_falling.FarmBlockMixin",
     "deepslate_dungeons.MonsterRoomFeatureMixin",
     "item_restocking.AnimalMixin",

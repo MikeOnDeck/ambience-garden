@@ -1,5 +1,6 @@
-package charmony.tweaks.client.features.chiseled_bookshelves_show_book_on_hover;
+package charmony.tweaks.client.features.chiseled_bookshelves_show_book;
 
+import charmony.core.base.Setup;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -14,13 +15,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
-import charmony.core.base.Setup;
 
 import java.util.Optional;
 import java.util.OptionalInt;
 
-public  class Handlers extends Setup<ChiseledBookshelvesShowBookOnHover> {
-    public Handlers(ChiseledBookshelvesShowBookOnHover feature) {
+public  class Handlers extends Setup<ChiseledBookshelvesShowBook> {
+    public Handlers(ChiseledBookshelvesShowBook feature) {
         super(feature);
     }
 

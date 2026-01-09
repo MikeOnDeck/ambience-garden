@@ -3,7 +3,7 @@ package charmony.tweaks.client;
 import charmony.api.core.Side;
 import charmony.tweaks.TweaksMod;
 import charmony.tweaks.client.features.burning_has_reduced_view_blocking.BurningHasReducedViewBlocking;
-import charmony.tweaks.client.features.chiseled_bookshelves_show_book_on_hover.ChiseledBookshelvesShowBookOnHover;
+import charmony.tweaks.client.features.chiseled_bookshelves_show_book.ChiseledBookshelvesShowBook;
 import charmony.tweaks.client.features.compasses_show_position.CompassesShowPosition;
 import charmony.tweaks.client.features.crafting_table_nearby.CraftingTableNearby;
 import charmony.tweaks.client.features.grindstone_disenchanting.GrindstoneDisenchanting;
@@ -37,7 +37,7 @@ public class ClientInitializer implements ClientModInitializer {
         var tweaks = TweaksMod.instance();
         tweaks.addSidedFeatures(List.of(
             BurningHasReducedViewBlocking.class,
-            ChiseledBookshelvesShowBookOnHover.class,
+            ChiseledBookshelvesShowBook.class,
             CompassesShowPosition.class,
             CraftingTableNearby.class,
             GrindstoneDisenchanting.class,
