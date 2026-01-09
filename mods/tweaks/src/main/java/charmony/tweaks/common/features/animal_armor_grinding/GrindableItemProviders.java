@@ -1,11 +1,11 @@
 package charmony.tweaks.common.features.animal_armor_grinding;
 
-import com.mojang.datafixers.util.Pair;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.level.ItemLike;
 import charmony.api.tweaks.GrindableItemProvider;
 import charmony.core.Api;
 import charmony.core.base.Setup;
+import com.mojang.datafixers.util.Pair;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.ItemLike;
 
 import java.util.List;
 
@@ -21,9 +21,16 @@ public class GrindableItemProviders extends Setup<AnimalArmorGrinding> implement
             Pair.of(Items.WOLF_ARMOR, Items.ARMADILLO_SCUTE),
             Pair.of(Items.SADDLE, Items.LEATHER),
             Pair.of(Items.LEATHER_HORSE_ARMOR, Items.LEATHER),
+            Pair.of(Items.COPPER_HORSE_ARMOR, Items.COPPER_INGOT),
             Pair.of(Items.IRON_HORSE_ARMOR, Items.IRON_INGOT),
             Pair.of(Items.GOLDEN_HORSE_ARMOR, Items.GOLD_INGOT),
-            Pair.of(Items.DIAMOND_HORSE_ARMOR, Items.DIAMOND)
+            Pair.of(Items.DIAMOND_HORSE_ARMOR, Items.DIAMOND),
+            Pair.of(Items.NETHERITE_HORSE_ARMOR, Items.NETHERITE_INGOT),
+            Pair.of(Items.COPPER_NAUTILUS_ARMOR, Items.COPPER_INGOT),
+            Pair.of(Items.IRON_NAUTILUS_ARMOR, Items.IRON_INGOT),
+            Pair.of(Items.GOLDEN_NAUTILUS_ARMOR, Items.GOLD_INGOT),
+            Pair.of(Items.DIAMOND_NAUTILUS_ARMOR, Items.DIAMOND),
+            Pair.of(Items.NETHERITE_NAUTILUS_ARMOR, Items.NETHERITE_INGOT)
         );
     }
 }
