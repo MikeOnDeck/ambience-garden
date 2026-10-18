@@ -1,0 +1,62 @@
+ package com.mikeondeck.ambiencegarden.client.features.environment.sounds;
+
+ import com.mikeondeck.ambiencegarden.client.features.environment.EnvironmentSound;
+ import com.mikeondeck.ambiencegarden.client.features.environment.SurfaceEnvironmentSound;
+ import com.mikeondeck.ambiencegarden.client.features.sound.SoundHandler;
+ import com.mikeondeck.ambiencegarden.client.features.sound.SoundType;
+ import com.mikeondeck.ambiencegarden.core.Charmony;
+ import com.mikeondeck.ambiencegarden.core.helpers.WorldHelper;
+ import net.minecraft.sounds.SoundEvent;
+ import net.minecraft.world.entity.npc.villager.Villager;
+ import net.minecraft.world.phys.AABB;
+ import org.jetbrains.annotations.Nullable;
+
+ import java.util.List;
+
+ public class Village implements SoundType<EnvironmentSound> {
+     public final SoundEvent sound;
+
+     public Village() {
+         sound = SoundEvent.createVariableRangeEvent(Charmony.id("environment.village"));
+     }
+
+     public void addSounds(SoundHandler<EnvironmentSound> handler) {
+         handler.getSounds().add(new SurfaceEnvironmentSound(handler.getPlayer()) {
+             @Override
+             public boolean isValidEnvironmentCondition() {
+                 var bb = new AABB(player.blockPosition()).inflate(32);
+                 List<Villager> villagers = level.getEntitiesOfClass(Villager.class, bb);
+
+                 if (villagers.size() >= 2) {
+                     var villager = villagers.get(player.getRandom().nextInt(villagers.size()));
+                     setPos(villager.blockPosition());
+                     return true;
+                 }
+
+                 return false;
+             }
+
+             @Override
+             public boolean isValidPlayerCondition() {
+                 return super.isValidPlayerCondition()
+                     && !WorldHelper.isNight(player);
+             }
+
+             @Nullable
+             @Override
+             public SoundEvent getSound() {
+                 return sound;
+             }
+
+             @Override
+             public int getDelay() {
+                 return level.random.nextInt(400) + 320;
+             }
+
+             @Override
+             public float getVolume() {
+                 return 0.82F;
+             }
+         });
+     }
+ }

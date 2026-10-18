@@ -1,0 +1,12 @@
+{
+  "gui.ambience_garden.labels.close": "Close",
+  "gui.ambience_garden.labels.back": "Back",
+  "gui.ambience_garden.labels.save": "Save",
+  "gui.ambience_garden.labels.cancel": "Cancel",
+  "gui.ambience_garden.labels.delete": "Delete",
+  "gui.ambience_garden.settings.defaults": "Defaults",
+  "gui.ambience_garden.settings.save": "Save",
+  "gui.ambience_garden.settings.feature.title": "%s Settings",
+  "gui.ambience_garden.settings.title": "Ambience Garden Settings",
+  "key.categories.ambience_garden": "Ambience Garden"
+}

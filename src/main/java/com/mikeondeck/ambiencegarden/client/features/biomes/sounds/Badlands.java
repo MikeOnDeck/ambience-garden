@@ -1,0 +1,66 @@
+package com.mikeondeck.ambiencegarden.client.features.biomes.sounds;
+
+import net.minecraft.core.Holder;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.level.biome.Biome;
+import com.mikeondeck.ambiencegarden.client.features.biomes.BiomeSound;
+import com.mikeondeck.ambiencegarden.client.features.biomes.SurfaceBiomeSound;
+import com.mikeondeck.ambiencegarden.client.features.sound.SoundHandler;
+import com.mikeondeck.ambiencegarden.client.features.sound.SoundType;
+import com.mikeondeck.ambiencegarden.helpers.BiomeCheckHelper;
+import com.mikeondeck.ambiencegarden.core.Charmony;
+import com.mikeondeck.ambiencegarden.core.helpers.WorldHelper;
+
+import javax.annotation.Nullable;
+
+public class Badlands implements SoundType<BiomeSound> {
+    public final SoundEvent daySound;
+    public final SoundEvent nightSound;
+
+    public Badlands() {
+        daySound = SoundEvent.createVariableRangeEvent(Charmony.id("biome.badlands.day"));
+        nightSound = SoundEvent.createVariableRangeEvent(Charmony.id("biome.badlands.night"));
+    }
+
+    @Override
+    public void addSounds(SoundHandler<BiomeSound> handler) {
+        // Day sound.
+        handler.getSounds().add(new SurfaceBiomeSound(handler.getPlayer(), true) {
+            @Nullable
+            @Override
+            public SoundEvent getSound() {
+                return daySound;
+            }
+
+            @Override
+            public boolean isValidPlayerCondition() {
+                return super.isValidPlayerCondition() && WorldHelper.isDay(player);
+            }
+
+            @Override
+            public boolean isValidBiomeCondition(Holder<Biome> holder, ResourceKey<Biome> key) {
+                return BiomeCheckHelper.BADLANDS.test(holder);
+            }
+        });
+
+        // Night sound.
+        handler.getSounds().add(new SurfaceBiomeSound(handler.getPlayer(), true) {
+            @Nullable
+            @Override
+            public SoundEvent getSound() {
+                return nightSound;
+            }
+
+            @Override
+            public boolean isValidPlayerCondition() {
+                return super.isValidPlayerCondition() && WorldHelper.isNight(player);
+            }
+
+            @Override
+            public boolean isValidBiomeCondition(Holder<Biome> holder, ResourceKey<Biome> key) {
+                return BiomeCheckHelper.BADLANDS.test(holder);
+            }
+        });
+    }
+}

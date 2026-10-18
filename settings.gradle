@@ -12,8 +12,4 @@ pluginManagement {
     }
 }
 
-rootProject.name = 'charmony'
-
-// Trimmed for local Charmonium build: only core, api, ambient_sounds and the charmonium collection.
-include 'mods:core', 'mods:api', 'mods:ambient_sounds'
-include 'collections:charmonium'
+rootProject.name = 'ambience-garden'

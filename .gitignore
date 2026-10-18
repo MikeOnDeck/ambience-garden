@@ -4,16 +4,18 @@
 .vscode/
 .idea/
 /bin
-/build/*
-!/build/.gitkeep
-/src/*
-!/src/.gitkeep
-/jars/*
-!/jars/.gitkeep
+/build
+/run
 .env
 package-lock.json
 node_modules
 projects.json
 
+# Old multi-module structure
+/old_structure
+
 # Never commit sound assets to the public repo
 *.ogg
+*.wav
+*.mp3
+*.flac
