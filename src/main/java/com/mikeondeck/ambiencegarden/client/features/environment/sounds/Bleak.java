@@ -7,14 +7,14 @@
  import com.mikeondeck.ambiencegarden.client.features.sound.SoundHandler;
  import com.mikeondeck.ambiencegarden.client.features.sound.SoundType;
  import com.mikeondeck.ambiencegarden.helpers.BiomeCheckHelper;
- import com.mikeondeck.ambiencegarden.core.Charmony;
+ import com.mikeondeck.ambiencegarden.client.sound.AmbientSoundEvents;
  import com.mikeondeck.ambiencegarden.core.helpers.WorldHelper;
 
  public class Bleak implements SoundType<EnvironmentSound> {
      public final SoundEvent sound;
 
      public Bleak() {
-         sound = SoundEvent.createVariableRangeEvent(Charmony.id("environment.bleak"));
+         sound = AmbientSoundEvents.get("environment.bleak");
      }
 
      public void addSounds(SoundHandler<EnvironmentSound> handler) {

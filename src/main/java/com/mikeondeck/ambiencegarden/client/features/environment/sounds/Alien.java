@@ -7,13 +7,13 @@
  import com.mikeondeck.ambiencegarden.client.features.sound.SoundHandler;
  import com.mikeondeck.ambiencegarden.client.features.sound.SoundType;
  import com.mikeondeck.ambiencegarden.helpers.BiomeCheckHelper;
- import com.mikeondeck.ambiencegarden.core.Charmony;
+ import com.mikeondeck.ambiencegarden.client.sound.AmbientSoundEvents;
 
  public class Alien implements SoundType<EnvironmentSound> {
     public final SoundEvent sound;
 
     public Alien() {
-        sound = SoundEvent.createVariableRangeEvent(Charmony.id("environment.alien"));
+        sound = AmbientSoundEvents.get("environment.alien");
     }
 
     public void addSounds(SoundHandler<EnvironmentSound> handler) {

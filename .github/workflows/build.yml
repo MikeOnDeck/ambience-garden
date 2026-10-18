@@ -2,7 +2,7 @@ name: Build Ambience Garden
 
 on:
   push:
-    branches: ['main', 'cursor/**']
+    branches: ['main']
   pull_request:
     branches: ['main']
   workflow_dispatch:

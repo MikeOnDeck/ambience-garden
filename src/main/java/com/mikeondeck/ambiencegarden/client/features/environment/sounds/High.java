@@ -7,14 +7,14 @@
  import com.mikeondeck.ambiencegarden.client.features.environment.RepeatingEnvironmentSound;
  import com.mikeondeck.ambiencegarden.client.features.sound.SoundHandler;
  import com.mikeondeck.ambiencegarden.client.features.sound.SoundType;
- import com.mikeondeck.ambiencegarden.core.Charmony;
+ import com.mikeondeck.ambiencegarden.client.sound.AmbientSoundEvents;
  import com.mikeondeck.ambiencegarden.core.helpers.WorldHelper;
 
  public class High implements SoundType<EnvironmentSound> {
      public final SoundEvent sound;
 
      public High() {
-         sound = SoundEvent.createVariableRangeEvent(Charmony.id("environment.high"));
+         sound = AmbientSoundEvents.get("environment.high");
      }
 
      public void addSounds(SoundHandler<EnvironmentSound> handler) {

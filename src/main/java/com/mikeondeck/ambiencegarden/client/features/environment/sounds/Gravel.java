@@ -8,7 +8,7 @@ import com.mikeondeck.ambiencegarden.client.features.environment.EnvironmentSoun
 import com.mikeondeck.ambiencegarden.client.features.environment.RepeatingEnvironmentSound;
 import com.mikeondeck.ambiencegarden.client.features.sound.SoundHandler;
 import com.mikeondeck.ambiencegarden.client.features.sound.SoundType;
-import com.mikeondeck.ambiencegarden.core.Charmony;
+import com.mikeondeck.ambiencegarden.client.sound.AmbientSoundEvents;
 import com.mikeondeck.ambiencegarden.core.helpers.WorldHelper;
 
 import java.util.Optional;
@@ -17,7 +17,7 @@ public class Gravel implements SoundType<EnvironmentSound> {
     public final SoundEvent sound;
 
     public Gravel() {
-        sound = SoundEvent.createVariableRangeEvent(Charmony.id("environment.gravel"));
+        sound = AmbientSoundEvents.get("environment.gravel");
     }
 
     public void addSounds(SoundHandler<EnvironmentSound> handler) {

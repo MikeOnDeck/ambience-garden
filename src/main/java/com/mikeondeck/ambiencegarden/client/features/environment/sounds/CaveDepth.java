@@ -5,7 +5,7 @@ import com.mikeondeck.ambiencegarden.client.features.environment.EnvironmentSoun
 import com.mikeondeck.ambiencegarden.client.features.environment.LoopingEnvironmentSound;
 import com.mikeondeck.ambiencegarden.client.features.sound.SoundHandler;
 import com.mikeondeck.ambiencegarden.client.features.sound.SoundType;
-import com.mikeondeck.ambiencegarden.core.Charmony;
+import com.mikeondeck.ambiencegarden.client.sound.AmbientSoundEvents;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.level.biome.Biomes;
 import org.jetbrains.annotations.Nullable;
@@ -14,7 +14,7 @@ public class CaveDepth implements SoundType<EnvironmentSound> {
     public final SoundEvent sound;
 
     public CaveDepth() {
-        sound = SoundEvent.createVariableRangeEvent(Charmony.id("environment.deep_cave"));
+        sound = AmbientSoundEvents.get("environment.deep_cave");
     }
 
     @Override

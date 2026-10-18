@@ -32,14 +32,19 @@
   "entrypoints": {
     "client": [
       "com.mikeondeck.ambiencegarden.client.ClientInitializer"
+    ],
+    "modmenu": [
+      "com.mikeondeck.ambiencegarden.integration.ModMenuIntegration"
     ]
   },
-  "mixins": [],
   "depends": {
     "fabricloader": ">=${loader_version}",
     "minecraft": "${minecraft_version}",
     "java": ">=${java_version}",
     "fabric-api": "*"
+  },
+  "suggests": {
+    "modmenu": "*"
   },
   "custom": {
     "modmenu": {

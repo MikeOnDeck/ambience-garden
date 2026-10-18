@@ -15,6 +15,10 @@ import java.util.List;
     Plays ambient sound according to the player's environment.""")
 @SuppressWarnings({"FieldMayBeFinal", "FieldCanBeLocal"})
 public final class Environment extends SidedFeature {
+    public static final int DEFAULT_CAVE_DRONE_CUTOFF = 48;
+    public static final int DEFAULT_CAVE_LIGHT_LEVEL = 10;
+    public static final List<String> DEFAULT_CAVE_DIMENSIONS = List.of("minecraft:overworld");
+
     private final List<Identifier> validCaveDimensions = new ArrayList<>();
     public Registers registers;
     public Handlers handlers;
@@ -37,11 +41,11 @@ public final class Environment extends SidedFeature {
 
     @Configurable(name = "Cave drone cutoff", requireRestart = false, description = """
         Height at which the cave drone will be silenced.""")
-    private static int caveDroneCutoff = 48;
+    private static int caveDroneCutoff = DEFAULT_CAVE_DRONE_CUTOFF;
 
     @Configurable(name = "Cave light level", requireRestart = false, description = """
         Light level at which cave ambience will be dampened.""")
-    private static int caveLightLevel = 10;
+    private static int caveLightLevel = DEFAULT_CAVE_LIGHT_LEVEL;
 
     @Configurable(name = "Deepslate sounds", requireRestart = false, description = """
         If true, plays ambient sounds when the player is underground and near deepslate blocks.""")
@@ -89,9 +93,7 @@ public final class Environment extends SidedFeature {
 
     @Configurable(name = "Valid cave ambience dimensions", description = """
         Dimensions in which cave ambience (drone and depth) will be played.""")
-    private static List<String> caveDimensions = List.of(
-        "minecraft:overworld"
-    );
+    private static List<String> caveDimensions = new ArrayList<>(DEFAULT_CAVE_DIMENSIONS);
 
     public Environment(Mod mod) {
         super(mod);
@@ -184,5 +186,63 @@ public final class Environment extends SidedFeature {
 
     public boolean village() {
         return village;
+    }
+
+    public void setAlien(boolean alien) { Environment.alien = alien; }
+    public void setBleak(boolean bleak) { Environment.bleak = bleak; }
+    public void setCaveDepth(boolean caveDepth) { Environment.caveDepth = caveDepth; }
+    public void setCaveDrone(boolean caveDrone) { Environment.caveDrone = caveDrone; }
+    public void setDeepslate(boolean deepslate) { Environment.deepslate = deepslate; }
+    public void setDry(boolean dry) { Environment.dry = dry; }
+    public void setGeode(boolean geode) { Environment.geode = geode; }
+    public void setGravel(boolean gravel) { Environment.gravel = gravel; }
+    public void setHigh(boolean high) { Environment.high = high; }
+    public void setMansion(boolean mansion) { Environment.mansion = mansion; }
+    public void setMineshaft(boolean mineshaft) { Environment.mineshaft = mineshaft; }
+    public void setNightPlains(boolean nightPlains) { Environment.nightPlains = nightPlains; }
+    public void setSnowstorm(boolean snowstorm) { Environment.snowstorm = snowstorm; }
+    public void setUndergroundWater(boolean undergroundWater) { Environment.undergroundWater = undergroundWater; }
+    public void setVillage(boolean village) { Environment.village = village; }
+
+    public void setCaveDroneCutoff(int caveDroneCutoff) {
+        Environment.caveDroneCutoff = caveDroneCutoff;
+    }
+
+    public void setCaveLightLevel(int caveLightLevel) {
+        Environment.caveLightLevel = caveLightLevel;
+    }
+
+    public void setCaveDimensionEnabled(String id, boolean enabled) {
+        var next = new ArrayList<>(caveDimensions());
+        if (enabled) {
+            if (!next.contains(id)) next.add(id);
+        } else {
+            next.remove(id);
+        }
+        caveDimensions = next;
+        validCaveDimensions.clear();
+    }
+
+    public void resetToDefaults() {
+        alien = true;
+        bleak = true;
+        caveDepth = true;
+        caveDrone = true;
+        deepslate = true;
+        dry = true;
+        geode = true;
+        gravel = true;
+        high = true;
+        mansion = true;
+        mineshaft = true;
+        nightPlains = true;
+        snowstorm = true;
+        undergroundWater = true;
+        village = true;
+        caveDroneCutoff = DEFAULT_CAVE_DRONE_CUTOFF;
+        caveLightLevel = DEFAULT_CAVE_LIGHT_LEVEL;
+        caveDimensions = new ArrayList<>(DEFAULT_CAVE_DIMENSIONS);
+        validCaveDimensions.clear();
+        enabled(true);
     }
 }

@@ -9,13 +9,18 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @FeatureDefinition(side = Side.Client, description = """
     Plays ambient background sound according to the biome and time of day.""")
 @SuppressWarnings({"FieldMayBeFinal", "FieldCanBeLocal"})
 public final class Biomes extends SidedFeature {
+    public static final int DEFAULT_BIOME_BLEND = 32;
+    public static final List<String> DEFAULT_DIMENSIONS = List.of(
+        "minecraft:overworld",
+        "minecraft:the_end"
+    );
+
     private final List<Identifier> validDimensions = new ArrayList<>();
 
     public final Registers registers;
@@ -28,16 +33,13 @@ public final class Biomes extends SidedFeature {
             Set to zero to disable.""",
         requireRestart = false
     )
-    private static int biomeBlend = 32;
+    private static int biomeBlend = DEFAULT_BIOME_BLEND;
 
     @Configurable(
         name = "Valid dimensions",
         description = "Dimensions in which biome ambience will be played."
     )
-    private static List<String> dimensions = Arrays.asList(
-        "minecraft:overworld",
-        "minecraft:the_end"
-    );
+    private static List<String> dimensions = new ArrayList<>(DEFAULT_DIMENSIONS);
 
     public Biomes(Mod mod) {
         super(mod);
@@ -55,6 +57,28 @@ public final class Biomes extends SidedFeature {
 
     public List<String> dimensions() {
         return dimensions;
+    }
+
+    public void setBiomeBlend(int biomeBlend) {
+        Biomes.biomeBlend = biomeBlend;
+    }
+
+    public void setDimensionEnabled(String id, boolean enabled) {
+        var next = new ArrayList<>(dimensions());
+        if (enabled) {
+            if (!next.contains(id)) next.add(id);
+        } else {
+            next.remove(id);
+        }
+        dimensions = next;
+        validDimensions.clear();
+    }
+
+    public void resetToDefaults() {
+        biomeBlend = DEFAULT_BIOME_BLEND;
+        dimensions = new ArrayList<>(DEFAULT_DIMENSIONS);
+        validDimensions.clear();
+        enabled(true);
     }
 
     public List<Identifier> validDimensions() {

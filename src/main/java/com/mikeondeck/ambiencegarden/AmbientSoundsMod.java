@@ -8,7 +8,7 @@ import com.mikeondeck.ambiencegarden.api.core.Side;
     name = "Ambient sounds",
     description = "Simple ambient sounds for Minecraft. Compatible with vanilla servers such as Realms.")
 public class AmbientSoundsMod extends Mod {
-    public static final String ID = "charmony-ambient-sounds";
+    public static final String ID = "ambience_garden";
 
     private static AmbientSoundsMod instance;
 

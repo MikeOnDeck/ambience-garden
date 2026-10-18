@@ -9,7 +9,7 @@ import com.mikeondeck.ambiencegarden.client.features.biomes.SurfaceBiomeSound;
 import com.mikeondeck.ambiencegarden.client.features.sound.SoundHandler;
 import com.mikeondeck.ambiencegarden.client.features.sound.SoundType;
 import com.mikeondeck.ambiencegarden.helpers.BiomeCheckHelper;
-import com.mikeondeck.ambiencegarden.core.Charmony;
+import com.mikeondeck.ambiencegarden.client.sound.AmbientSoundEvents;
 
 import javax.annotation.Nullable;
 
@@ -17,7 +17,7 @@ public class River implements SoundType<BiomeSound> {
     public final SoundEvent sound;
 
     public River() {
-        sound = SoundEvent.createVariableRangeEvent(Charmony.id("biome.river"));
+        sound = AmbientSoundEvents.get("biome.river");
     }
 
     @Override

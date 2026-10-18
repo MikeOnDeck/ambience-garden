@@ -70,7 +70,7 @@ Ambience Garden is a **standalone rebrand** of Charmonium that:
    - Mod ID: `ambience_garden`
    - Package: `com.mikeondeck.ambiencegarden`
    - Asset namespace: `ambience_garden` (previously `charmony`)
-   - Config file: `ambience_garden.toml` (in `.minecraft/config/ambience_garden/`)
+   - Config file: `.minecraft/config/ambience_garden/ambience_garden-client.toml`
 
 3. **Simplified scope**: Only ambient sounds functionality is included. Removed unused Charmony features (e.g., anvil behavior toggles).
 

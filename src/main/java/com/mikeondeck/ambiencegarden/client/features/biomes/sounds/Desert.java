@@ -9,7 +9,7 @@ import com.mikeondeck.ambiencegarden.client.features.biomes.SurfaceBiomeSound;
 import com.mikeondeck.ambiencegarden.client.features.sound.SoundHandler;
 import com.mikeondeck.ambiencegarden.client.features.sound.SoundType;
 import com.mikeondeck.ambiencegarden.helpers.BiomeCheckHelper;
-import com.mikeondeck.ambiencegarden.core.Charmony;
+import com.mikeondeck.ambiencegarden.client.sound.AmbientSoundEvents;
 import com.mikeondeck.ambiencegarden.core.helpers.WorldHelper;
 
 import javax.annotation.Nullable;
@@ -19,8 +19,8 @@ public class Desert implements SoundType<BiomeSound> {
     public final SoundEvent nightSound;
 
     public Desert() {
-        daySound = SoundEvent.createVariableRangeEvent(Charmony.id("biome.desert.day"));
-        nightSound = SoundEvent.createVariableRangeEvent(Charmony.id("biome.desert.night"));
+        daySound = AmbientSoundEvents.get("biome.desert.day");
+        nightSound = AmbientSoundEvents.get("biome.desert.night");
     }
 
     @Override

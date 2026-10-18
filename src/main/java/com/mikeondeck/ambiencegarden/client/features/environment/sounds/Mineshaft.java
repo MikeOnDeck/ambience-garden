@@ -8,7 +8,7 @@
  import com.mikeondeck.ambiencegarden.client.features.environment.RepeatingEnvironmentSound;
  import com.mikeondeck.ambiencegarden.client.features.sound.SoundHandler;
  import com.mikeondeck.ambiencegarden.client.features.sound.SoundType;
- import com.mikeondeck.ambiencegarden.core.Charmony;
+ import com.mikeondeck.ambiencegarden.client.sound.AmbientSoundEvents;
 
  import java.util.Optional;
 
@@ -16,7 +16,7 @@
      public final SoundEvent sound;
 
      public Mineshaft() {
-         sound = SoundEvent.createVariableRangeEvent(Charmony.id("environment.mineshaft"));
+         sound = AmbientSoundEvents.get("environment.mineshaft");
      }
 
      public void addSounds(SoundHandler<EnvironmentSound> handler) {

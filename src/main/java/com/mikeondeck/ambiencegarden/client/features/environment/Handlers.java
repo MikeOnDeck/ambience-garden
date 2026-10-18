@@ -17,8 +17,22 @@ public class Handlers extends Setup<Environment> {
     }
 
     public void clientTick(Minecraft client) {
+        if (!feature().enabled()) {
+            reload();
+            return;
+        }
+        if (handler == null && client.player instanceof LocalPlayer player) {
+            trySetupSoundHandler(player);
+        }
         if (handler != null && !client.isPaused()) {
             handler.tick();
+        }
+    }
+
+    public void reload() {
+        if (handler != null) {
+            handler.stop();
+            handler = null;
         }
     }
 

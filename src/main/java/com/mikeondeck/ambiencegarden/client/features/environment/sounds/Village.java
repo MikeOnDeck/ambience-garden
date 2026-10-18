@@ -4,7 +4,7 @@
  import com.mikeondeck.ambiencegarden.client.features.environment.SurfaceEnvironmentSound;
  import com.mikeondeck.ambiencegarden.client.features.sound.SoundHandler;
  import com.mikeondeck.ambiencegarden.client.features.sound.SoundType;
- import com.mikeondeck.ambiencegarden.core.Charmony;
+ import com.mikeondeck.ambiencegarden.client.sound.AmbientSoundEvents;
  import com.mikeondeck.ambiencegarden.core.helpers.WorldHelper;
  import net.minecraft.sounds.SoundEvent;
  import net.minecraft.world.entity.npc.villager.Villager;
@@ -17,7 +17,7 @@
      public final SoundEvent sound;
 
      public Village() {
-         sound = SoundEvent.createVariableRangeEvent(Charmony.id("environment.village"));
+         sound = AmbientSoundEvents.get("environment.village");
      }
 
      public void addSounds(SoundHandler<EnvironmentSound> handler) {

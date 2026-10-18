@@ -9,7 +9,7 @@ import com.mikeondeck.ambiencegarden.client.features.biomes.SurfaceBiomeSound;
 import com.mikeondeck.ambiencegarden.client.features.sound.SoundHandler;
 import com.mikeondeck.ambiencegarden.client.features.sound.SoundType;
 import com.mikeondeck.ambiencegarden.helpers.BiomeCheckHelper;
-import com.mikeondeck.ambiencegarden.core.Charmony;
+import com.mikeondeck.ambiencegarden.client.sound.AmbientSoundEvents;
 import com.mikeondeck.ambiencegarden.core.helpers.WorldHelper;
 
 import javax.annotation.Nullable;
@@ -19,8 +19,8 @@ public class Mountains implements SoundType<BiomeSound> {
     public final SoundEvent nightSound;
 
     public Mountains() {
-        daySound = SoundEvent.createVariableRangeEvent(Charmony.id("biome.mountains.day"));
-        nightSound = SoundEvent.createVariableRangeEvent(Charmony.id("biome.mountains.night"));
+        daySound = AmbientSoundEvents.get("biome.mountains.day");
+        nightSound = AmbientSoundEvents.get("biome.mountains.night");
     }
 
     @Override

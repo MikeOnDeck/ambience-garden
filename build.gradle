@@ -38,6 +38,12 @@ dependencies {
     include "com.electronwill.night-config:toml:${tomlnc_version}"
     
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
+
+    // Optional. The modmenu entrypoint class is only loaded when Mod Menu is installed.
+    modCompileOnly "com.terraformersmc:modmenu:${modmenu_version}"
+
+    testImplementation "org.junit.jupiter:junit-jupiter:5.11.4"
+    testRuntimeOnly "org.junit.platform:junit-platform-launcher"
 }
 
 loom {
@@ -62,6 +68,16 @@ processResources {
 
 tasks.withType(JavaCompile).configureEach {
     it.options.release = 21
+}
+
+tasks.withType(Test).configureEach {
+    useJUnitPlatform()
+}
+
+tasks.named("runClient", JavaExec).configure {
+    if (System.getenv("AMBIENCE_GARDEN_VERIFY_SOUNDS") == "true") {
+        systemProperty "ambience_garden.verifySounds", "true"
+    }
 }
 
 java {

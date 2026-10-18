@@ -5,7 +5,7 @@ import com.mikeondeck.ambiencegarden.client.features.environment.EnvironmentSoun
 import com.mikeondeck.ambiencegarden.client.features.environment.LoopingEnvironmentSound;
 import com.mikeondeck.ambiencegarden.client.features.sound.SoundHandler;
 import com.mikeondeck.ambiencegarden.client.features.sound.SoundType;
-import com.mikeondeck.ambiencegarden.core.Charmony;
+import com.mikeondeck.ambiencegarden.client.sound.AmbientSoundEvents;
 import net.minecraft.sounds.SoundEvent;
 import org.jetbrains.annotations.Nullable;
 
@@ -13,7 +13,7 @@ public class CaveDrone implements SoundType<EnvironmentSound> {
     public final SoundEvent sound;
 
     public CaveDrone() {
-        sound = SoundEvent.createVariableRangeEvent(Charmony.id("environment.cave_drone"));
+        sound = AmbientSoundEvents.get("environment.cave_drone");
     }
 
     public void addSounds(SoundHandler<EnvironmentSound> handler) {

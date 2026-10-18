@@ -114,11 +114,9 @@ public abstract class Mod {
             feature.enabled(feature.enabled() && check.stream().allMatch(BooleanSupplier::getAsBoolean)));
 
         log().debug("Booting up " + name() + " " + sideName);
-        boots.forEach((feature, boot) -> {
-            if (feature.enabled()) {
-                boot.forEach(Runnable::run);
-            }
-        });
+        // Always install client hooks. Handlers no-op while a feature is disabled,
+        // so the in-game settings screen can turn it back on without a restart.
+        boots.forEach((feature, boot) -> boot.forEach(Runnable::run));
 
         log().debug("Registering " + name() + " " + sideName);
         registers.forEach((feature, register)

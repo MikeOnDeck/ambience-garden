@@ -8,7 +8,7 @@ import net.minecraft.world.level.biome.Biomes;
 import com.mikeondeck.ambiencegarden.client.features.biomes.BiomeSound;
 import com.mikeondeck.ambiencegarden.client.features.sound.SoundHandler;
 import com.mikeondeck.ambiencegarden.client.features.sound.SoundType;
-import com.mikeondeck.ambiencegarden.core.Charmony;
+import com.mikeondeck.ambiencegarden.client.sound.AmbientSoundEvents;
 
 import javax.annotation.Nullable;
 
@@ -18,9 +18,9 @@ public class Caves implements SoundType<BiomeSound> {
     public final SoundEvent lush;
 
     public Caves() {
-        deepDark = SoundEvent.createVariableRangeEvent(Charmony.id("biome.caves.deep_dark"));
-        dripstone = SoundEvent.createVariableRangeEvent(Charmony.id("biome.caves.dripstone"));
-        lush = SoundEvent.createVariableRangeEvent(Charmony.id("biome.caves.lush"));
+        deepDark = AmbientSoundEvents.get("biome.caves.deep_dark");
+        dripstone = AmbientSoundEvents.get("biome.caves.dripstone");
+        lush = AmbientSoundEvents.get("biome.caves.lush");
     }
 
     @Override

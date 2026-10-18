@@ -6,6 +6,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.Nullable;
+import com.mikeondeck.ambiencegarden.client.sound.AmbientPlayback;
 import com.mikeondeck.ambiencegarden.helpers.SettingsHelper;
 
 public class SingleSound extends AbstractTickableSoundInstance {
@@ -31,6 +32,7 @@ public class SingleSound extends AbstractTickableSoundInstance {
         } else {
             this.relative = true;
         }
+        AmbientPlayback.logFirstPlay(sound);
     }
 
     @Override

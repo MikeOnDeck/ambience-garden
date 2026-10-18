@@ -6,10 +6,10 @@ import com.mikeondeck.ambiencegarden.core.Charmony;
 import com.mikeondeck.ambiencegarden.core.base.Log;
 
 import javax.annotation.Nullable;
-import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Field;
+import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,13 +48,13 @@ public final class ConfigHelper {
     }
 
     public static Path configPath(String modId, Side side) {
-        var name = modId.startsWith("charmony-") ? modId.replace("charmony-", "") : modId;
-
-        var root = new File(FabricLoader.getInstance().getConfigDir() + "/charmony");
-        if (!root.exists() && !root.mkdir()) {
-            throw new RuntimeException("Could not create charmony config dir");
+        var path = ConfigPaths.resolve(FabricLoader.getInstance().getConfigDir(), modId, side.getSerializedName());
+        try {
+            Files.createDirectories(path.getParent());
+        } catch (IOException e) {
+            throw new RuntimeException("Could not create config directory " + path.getParent(), e);
         }
-        return Paths.get(root + "/" + name + "-" + side.getSerializedName() + ".toml");
+        return path;
     }
 
     private static Object filterEmptyStrings(Object val) {
