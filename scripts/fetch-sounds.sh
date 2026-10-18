@@ -32,15 +32,17 @@ if git clone --depth 1 "$UPSTREAM_REPO" /tmp/charmony-sounds 2>/dev/null; then
     
     cd - > /dev/null
     
-    # Copy sound folders
-    if [ -d "/tmp/charmony-sounds/biomes" ] && [ -d "/tmp/charmony-sounds/environment" ]; then
-        cp -r /tmp/charmony-sounds/biomes "$SOUNDS_DIR/"
-        cp -r /tmp/charmony-sounds/environment "$SOUNDS_DIR/"
+    # Copy sound folders (they're in src/main/resources/assets/charmony/sounds/)
+    UPSTREAM_SOUNDS="/tmp/charmony-sounds/src/main/resources/assets/charmony/sounds"
+    if [ -d "$UPSTREAM_SOUNDS/biomes" ] && [ -d "$UPSTREAM_SOUNDS/environment" ]; then
+        cp -r "$UPSTREAM_SOUNDS/biomes" "$SOUNDS_DIR/"
+        cp -r "$UPSTREAM_SOUNDS/environment" "$SOUNDS_DIR/"
         rm -rf /tmp/charmony-sounds
         echo "✓ Copied sounds from upstream"
     else
         rm -rf /tmp/charmony-sounds
         echo "✗ Expected folders not found in upstream repo"
+        echo "  Looked in: $UPSTREAM_SOUNDS"
         exit 1
     fi
 else
