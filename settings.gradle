@@ -14,8 +14,6 @@ pluginManagement {
 
 rootProject.name = 'charmony'
 
-include 'mods:core', 'mods:api', 'mods:ambient_sounds', 'mods:travel_journal', 'mods:tweaks'
-include 'collections:realms_companion', 'collections:charmonium'
-
-// Content mods.
-include 'mods:rune_dictionary', 'mods:villager_tasks'
+// Trimmed for local Charmonium build: only core, api, ambient_sounds and the charmonium collection.
+include 'mods:core', 'mods:api', 'mods:ambient_sounds'
+include 'collections:charmonium'
