@@ -39,7 +39,7 @@ See the [Building from Source](README.md#building-from-source) section in the RE
 
 ## Review Process
 
-All contributions are reviewed by Mike Clarke (MikeOnDeck). Please be patient - I review PRs as time permits.
+All contributions are reviewed by MikeOnDeck. Please be patient - I review PRs as time permits.
 
 ## Code of Conduct
 
