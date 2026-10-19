@@ -1,0 +1,331 @@
+{
+  "biome.beach.day": {
+    "sounds": [
+      {"name": "ambience_garden:biomes/beach/beach1"}
+    ]
+  },
+  "biome.beach.night": {
+    "sounds": [
+      {"name": "ambience_garden:biomes/beach/beach1"}
+    ]
+  },
+  "biome.caves.dripstone": {
+    "sounds": [
+      {"name": "ambience_garden:biomes/dripstone_caves/dripstone_caves1"}
+    ]
+  },
+  "biome.caves.lush": {
+    "sounds": [
+      {"name": "ambience_garden:biomes/lush_caves/lush_caves2"}
+    ]
+  },
+  "biome.caves.deep_dark": {
+    "sounds": [
+      {"name": "ambience_garden:biomes/deep_dark/deep_dark1"}
+    ]
+  },
+  "biome.desert.day": {
+    "sounds": [
+      {"name": "ambience_garden:biomes/wind/wind1"},
+      {"name": "ambience_garden:biomes/wind/wind2"},
+      {"name": "ambience_garden:biomes/wind/wind3"}
+    ]
+  },
+  "biome.desert.night": {
+    "sounds": [
+      {"name": "ambience_garden:biomes/cicadas/cicadas1"},
+      {"name": "ambience_garden:biomes/wind/wind2"}
+    ]
+  },
+  "biome.mountains.day": {
+    "sounds": [
+      {"name": "ambience_garden:biomes/windy_plains/windy_plains1"},
+      {"name": "ambience_garden:biomes/wind/wind1"},
+      {"name": "ambience_garden:biomes/wind/wind2"},
+      {"name": "ambience_garden:biomes/wind/wind3"}
+    ]
+  },
+  "biome.mountains.night": {
+    "sounds": [
+      {"name": "ambience_garden:biomes/wind/wind1"},
+      {"name": "ambience_garden:biomes/wind/wind2"},
+      {"name": "ambience_garden:biomes/wind/wind3"}
+    ]
+  },
+  "biome.forest.day": {
+    "sounds": [
+      {"name": "ambience_garden:biomes/forest/forest1"},
+      {"name": "ambience_garden:biomes/forest/forest2"},
+      {"name": "ambience_garden:biomes/forest/forest3"}
+    ]
+  },
+  "biome.forest.night": {
+    "sounds": [
+      {"name": "ambience_garden:biomes/crickets/crickets1"},
+      {"name": "ambience_garden:biomes/crickets/crickets2"}
+    ]
+  },
+  "biome.icy.day": {
+    "sounds": [
+      {"name": "ambience_garden:biomes/cold_plains/cold_plains1"},
+      {"name": "ambience_garden:biomes/cold_plains/cold_plains2"},
+      {"name": "ambience_garden:biomes/wind/wind4"}
+    ]
+  },
+  "biome.icy.night": {
+    "sounds": [
+      {"name": "ambience_garden:biomes/wind/wind1"},
+      {"name": "ambience_garden:biomes/wind/wind2"},
+      {"name": "ambience_garden:biomes/wind/wind3"},
+      {"name": "ambience_garden:biomes/wind/wind4"},
+      {"name": "ambience_garden:biomes/cold_plains/cold_plains2"}
+    ]
+  },
+  "biome.jungle.day": {
+    "sounds": [
+      {"name": "ambience_garden:biomes/lush_forest/lush_forest1"}
+    ]
+  },
+  "biome.jungle.night": {
+    "sounds": [
+      {"name": "ambience_garden:biomes/crickets/crickets3"},
+      {"name": "ambience_garden:biomes/cicadas/cicadas3"}
+    ]
+  },
+  "biome.badlands.day": {
+    "sounds": [
+      {"name": "ambience_garden:biomes/canyon/canyon1"},
+      {"name": "ambience_garden:biomes/canyon/canyon2"}
+    ]
+  },
+  "biome.badlands.night": {
+    "sounds": [
+      {"name": "ambience_garden:biomes/crickets/crickets2"},
+      {"name": "ambience_garden:biomes/crickets/crickets4"}
+    ]
+  },
+  "biome.ocean.day": {
+    "sounds": [
+      {"name": "ambience_garden:biomes/sea/sea1"},
+      {"name": "ambience_garden:biomes/sea/sea2"}
+    ]
+  },
+  "biome.ocean.night": {
+    "sounds": [
+      {"name": "ambience_garden:biomes/sea/sea1"},
+      {"name": "ambience_garden:biomes/sea/sea2"}
+    ]
+  },
+  "biome.pale_garden.day": {
+    "sounds": [
+      {"name": "ambience_garden:biomes/pale_garden/pale_garden_day"}
+    ]
+  },
+  "biome.pale_garden.night": {
+    "sounds": [
+      {"name": "ambience_garden:biomes/pale_garden/pale_garden_night"}
+    ]
+  },
+  "biome.plains.day": {
+    "sounds": [
+      {"name": "ambience_garden:biomes/plains/plains1"},
+      {"name": "ambience_garden:biomes/plains/plains2"},
+      {"name": "ambience_garden:biomes/plains/plains3"}
+    ]
+  },
+  "biome.plains.night": {
+    "sounds": [
+      {"name": "ambience_garden:biomes/crickets/crickets1"},
+      {"name": "ambience_garden:biomes/crickets/crickets2"},
+      {"name": "ambience_garden:biomes/crickets/crickets4"}
+    ]
+  },
+  "biome.river": {
+    "sounds": [
+      {"name": "ambience_garden:biomes/wind/wind4"},
+      {"name": "ambience_garden:biomes/cold_plains/cold_plains1"},
+      {"name": "ambience_garden:biomes/cold_plains/cold_plains2"}
+    ]
+  },
+  "biome.savanna.day": {
+    "sounds": [
+      {"name": "ambience_garden:biomes/windy_plains/windy_plains1"},
+      {"name": "ambience_garden:biomes/windy_plains/windy_plains2"},
+      {"name": "ambience_garden:biomes/cicadas/cicadas3"},
+      {"name": "ambience_garden:biomes/warm_plains/warm_plains1"},
+      {"name": "ambience_garden:biomes/warm_plains/warm_plains2"}
+    ]
+  },
+  "biome.savanna.night": {
+    "sounds": [
+      {"name": "ambience_garden:biomes/crickets/crickets1"},
+      {"name": "ambience_garden:biomes/crickets/crickets2"},
+      {"name": "ambience_garden:biomes/crickets/crickets4"},
+      {"name": "ambience_garden:biomes/cicadas/cicadas1"},
+      {"name": "ambience_garden:biomes/cicadas/cicadas2"}
+    ]
+  },
+  "biome.swamp.day": {
+    "sounds": [
+      {"name": "ambience_garden:biomes/swamp/swamp1"}
+    ]
+  },
+  "biome.swamp.night": {
+    "sounds": [
+      {"name": "ambience_garden:biomes/crickets/crickets3"}
+    ]
+  },
+  "biome.taiga.day": {
+    "sounds": [
+      {"name": "ambience_garden:biomes/cold_forest/cold_forest1"},
+      {"name": "ambience_garden:biomes/cold_forest/cold_forest2"},
+      {"name": "ambience_garden:biomes/mountain_forest/mountain_forest1"}
+    ]
+  },
+  "biome.taiga.night": {
+    "sounds": [
+      {"name": "ambience_garden:biomes/wind/wind1"},
+      {"name": "ambience_garden:biomes/wind/wind3"}
+    ]
+  },
+  "biome.the_end": {
+    "sounds": [
+      {"name": "ambience_garden:biomes/the_end/the_end1"}
+    ]
+  },
+  "environment.dry": {
+    "sounds": [
+      {"name": "ambience_garden:environment/cicadas/cicadas1"},
+      {"name": "ambience_garden:environment/cicadas/cicadas2"},
+      {"name": "ambience_garden:environment/cicadas/cicadas3"}
+    ]
+  },
+  "environment.bleak": {
+    "sounds": [
+      {"name": "ambience_garden:environment/cold_wind/cold_wind1"},
+      {"name": "ambience_garden:environment/cold_wind/cold_wind2"},
+      {"name": "ambience_garden:environment/crow/crow1"},
+      {"name": "ambience_garden:environment/crow/crow2"},
+      {"name": "ambience_garden:environment/crow/crow3"},
+      {"name": "ambience_garden:environment/crow/crow4"}
+    ]
+  },
+  "environment.night_plains": {
+    "sounds": [
+      {"name": "ambience_garden:environment/blackbird/blackbird1"},
+      {"name": "ambience_garden:environment/blackbird/blackbird2"},
+      {"name": "ambience_garden:environment/blackbird/blackbird3"},
+      {"name": "ambience_garden:environment/blackbird/blackbird4"},
+      {"name": "ambience_garden:environment/blackbird/blackbird5"},
+      {"name": "ambience_garden:environment/blackbird/blackbird6"},
+      {"name": "ambience_garden:environment/crickets/crickets1"},
+      {"name": "ambience_garden:environment/crickets/crickets2"}
+    ]
+  },
+  "environment.underground_water": {
+    "sounds": [
+      {"name": "ambience_garden:environment/underground_water/underground_water1"},
+      {"name": "ambience_garden:environment/underground_water/underground_water2"},
+      {"name": "ambience_garden:environment/underground_water/underground_water3"}
+    ]
+  },
+  "environment.cave_drone": {
+    "sounds": [
+      {"name": "ambience_garden:environment/cave_drone/cave_drone1"}
+    ]
+  },
+  "environment.deep_cave": {
+    "sounds": [
+      {
+        "name": "ambience_garden:environment/deep_cave/deep_cave1",
+        "volume": 0.9
+      },
+      {
+        "name": "ambience_garden:environment/deep_cave/deep_cave2",
+        "volume": 0.9
+      }
+    ]
+  },
+  "environment.alien": {
+    "sounds": [
+      {"name": "ambience_garden:environment/alien/alien1"},
+      {"name": "ambience_garden:environment/alien/alien2"},
+      {"name": "ambience_garden:environment/alien/alien3"},
+      {"name": "ambience_garden:environment/alien/alien4"},
+      {"name": "ambience_garden:environment/alien/alien5"},
+      {"name": "ambience_garden:environment/alien/alien6"},
+      {"name": "ambience_garden:environment/alien/alien7"},
+      {"name": "ambience_garden:environment/alien/alien8"}
+    ]
+  },
+  "environment.mineshaft": {
+    "sounds": [
+      {"name": "ambience_garden:environment/wood_creaking/wood_creaking1"},
+      {"name": "ambience_garden:environment/wood_creaking/wood_creaking2"},
+      {"name": "ambience_garden:environment/wood_creaking/wood_creaking3"},
+      {"name": "ambience_garden:environment/wood_creaking/wood_creaking4"},
+      {"name": "ambience_garden:environment/wood_creaking/wood_creaking5"}
+    ]
+  },
+  "environment.mansion": {
+    "sounds": [
+      {"name": "ambience_garden:environment/wood_creaking/wood_creaking1"},
+      {"name": "ambience_garden:environment/wood_creaking/wood_creaking2"},
+      {"name": "ambience_garden:environment/wood_creaking/wood_creaking3"},
+      {"name": "ambience_garden:environment/wood_creaking/wood_creaking4"},
+      {"name": "ambience_garden:environment/wood_creaking/wood_creaking5"}
+    ]
+  },
+  "environment.village": {
+    "sounds": [
+      {"name": "ambience_garden:environment/village/village1"},
+      {"name": "ambience_garden:environment/village/village2"},
+      {"name": "ambience_garden:environment/village/village3"},
+      {"name": "ambience_garden:environment/village/village4"},
+      {"name": "ambience_garden:environment/village/village5"},
+      {"name": "ambience_garden:environment/village/village6"},
+      {"name": "ambience_garden:environment/village/village7"},
+      {"name": "ambience_garden:environment/village/village8"},
+      {"name": "ambience_garden:environment/village/village9"},
+      {"name": "ambience_garden:environment/village/village10"},
+      {"name": "ambience_garden:environment/village/village11"},
+      {"name": "ambience_garden:environment/village/village12"}
+    ]
+  },
+  "environment.snowstorm": {
+    "sounds": [
+      {"name": "ambience_garden:environment/strong_wind/strong_wind1"},
+      {"name": "ambience_garden:environment/strong_wind/strong_wind2"},
+      {"name": "ambience_garden:environment/strong_wind/strong_wind3"}
+    ]
+  },
+  "environment.high": {
+    "sounds": [
+      {"name": "ambience_garden:environment/strong_wind/strong_wind1"},
+      {"name": "ambience_garden:environment/strong_wind/strong_wind2"},
+      {"name": "ambience_garden:environment/strong_wind/strong_wind3"}
+    ]
+  },
+  "environment.geode": {
+    "sounds": [
+      {"name": "ambience_garden:environment/geode/geode1"},
+      {"name": "ambience_garden:environment/geode/geode2"}
+    ]
+  },
+  "environment.gravel": {
+    "sounds": [
+      {"name": "ambience_garden:environment/gravel/gravel1"},
+      {"name": "ambience_garden:environment/gravel/gravel2"},
+      {"name": "ambience_garden:environment/gravel/gravel3"},
+      {"name": "ambience_garden:environment/gravel/gravel4"}
+    ]
+  },
+  "environment.deepslate": {
+    "sounds": [
+      {"name": "ambience_garden:environment/deepslate/deepslate1"},
+      {"name": "ambience_garden:environment/deepslate/deepslate2"},
+      {"name": "ambience_garden:environment/deepslate/deepslate3"},
+      {"name": "ambience_garden:environment/deepslate/deepslate4"}
+    ]
+  }
+}

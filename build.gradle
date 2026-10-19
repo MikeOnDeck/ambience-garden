@@ -1,182 +1,93 @@
-import groovy.json.JsonBuilder
-import groovy.json.JsonSlurper
-
 plugins {
-    id 'fabric-loom' version "${loom_version}"
+    id 'fabric-loom' version '1.14-SNAPSHOT'
+    id 'maven-publish'
 }
 
-subprojects {
-    if (!project.hasProperty('mod_version')) return
-    apply plugin: 'java'
-    apply plugin: 'fabric-loom'
+version = project.mod_version + '+' + project.minecraft_version
+group = project.maven_group
 
-    version = "${project.mod_version}+${project.minecraft_version}"
-    group = project.maven_group
-    var modId = project.findProperty('mod_id')
-
-    base {
-        archivesName = project.archives_base_name
-    }
-
-    java {
-        withSourcesJar()
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
-    }
-
-    jar {
-        inputs.property "archivesName", project.base.archivesName
-
-        from("LICENSE") {
-            rename { "${it}_${inputs.properties.archivesName}"}
-        }
-    }
-
-    loom {
-        def path = file("src/main/resources/${modId}.accesswidener")
-        if (path.exists()) {
-            accessWidenerPath = path
-        }
-    }
-
-    dependencies {
-        minecraft "com.mojang:minecraft:${rootProject.minecraft_version}"
-        mappings loom.layered { officialMojangMappings() }
-        modImplementation "net.fabricmc:fabric-loader:${rootProject.loader_version}"
-        modImplementation "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_version}"
-        implementation 'com.google.code.findbugs:jsr305:3.0.2'
-    }
-
-    // Shared function to add TOML dependencies
-    ext.addTomlDependencies = { bundle = false ->
-        dependencies {
-            if (bundle) {
-                include "com.moandjiezana.toml:toml4j:${rootProject.toml4j_version}"
-                include "com.electronwill.night-config:core:${rootProject.tomlnc_version}"
-                include "com.electronwill.night-config:toml:${rootProject.tomlnc_version}"
-            }
-            implementation "com.moandjiezana.toml:toml4j:${rootProject.toml4j_version}"
-            implementation "com.electronwill.night-config:core:${rootProject.tomlnc_version}"
-            implementation "com.electronwill.night-config:toml:${rootProject.tomlnc_version}"
-        }
-    }
-
-    // Shared function to add a subproject dependency (bundled and referenced)
-    ext.addSubprojectDependency = { subproject, bundle = false ->
-        dependencies {
-            if (bundle) {
-                include project(":${subproject}")
-            }
-            // We have to use 'namedElements' here so that the dev environment works. Without it, all the accessWideners fail.
-            // modImplementation *looks* like the correct thing to use but it expects dependency jars to exist and they don't.
-            implementation project(path: ":${subproject}", configuration: "namedElements")
-        }
-    }
-
-    processResources {
-        inputs.property "mod_version", project.mod_version
-
-        def expandMap = [
-            "mod_id": modId,
-            "mod_version": project.mod_version,
-            "mod_name": project.mod_name,
-            "mod_description": project.mod_description,
-            "minecraft_version": rootProject.minecraft_version,
-            "loader_version": rootProject.loader_version,
-            "discord_link": rootProject.discord_link,
-            "homepage_link": rootProject.homepage_link,
-            "sources_link": rootProject.sources_link,
-            "license": rootProject.license,
-            "pack_version": rootProject.pack_version,
-            "java_version": rootProject.java_version,
-            "charmony_version": project(":mods:core").mod_version,
-            "api_version": project(":mods:api").mod_version
-        ]
-
-        filesMatching(["fabric.mod.json", "pack.mcmeta"]) {
-            expand(expandMap)
-        }
-
-        filesMatching(["**/*.mixins.json", "**/*.client.mixins.json", "**/*.common.mixins.json", "**/*.server.mixins.json"]) {
-            expand (
-                "refmap_file": modId + "-refmap.json"
-            )
-        }
-
-        duplicatesStrategy(DuplicatesStrategy.INCLUDE)
-
-        doLast {
-            fileTree(dir: "${project.buildDir}/resources/main", include: "**/*.template.json").each { file ->
-                JsonBuilder json = new JsonBuilder(new JsonSlurper().parseText(file.text))
-                String template = new JsonBuilder(json.content.template).toPrettyString()
-                def v = json.content.variants
-                Iterable<String> variants
-                if (v instanceof String) {
-                    def f = new File("${project.buildDir}/resources/main/META-INF/variants/${v}.variants")
-                    if (!f.exists()) {
-                        throw new Exception("Can't find ${f.name}")
-                    }
-                    variants = f.readLines().findAll { !it.isEmpty() }
-                } else {
-                    variants = v
-                }
-                File dir = file.parentFile
-                dir.mkdirs()
-                String name = file.name.replace(".template.json", ".json")
-                String[] replacements = variants.remove(0).split("\\|")
-                for (variant in variants) {
-                    Map<String, String> s = [replacements, variant.split("\\|", -1)].transpose().collectEntries()
-                    def outputFile = new File(dir, s.inject(name) { r, e -> r.replace(e.key, e.value) })
-                    if (!outputFile.exists()) {
-                        outputFile.createNewFile()
-                        outputFile.text = s.inject(template) { r, e -> r.replace(e.key, e.value) }
-                    }
-                }
-                file.delete() // Remove the template file after processing
-            }
-        }
-    }
-
-    tasks.sourcesJar {
-        duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
-    }
-
-    tasks.withType(JavaCompile).configureEach {
-        it.options.release = 21
-    }
+base {
+    archivesName = project.archives_base_name
 }
 
-// Task to collect all built jars from subprojects into a root 'jars' folder
-tasks.register('copyJars', Copy) {
-    description = 'Copies all built jar files from subprojects into the root jars directory.'
-    group = 'build'
-    def jarsDir = file("${rootProject.projectDir}/jars")
-    from(subprojects.collect { project ->
-        project.fileTree(dir: "${project.buildDir}/libs", include: ['*.jar'], exclude: ['*-sources.jar'])
-    })
-    into jarsDir
-    doFirst {
-        if (!jarsDir.exists()) {
-            jarsDir.mkdirs()
-        }
+repositories {
+    mavenCentral()
+    maven {
+        url "https://maven.fabricmc.net"
     }
-}
-
-// Ensure the global clean task also deletes all jars from the root 'jars' directory
-tasks.named('clean').configure {
-    doLast {
-        def jarsDir = file("${rootProject.projectDir}/jars")
-        if (jarsDir.exists()) {
-            jarsDir.listFiles(new FilenameFilter() {
-                boolean accept(File dir, String name) {
-                    return name.endsWith('.jar')
-                }
-            })?.each { it.delete() }
-        }
+    maven {
+        name = "Terraformers"
+        url = "https://maven.terraformersmc.com/"
     }
 }
 
 dependencies {
-    minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings loom.layered { officialMojangMappings() }
+    minecraft "com.mojang:minecraft:${minecraft_version}"
+    mappings loom.layered { 
+        officialMojangMappings() 
+    }
+    modImplementation "net.fabricmc:fabric-loader:${loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+    
+    // TOML dependencies
+    implementation "com.moandjiezana.toml:toml4j:${toml4j_version}"
+    implementation "com.electronwill.night-config:core:${tomlnc_version}"
+    implementation "com.electronwill.night-config:toml:${tomlnc_version}"
+    include "com.moandjiezana.toml:toml4j:${toml4j_version}"
+    include "com.electronwill.night-config:core:${tomlnc_version}"
+    include "com.electronwill.night-config:toml:${tomlnc_version}"
+    
+    implementation 'com.google.code.findbugs:jsr305:3.0.2'
+
+    // Optional. The modmenu entrypoint class is only loaded when Mod Menu is installed.
+    modCompileOnly "com.terraformersmc:modmenu:${modmenu_version}"
+
+    testImplementation "org.junit.jupiter:junit-jupiter:5.11.4"
+    testRuntimeOnly "org.junit.platform:junit-platform-launcher"
+}
+
+loom {
+    accessWidenerPath = file("src/main/resources/ambience_garden.accesswidener")
+}
+
+processResources {
+    inputs.property "mod_version", project.mod_version
+    inputs.property "minecraft_version", project.minecraft_version
+    inputs.property "loader_version", project.loader_version
+    inputs.property "java_version", project.java_version
+
+    filesMatching("fabric.mod.json") {
+        expand (
+            "mod_version": project.mod_version,
+            "minecraft_version": project.minecraft_version,
+            "loader_version": project.loader_version,
+            "java_version": project.java_version
+        )
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    it.options.release = 21
+}
+
+tasks.withType(Test).configureEach {
+    useJUnitPlatform()
+}
+
+tasks.named("runClient", JavaExec).configure {
+    if (System.getenv("AMBIENCE_GARDEN_VERIFY_SOUNDS") == "true") {
+        systemProperty "ambience_garden.verifySounds", "true"
+    }
+}
+
+java {
+    withSourcesJar()
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+jar {
+    from("LICENSE") {
+        rename { "${it}_${project.archives_base_name}"}
+    }
 }

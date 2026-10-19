@@ -1,11 +1,11 @@
 #!/bin/bash
 set -euo pipefail
 
-# Fetch sound assets for Charmonium build
+# Fetch sound assets for Ambience Garden build
 # Primary: svenhjol/charmony-ambient-sounds (public)
 # Fallback: MikeOnDeck/charmony-sounds-archive (private, requires SOUNDS_ARCHIVE_TOKEN)
 
-SOUNDS_DIR="mods/ambient_sounds/src/main/resources/assets/charmony/sounds"
+SOUNDS_DIR="src/main/resources/assets/ambience_garden/sounds"
 UPSTREAM_REPO="https://github.com/svenhjol/charmony-ambient-sounds.git"
 UPSTREAM_COMMIT="02d2e4289517f0c0ae82e7d1729b3f71ef5e0267"
 FALLBACK_REPO="https://github.com/MikeOnDeck/charmony-sounds-archive.git"

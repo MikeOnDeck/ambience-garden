@@ -1,10 +1,10 @@
-name: Build Charmonium
+name: Build Ambience Garden
 
 on:
   push:
-    branches: ['1.21.11', 'cursor/**']
+    branches: ['main']
   pull_request:
-    branches: ['1.21.11']
+    branches: ['main']
   workflow_dispatch:
     inputs:
       create_release:
@@ -40,22 +40,22 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
-          cache-read-only: ${{ github.ref != 'refs/heads/1.21.11' }}
+          cache-read-only: ${{ github.ref != 'refs/heads/main' }}
       
       - name: Fetch sound assets
-        run: ./scripts/fetch-sounds.sh
+        run: chmod +x scripts/fetch-sounds.sh && ./scripts/fetch-sounds.sh
         env:
           SOUNDS_ARCHIVE_TOKEN: ${{ secrets.SOUNDS_ARCHIVE_TOKEN }}
       
       - name: Build with Gradle
         run: ./gradlew build --no-daemon
       
-      - name: Find Charmonium jar
+      - name: Find Ambience Garden jar
         id: find_jar
         run: |
-          JAR_PATH=$(find collections/charmonium/build/libs -name "charmonium-*.jar" -not -name "*-sources.jar" -not -name "*-dev.jar" | head -1)
+          JAR_PATH=$(find build/libs -name "ambience-garden-*.jar" -not -name "*-sources.jar" -not -name "*-dev.jar" | head -1)
           if [ -z "$JAR_PATH" ]; then
-            echo "ERROR: Could not find built Charmonium jar"
+            echo "ERROR: Could not find built Ambience Garden jar"
             exit 1
           fi
           echo "jar_path=$JAR_PATH" >> $GITHUB_OUTPUT
@@ -63,11 +63,15 @@ jobs:
           JAR_SIZE=$(du -h "$JAR_PATH" | cut -f1)
           echo "jar_size=$JAR_SIZE" >> $GITHUB_OUTPUT
           echo "✓ Found jar: $JAR_PATH ($JAR_SIZE)"
+          
+          # List contents
+          echo "=== Jar contents ==="
+          unzip -l "$JAR_PATH" | grep -E "(fabric.mod.json|com/mikeondeck|META-INF)" | head -20
       
-      - name: Upload Charmonium jar
+      - name: Upload Ambience Garden jar
         uses: actions/upload-artifact@v4
         with:
-          name: charmonium-jar
+          name: ambience-garden-jar
           path: ${{ steps.find_jar.outputs.jar_path }}
           if-no-files-found: error
       
@@ -75,10 +79,10 @@ jobs:
         if: github.event_name == 'workflow_dispatch' && github.event.inputs.create_release == 'true'
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.ref_name }}-${{ github.run_number }}
-          name: Charmonium ${{ github.ref_name }} Build ${{ github.run_number }}
+          tag_name: v${{ github.run_number }}
+          name: Ambience Garden v1.0.0 Build ${{ github.run_number }}
           body: |
-            Automated build of Charmonium for Minecraft 1.21.11 (Fabric)
+            Automated build of Ambience Garden for Minecraft 1.21.11 (Fabric)
             
             Built from commit ${{ github.sha }}
             
@@ -87,7 +91,7 @@ jobs:
             - Requires Fabric API 0.141.6+1.21.11
             - Requires Java 21
             
-            The Charmony core, API, and Ambient Sounds modules are included (jar-in-jar).
+            **Note**: This is a private build. Sound asset licensing is under review.
           files: ${{ steps.find_jar.outputs.jar_path }}
-          draft: false
+          draft: true
           prerelease: true

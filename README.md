@@ -1,78 +1,105 @@
-# Charmony
+# Ambience Garden
 
-A suite of mods for Minecraft. WIP.
+**Ambient biome sounds that make your world feel alive.**
 
-All mod jars require the **charmony** jar to be present in order to function.
-Collections, which are bundles of mods, include the charmony jar by default.
+Ambience Garden adds immersive ambient sounds to Minecraft's biomes and environments. Standalone client-side mod for Minecraft 1.21.11 (Fabric), compatible with vanilla servers including Realms.
 
-## Building mods
+## Credits
 
-- Enable/disable mods in `settings.gradle`.
-- Run `./gradlew build` to build everything.
-- Run `./gradlew copyJars` to copy built jars to `./jars`.
-- Note that disabling a mod may cause a collection to fail to build if it depends on that mod.
+Ambience Garden is a rebrand and standalone version of **Charmonium** by [svenhjol](https://github.com/svenhjol).
 
-## Building collections
+- **Original Charmony framework and Charmonium mod**: Copyright (c) 2022 Sven Hjól
+- **Ambience Garden standalone rebrand**: Copyright (c) 2026 Mike Clarke (MikeOnDeck)
 
-- Enable/disable collections in `settings.gradle`.
-- Run `./gradlew build` to build everything.
-- Run `./gradlew copyJars` to copy built jars to `./jars`. Note that this will also copy built mod jars.
+### Source Material
 
-## Building Charmonium (1.21.11)
+This mod is derived from:
+- [svenhjol/charmony](https://github.com/svenhjol/charmony) - Core framework and features
+- [svenhjol/charmony-ambient-sounds](https://github.com/svenhjol/charmony-ambient-sounds) - Sound assets
 
-This fork includes a streamlined build configuration for **Charmonium** on Minecraft 1.21.11 (Fabric).
+## Building from Source
 
-### Local Build
+### Requirements
 
-**Requirements:**
 - Java 21 (Temurin recommended)
 - Git
 
-**Steps:**
+### Build Steps
 
-1. Fetch sound assets (required before building):
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/MikeOnDeck/ambience-garden.git
+   cd ambience-garden
+   ```
+
+2. **Fetch sound assets** (required before building):
    ```bash
    ./scripts/fetch-sounds.sh
    ```
-   This downloads ambient sound files from [svenhjol/charmony-ambient-sounds](https://github.com/svenhjol/charmony-ambient-sounds) (public) at the pinned commit. If that fails, it falls back to a private archive using the `SOUNDS_ARCHIVE_TOKEN` environment variable.
+   
+   This downloads ambient sound files from [svenhjol/charmony-ambient-sounds](https://github.com/svenhjol/charmony-ambient-sounds) at the pinned commit `02d2e42`. If that source is unavailable, it falls back to a private archive using the `SOUNDS_ARCHIVE_TOKEN` environment variable.
 
-2. Build:
+3. **Build the mod**:
    ```bash
    ./gradlew build
    ```
 
-3. Find the built jar:
+4. **Find the built jar**:
    ```
-   collections/charmonium/build/libs/charmonium-8.9.0+1.21.11.jar
+   build/libs/ambience-garden-1.0.0+1.21.11.jar
    ```
 
-**Note:** Sound assets (`.ogg` files) are **never** committed to this public repository. They are fetched at build time and are `.gitignore`d. The sound file licenses are unconfirmed, which is why they remain external.
+### Sound Assets and Licensing
 
-### GitHub Actions Build
+**Important**: Sound assets (`.ogg` files) are **NOT included** in this repository. They are:
+- Fetched at build time from upstream sources
+- `.gitignore`d and never committed to version control
+- CI checks fail if any `.ogg` files are tracked in git
 
-The repository includes a GitHub Actions workflow that builds Charmonium automatically:
+**Sound asset licensing is currently under review.** Until licensing is clarified, **no public jar releases** are being made. This repository is for building personal/private copies only.
 
-- **Automatic builds:** Triggered on push to `1.21.11` and pull requests.
-- **Manual builds:** Go to **Actions** → **Build Charmonium** → **Run workflow**. You can optionally check "Create GitHub Release" to publish a draft release with the jar attached.
+## Development Notes
 
-**Setup:**
+### What Changed from Charmonium?
 
-The public upstream sound repository should work without secrets. If it's unavailable, create a repository secret:
+Ambience Garden is a **standalone rebrand** of Charmonium that:
 
-- **Name:** `SOUNDS_ARCHIVE_TOKEN`
-- **Value:** A GitHub personal access token (fine-grained recommended) with `contents:read` permission for `MikeOnDeck/charmony-sounds-archive`.
+1. **Merged dependencies**: The Charmony core, API, and ambient sounds modules are now integrated directly into one mod. No more nested jar-in-jar dependencies.
 
-To create a fine-grained token:
-1. Go to GitHub Settings → Developer settings → Personal access tokens → Fine-grained tokens
-2. Generate new token with Repository access: Only select repositories → `MikeOnDeck/charmony-sounds-archive`
-3. Permissions: Repository permissions → Contents → Read-only
-4. Add the token as a repository secret in Settings → Secrets and variables → Actions
+2. **New identity**:
+   - Mod ID: `ambience_garden`
+   - Package: `com.mikeondeck.ambiencegarden`
+   - Asset namespace: `ambience_garden` (previously `charmony`)
+   - Config file: `.minecraft/config/ambience_garden/ambience_garden-client.toml`
 
-### Credits
+3. **Simplified scope**: Only ambient sounds functionality is included. Removed unused Charmony features (e.g., anvil behavior toggles).
 
-Original **Charmonium** and **Charmony** framework by [svenhjol](https://github.com/svenhjol).
+4. **Asset migration**: Sound files moved from `assets/charmony/sounds/` to `assets/ambience_garden/sounds/`, and `sounds.json` keys updated accordingly.
 
-**License:** MIT  
-Copyright (c) 2022 Sven Hjól
+5. **Build system**: Simplified from multi-module Gradle to single-module project. CI still fetches sounds at build time and prevents accidental commits of audio files.
 
-Sound assets are sourced from [svenhjol/charmony-ambient-sounds](https://github.com/svenhjol/charmony-ambient-sounds). Their licensing is unconfirmed and they are not included in this repository.
+### Dropped Features
+
+The following Charmony core features were removed as they're not needed for ambient sounds:
+- Anvil behavior customization
+- Other library features unrelated to sound playback
+
+## Contributing
+
+Contributions are welcome! Please open an issue or pull request.
+
+- **Bug reports**: Use the [bug report template](.github/ISSUE_TEMPLATE/bug_report.md)
+- **Sound suggestions**: Use the [sound/biome suggestion template](.github/ISSUE_TEMPLATE/sound_suggestion.md)
+- **Pull requests**: See [CONTRIBUTING.md](CONTRIBUTING.md)
+
+All contributions are reviewed by Mike Clarke (MikeOnDeck).
+
+## License
+
+MIT License - See [LICENSE](LICENSE) for full text.
+
+## Links
+
+- **GitHub**: https://github.com/MikeOnDeck/ambience-garden
+- **Original Charmony**: https://github.com/svenhjol/charmony
+- **Original Charmonium**: https://github.com/svenhjol/charmony (Charmonium collection)

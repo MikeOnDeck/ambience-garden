@@ -1,7 +1,0 @@
-plugins {
-	id 'java'
-}
-
-// Use "true" to bundle.
-addTomlDependencies(true)
-addSubprojectDependency(':mods:api', true)

@@ -1,7 +1,0 @@
-{
-  "pack": {
-    "description": "${mod_name}",
-    "max_format": ${pack_version},
-    "min_format": ${pack_version}
-  }
-}
