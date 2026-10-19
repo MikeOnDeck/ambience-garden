@@ -9,7 +9,7 @@ Ambience Garden adds immersive ambient sounds to Minecraft's biomes and environm
 Ambience Garden is a rebrand and standalone version of **Charmonium** by [svenhjol](https://github.com/svenhjol).
 
 - **Original Charmony framework and Charmonium mod**: Copyright (c) 2022 Sven Hjól
-- **Ambience Garden standalone rebrand**: Copyright (c) 2026 Mike Clarke (MikeOnDeck)
+- **Ambience Garden standalone rebrand**: Copyright (c) 2026 MikeOnDeck
 
 ### Source Material
 
@@ -92,7 +92,7 @@ Contributions are welcome! Please open an issue or pull request.
 - **Sound suggestions**: Use the [sound/biome suggestion template](.github/ISSUE_TEMPLATE/sound_suggestion.md)
 - **Pull requests**: See [CONTRIBUTING.md](CONTRIBUTING.md)
 
-All contributions are reviewed by Mike Clarke (MikeOnDeck).
+All contributions are reviewed by MikeOnDeck.
 
 ## License
 
