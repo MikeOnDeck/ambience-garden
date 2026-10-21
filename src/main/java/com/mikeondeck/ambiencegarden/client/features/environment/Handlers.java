@@ -7,6 +7,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import com.mikeondeck.ambiencegarden.client.features.sound.SoundHandler;
+import com.mikeondeck.ambiencegarden.client.sound.SoundOverride;
 import com.mikeondeck.ambiencegarden.core.base.Setup;
 
 public class Handlers extends Setup<Environment> {
@@ -29,7 +30,11 @@ public class Handlers extends Setup<Environment> {
             trySetupSoundHandler(player);
         }
         if (handler != null && !client.isPaused()) {
-            handler.tick();
+            if (SoundOverride.isActive()) {
+                SoundOverride.keepAutomaticSuspended(handler);
+            } else {
+                handler.tick();
+            }
         }
     }
 
