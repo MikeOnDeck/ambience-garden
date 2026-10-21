@@ -11,6 +11,10 @@ import com.mikeondeck.ambiencegarden.core.base.Setup;
 public class Handlers extends Setup<Biomes> {
     private Handler handler;
 
+    public Handler activeHandler() {
+        return handler;
+    }
+
     public Handlers(Biomes feature) {
         super(feature);
     }

@@ -12,6 +12,10 @@ import com.mikeondeck.ambiencegarden.core.base.Setup;
 public class Handlers extends Setup<Environment> {
     private Handler handler;
 
+    public Handler activeHandler() {
+        return handler;
+    }
+
     public Handlers(Environment feature) {
         super(feature);
     }

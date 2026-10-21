@@ -5,6 +5,7 @@ import com.mikeondeck.ambiencegarden.AmbientSoundsMod;
 import com.mikeondeck.ambiencegarden.client.features.biomes.Biomes;
 import com.mikeondeck.ambiencegarden.client.features.environment.Environment;
 import com.mikeondeck.ambiencegarden.client.features.settings.Settings;
+import com.mikeondeck.ambiencegarden.client.debug.AmbientDebugBootstrap;
 import com.mikeondeck.ambiencegarden.client.gui.SoundOptionsHook;
 import com.mikeondeck.ambiencegarden.client.sound.AmbientSoundEvents;
 import com.mikeondeck.ambiencegarden.api.core.Side;
@@ -26,6 +27,7 @@ public class ClientInitializer implements ClientModInitializer {
         ambientSounds.run(Side.Client);
 
         SoundOptionsHook.register();
+        AmbientDebugBootstrap.register();
         AmbientStartup.hook();
     }
 }

@@ -10,6 +10,8 @@
   "gui.ambience_garden.settings.title": "Ambience Garden Settings",
   "gui.ambience_garden.settings.open": "Ambience Garden...",
   "key.categories.ambience_garden": "Ambience Garden",
+  "key.category.ambience_garden.keys": "Ambience Garden",
+  "key.ambience_garden.debug_overlay": "Toggle Ambience Debug Overlay",
   "options.ambience_garden.section.playback": "Playback",
   "options.ambience_garden.section.biome_dimensions": "Biome Dimensions",
   "options.ambience_garden.section.environment": "Environment Sounds",

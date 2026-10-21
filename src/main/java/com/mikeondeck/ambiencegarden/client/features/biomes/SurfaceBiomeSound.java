@@ -32,4 +32,8 @@ public abstract class SurfaceBiomeSound extends BiomeSound {
             return super.getVolumeScaling();
         }
     }
+
+    public boolean debugPlayWhenThundering() {
+        return playWhenThundering;
+    }
 }

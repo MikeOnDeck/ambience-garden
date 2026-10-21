@@ -150,4 +150,12 @@ public abstract class BiomeSound implements SoundInstance {
 
         return false;
     }
+
+    public float debugBlendScaling() {
+        return blendScaling;
+    }
+
+    public boolean debugTrackedValid() {
+        return isValid;
+    }
 }
