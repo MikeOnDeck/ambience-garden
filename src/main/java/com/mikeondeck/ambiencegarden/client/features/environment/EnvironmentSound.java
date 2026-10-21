@@ -53,4 +53,8 @@ public abstract class EnvironmentSound implements SoundInstance {
     public double getVolumeScaling() {
         return SettingsHelper.environmentVolumeScaling();
     }
+
+    public boolean debugPlayUnderWater() {
+        return playUnderWater;
+    }
 }

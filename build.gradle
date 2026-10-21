@@ -78,6 +78,10 @@ tasks.named("runClient", JavaExec).configure {
     if (System.getenv("AMBIENCE_GARDEN_VERIFY_SOUNDS") == "true") {
         systemProperty "ambience_garden.verifySounds", "true"
     }
+    def overlayVerify = System.getenv("AMBIENCE_GARDEN_VERIFY_DEBUG_OVERLAY")
+    if (overlayVerify != null && !overlayVerify.isBlank()) {
+        systemProperty "ambience_garden.verifyDebugOverlay", overlayVerify
+    }
 }
 
 java {
