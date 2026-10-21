@@ -43,23 +43,36 @@ public final class AmbientDebugOverlay {
             return;
         }
 
+        List<String> lines;
+        try {
+            lines = collectLines(player);
+        } catch (RuntimeException e) {
+            lines = List.of("Ambience Garden debug", "error: " + e.getClass().getSimpleName());
+        }
+
         var font = client.font;
-        var lines = collectLines(player);
-        int x = 6;
-        int y = 6;
-        graphics.fill(0, 0, Math.min(420, client.getWindow().getGuiScaledWidth()), Math.min(lines.size() * 10 + 16, client.getWindow().getGuiScaledHeight()), 0x90000000);
+        int x = 4;
+        int y = 4;
         int width = 0;
         for (String line : lines) {
             width = Math.max(width, font.width(line));
         }
-        int height = lines.size() * (font.lineHeight + 1) + 6;
-        graphics.fill(x - 2, y - 2, x + width + 4, y + height, 0xC0101010);
+        int lineStep = font.lineHeight + 1;
+        int height = lines.size() * lineStep + 2;
+
+        // Screen space. A later HUD layer may have left a translated pose.
+        graphics.pose().pushMatrix();
+        graphics.pose().identity();
+        graphics.fill(x - 2, y - 2, x + width + 4, y + height, 0xE0101010);
+        // Text must sit in a later stratum or the panel quad can cover it.
+        // 1.21.11 drawString drops colours whose alpha byte is 0 (0xFFFFFF).
+        graphics.nextStratum();
         int lineY = y;
         for (String line : lines) {
-            graphics.drawString(font, line, x, lineY, 0xFFFFFF, true);
-            lineY += font.lineHeight + 1;
+            graphics.drawString(font, line, x, lineY, 0xFFFFFFFF, true);
+            lineY += lineStep;
         }
-
+        graphics.pose().popMatrix();
     }
 
     private static List<String> collectLines(net.minecraft.world.entity.player.Player player) {

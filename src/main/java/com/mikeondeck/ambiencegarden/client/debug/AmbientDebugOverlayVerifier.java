@@ -60,7 +60,9 @@ public final class AmbientDebugOverlayVerifier {
     }
 
     /**
-     * Screenshots must run at end-of-tick: HUD is composited after {@code HudRenderCallback} in 1.21+.
+     * Same capture as the screenshot key: {@code Screenshot.grab} of the main render target
+     * during the client tick, which still holds the previous frame after {@code GuiRenderer}
+     * has drawn the HUD into it and before the next frame clears that target.
      */
     public static void endClientTick() {
         if (!enabled() || pendingScreenshot == null) {
@@ -92,15 +94,29 @@ public final class AmbientDebugOverlayVerifier {
     }
 
     private static void copyToArtifacts(String fileName, File gameDir) {
+        File shot = new File(new File(gameDir, "screenshots"), fileName);
+        if (!shot.isFile()) {
+            return;
+        }
+        copyShot(shot, Path.of("/opt/cursor/artifacts/screenshots", fileName));
+        // run/ is the client game directory; docs/ sits next to it in the repo.
+        copyShot(shot, gameDir.toPath().resolve("../docs/screenshots").normalize().resolve(fileName));
+    }
+
+    private static void copyShot(File shot, Path target) {
         try {
-            Path target = Path.of("/opt/cursor/artifacts/screenshots", fileName);
             target.getParent().toFile().mkdirs();
-            File shot = new File(new File(gameDir, "screenshots"), fileName);
-            if (shot.isFile()) {
-                java.nio.file.Files.copy(shot.toPath(), target, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
-            }
+            java.nio.file.Files.copy(shot.toPath(), target, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
         } catch (Exception e) {
-            LOG.warn("Could not copy screenshot to artifacts: " + e.getMessage());
+            LOG.warn("Could not copy screenshot to " + target + ": " + e.getMessage());
+        }
+    }
+
+    private static void prepareForCapture(Minecraft client) {
+        client.options.hideGui = false;
+        client.options.pauseOnLostFocus = false;
+        if (client.screen != null) {
+            client.setScreen(null);
         }
     }
 
@@ -119,10 +135,13 @@ public final class AmbientDebugOverlayVerifier {
             private Phase phase = Phase.WAIT_BOOT;
             private int phaseTicks;
             private boolean captureRequested;
+            private boolean overlayArmed;
 
             @Override
             public void onEndTick(Minecraft client) {
                 ticks++;
+                client.options.hideGui = false;
+                client.options.pauseOnLostFocus = false;
                 switch (phase) {
                     case WAIT_BOOT -> {
                         if (ticks < 40) {
@@ -177,7 +196,11 @@ public final class AmbientDebugOverlayVerifier {
                         if (phaseTicks++ < 60) {
                             return;
                         }
-                        AmbientDebugOverlay.setEnabled(true);
+                        prepareForCapture(client);
+                        if (!AmbientDebugOverlay.isEnabled()) {
+                            LOG.info("Pressing debug overlay key");
+                            AmbientDebugKeys.pressToggle();
+                        }
                         if (captureMode == Mode.INDOOR) {
                             phase = Phase.SHOT_INDOOR;
                         } else {
@@ -186,6 +209,17 @@ public final class AmbientDebugOverlayVerifier {
                         phaseTicks = 0;
                     }
                     case SHOT_OUTDOOR -> {
+                        prepareForCapture(client);
+                        if (!AmbientDebugOverlay.isEnabled()) {
+                            if (phaseTicks++ > 80) {
+                                fail(client, "overlay key was not consumed");
+                            }
+                            return;
+                        }
+                        if (!overlayArmed) {
+                            overlayArmed = true;
+                            phaseTicks = 0;
+                        }
                         if (phaseTicks++ < 20) {
                             return;
                         }
@@ -205,6 +239,17 @@ public final class AmbientDebugOverlayVerifier {
                         }
                     }
                     case SHOT_INDOOR -> {
+                        prepareForCapture(client);
+                        if (!AmbientDebugOverlay.isEnabled()) {
+                            if (phaseTicks++ > 80) {
+                                fail(client, "overlay key was not consumed");
+                            }
+                            return;
+                        }
+                        if (!overlayArmed) {
+                            overlayArmed = true;
+                            phaseTicks = 0;
+                        }
                         if (phaseTicks++ < 60) {
                             return;
                         }

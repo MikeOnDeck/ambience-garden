@@ -1,6 +1,7 @@
 package com.mikeondeck.ambiencegarden.client.debug;
 
 import com.mikeondeck.ambiencegarden.AmbientSoundsMod;
+import com.mojang.blaze3d.platform.InputConstants;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.resources.Identifier;
@@ -23,5 +24,13 @@ public final class AmbientDebugKeys {
                 CATEGORY
             )
         );
+    }
+
+    /**
+     * Same click the keyboard handler records when the bound key goes down.
+     * The client tick then picks it up with {@link KeyMapping#consumeClick()}.
+     */
+    public static void pressToggle() {
+        KeyMapping.click(InputConstants.getKey(toggleOverlay.saveString()));
     }
 }
