@@ -4,6 +4,8 @@ import com.mikeondeck.ambiencegarden.client.features.biomes.Biomes;
 import com.mikeondeck.ambiencegarden.client.features.environment.Environment;
 import com.mikeondeck.ambiencegarden.client.features.settings.Settings;
 import com.mikeondeck.ambiencegarden.client.sound.AmbientSoundIds;
+import com.mikeondeck.ambiencegarden.client.sound.SoundCatalog;
+import com.mikeondeck.ambiencegarden.client.sound.SoundOverride;
 import com.mikeondeck.ambiencegarden.core.base.Log;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.OptionInstance;
@@ -11,6 +13,7 @@ import net.minecraft.client.Options;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.CycleButton;
+import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.layouts.LinearLayout;
 import net.minecraft.client.gui.screens.Screen;
@@ -19,7 +22,9 @@ import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
 /**
@@ -27,6 +32,11 @@ import java.util.function.Consumer;
  * Every control is a button, cycle button, or slider so a controller can use it.
  */
 public class AmbienceGardenSettingsScreen extends OptionsSubScreen {
+    public enum Tab {
+        SETTINGS,
+        DEBUG
+    }
+
     private static final Log LOG = new Log(AmbientSoundIds.NAMESPACE, "Settings");
     private static final List<String> AUDIO_CHANNELS = List.of(
         "music", "record", "weather", "block", "hostile", "neutral", "player", "ambient", "voice"
@@ -37,12 +47,100 @@ public class AmbienceGardenSettingsScreen extends OptionsSubScreen {
         "minecraft:the_end"
     );
 
+    private final Tab tab;
+    private final Map<String, OptionInstance<Double>> volumeOptions = new LinkedHashMap<>();
+    private final Map<String, Integer> sliderRows = new LinkedHashMap<>();
+
     public AmbienceGardenSettingsScreen(Screen parent) {
+        this(parent, Tab.SETTINGS);
+    }
+
+    public AmbienceGardenSettingsScreen(Screen parent, Tab tab) {
         super(parent, Minecraft.getInstance().options, Component.translatable("gui.ambience_garden.settings.title"));
+        this.tab = tab == null ? Tab.SETTINGS : tab;
+        this.layout.setHeaderHeight(72);
+    }
+
+    public Tab tab() {
+        return tab;
+    }
+
+    @Override
+    protected void addTitle() {
+        var column = LinearLayout.vertical().spacing(4);
+        var title = new StringWidget(this.title, this.font);
+        title.active = false;
+        column.addChild(title);
+        var tabs = LinearLayout.horizontal().spacing(8);
+        tabs.addChild(tabButton(Tab.SETTINGS));
+        tabs.addChild(tabButton(Tab.DEBUG));
+        column.addChild(tabs);
+        this.layout.addToHeader(column);
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (this.tab != Tab.DEBUG || this.list == null) {
+            return;
+        }
+        // Slider drags, arrow keys, and a controller all change the widget first.
+        // Commit every tick so override playback updates while the menu is open.
+        if (SoundOverride.isActive()) {
+            this.list.applyUnsavedChanges();
+        }
+        for (var option : volumeOptions.entrySet()) {
+            var widget = this.list.findOption(option.getValue());
+            if (widget == null) {
+                continue;
+            }
+            widget.setMessage(sliderLabel(option.getKey(), option.getValue().get()));
+        }
+    }
+
+    /**
+     * Moves keyboard focus onto one volume slider and scrolls it into view.
+     * Controllable walks the same focusable widgets.
+     */
+    public boolean focusVolumeSlider(String path) {
+        if (this.list == null) {
+            return false;
+        }
+        var option = volumeOptions.get(path);
+        if (option == null) {
+            return false;
+        }
+        var widget = this.list.findOption(option);
+        if (widget == null) {
+            return false;
+        }
+        scrollTo(path);
+        this.setFocused(widget);
+        widget.setFocused(true);
+        return widget.isFocused();
+    }
+
+    public void scrollTo(String path) {
+        if (this.list == null) {
+            return;
+        }
+        Integer row = sliderRows.get(path);
+        if (row == null) {
+            return;
+        }
+        this.list.setScrollAmount(Math.max(0.0, row * 25.0 - 36.0));
     }
 
     @Override
     protected void addOptions() {
+        if (this.tab == Tab.DEBUG) {
+            addDebugOptions();
+            return;
+        }
+        addSettingsOptions();
+    }
+
+    private void addSettingsOptions() {
         var list = this.list;
         if (list == null) return;
 
@@ -130,6 +228,80 @@ public class AmbienceGardenSettingsScreen extends OptionsSubScreen {
         LOG.info("Built settings screen with " + list.children().size() + " rows");
     }
 
+    private void addDebugOptions() {
+        var list = this.list;
+        if (list == null) return;
+        volumeOptions.clear();
+        sliderRows.clear();
+
+        list.addBig(OptionInstance.createBoolean(
+            "options.ambience_garden.debug.override",
+            OptionInstance.cachedConstantTooltip(Component.translatable("options.ambience_garden.debug.override.tooltip")),
+            SoundOverride.isActive(),
+            value -> {
+                SoundOverride.setActive(value);
+                this.minecraft.setScreen(new AmbienceGardenSettingsScreen(this.lastScreen, Tab.DEBUG));
+            }
+        ));
+
+        SoundCatalog.Group current = null;
+        for (SoundCatalog.Bank bank : SoundCatalog.banks()) {
+            if (bank.group() != current) {
+                current = bank.group();
+                list.addHeader(Component.translatable(current == SoundCatalog.Group.BIOME
+                    ? "options.ambience_garden.debug.biomes"
+                    : "options.ambience_garden.debug.environment"));
+            }
+            list.addHeader(Component.literal(bank.name()));
+            for (SoundCatalog.Entry entry : bank.entries()) {
+                sliderRows.put(entry.path(), list.children().size());
+                list.addBig(volumeOption(entry));
+            }
+        }
+        LOG.info("Built debug tab with " + volumeOptions.size() + " sound sliders, override=" + SoundOverride.isActive());
+    }
+
+    private OptionInstance<Double> volumeOption(SoundCatalog.Entry entry) {
+        double initial = Math.clamp(SoundOverride.sliderVolume(entry.path()), 0.0, 1.0);
+        var option = new OptionInstance<>(
+            "options.ambience_garden.debug.volume",
+            OptionInstance.cachedConstantTooltip(Component.translatable("options.ambience_garden.debug.volume.tooltip")),
+            (caption, value) -> sliderLabel(entry.path(), value),
+            OptionInstance.UnitDouble.INSTANCE,
+            initial,
+            value -> {
+                if (SoundOverride.isActive()) {
+                    SoundOverride.setVolume(entry.path(), value.floatValue());
+                }
+            }
+        );
+        volumeOptions.put(entry.path(), option);
+        return option;
+    }
+
+    private static Component sliderLabel(String path, double slider) {
+        var entry = SoundCatalog.find(path);
+        String name = entry == null ? path : entry.bank() + " " + entry.label();
+        int percent = (int) Math.round(slider * 100.0);
+        float live = SoundOverride.liveVolume(path);
+        return Component.literal(name + "  " + percent + "%  live " + String.format("%.2f", live));
+    }
+
+    private Button tabButton(Tab target) {
+        boolean selected = this.tab == target;
+        var label = Component.translatable(target == Tab.SETTINGS
+            ? "gui.ambience_garden.settings.tab.settings"
+            : "gui.ambience_garden.settings.tab.debug");
+        if (selected) {
+            label = Component.literal("[ ").append(label).append(" ]");
+        }
+        return Button.builder(label, pressed -> {
+            if (this.tab != target) {
+                this.minecraft.setScreen(new AmbienceGardenSettingsScreen(this.lastScreen, target));
+            }
+        }).width(120).build();
+    }
+
     @Override
     protected void addFooter() {
         var row = this.layout.addToFooter(LinearLayout.horizontal().spacing(8));
@@ -152,7 +324,7 @@ public class AmbienceGardenSettingsScreen extends OptionsSubScreen {
         Environment.feature().resetToDefaults();
         LiveSettings.save();
         LiveSettings.reloadSounds();
-        this.minecraft.setScreen(new AmbienceGardenSettingsScreen(this.lastScreen));
+        this.minecraft.setScreen(new AmbienceGardenSettingsScreen(this.lastScreen, this.tab));
     }
 
     private void addDimensionToggles(List<String> selected, DimensionSetter setter) {

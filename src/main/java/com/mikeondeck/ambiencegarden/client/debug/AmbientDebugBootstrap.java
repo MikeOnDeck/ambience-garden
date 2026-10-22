@@ -1,6 +1,7 @@
 package com.mikeondeck.ambiencegarden.client.debug;
 
 import com.mikeondeck.ambiencegarden.AmbientSoundsMod;
+import com.mikeondeck.ambiencegarden.client.sound.SoundOverride;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.minecraft.resources.Identifier;
@@ -15,6 +16,7 @@ public final class AmbientDebugBootstrap {
 
     public static void register() {
         AmbientDebugKeys.register();
+        SoundOverride.register();
 
         // addLast draws with the subtitle pass, after the rest of the HUD has been
         // recorded and still before GuiRenderer flushes into the main framebuffer.
@@ -25,9 +27,12 @@ public final class AmbientDebugBootstrap {
                 AmbientDebugOverlay.toggle();
             }
             AmbientDebugOverlayVerifier.endClientTick();
+            Issue6Capture.endClientTick();
         });
 
-        if (AmbientDebugOverlayVerifier.enabled()) {
+        if (Issue6Capture.enabled()) {
+            Issue6Capture.hook();
+        } else if (AmbientDebugOverlayVerifier.enabled()) {
             AmbientDebugOverlayVerifier.hook();
         }
     }
