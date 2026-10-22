@@ -4,11 +4,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.levelgen.Heightmap;
 
 import java.util.List;
@@ -33,38 +31,7 @@ public final class WorldHelper {
     }
 
     public static boolean isOutside(Player player) {
-        var level = player.level();
-        if (player.isUnderWater()) return false;
-
-        var blocks = 24;
-        var start = 1;
-
-        var playerPos = player.blockPosition();
-
-        if (level.canSeeSky(playerPos)) return true;
-        if (level.canSeeSkyFromBelowWater(playerPos)) return true;
-
-        for (int i = start; i < start + blocks; i++) {
-            var check = new BlockPos(playerPos.getX(), playerPos.getY() + i, playerPos.getZ());
-            var state = level.getBlockState(check);
-            var block = state.getBlock();
-
-            if (level.isEmptyBlock(check)) continue;
-
-            // TODO: Tag for glass here
-            if (state.is(Blocks.GLASS)
-                || (block instanceof RotatedPillarBlock && state.is(BlockTags.LOGS))
-                || block instanceof LeavesBlock
-                || block instanceof HugeMushroomBlock
-                || block instanceof StemBlock
-            ) continue;
-
-            if (level.canSeeSky(check)) return true;
-            if (level.canSeeSkyFromBelowWater(check)) return true;
-            if (state.canOcclude()) return false;
-        }
-
-        return level.canSeeSky(playerPos.above(blocks));
+        return OutdoorExposure.analyze(player).consideredOutside();
     }
 
     public static BlockPos addRandomOffset(Level level, BlockPos pos, RandomSource random, int min, int max) {
