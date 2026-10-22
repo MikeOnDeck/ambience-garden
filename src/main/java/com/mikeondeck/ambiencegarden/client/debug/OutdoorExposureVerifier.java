@@ -99,7 +99,22 @@ public final class OutdoorExposureVerifier {
             new RoofCase("issue-8-stair-roof.png", List.of(
                 "fill 97 86 97 103 86 103 minecraft:oak_stairs[half=top]"
             )),
-            new RoofCase("issue-8-open-sky.png", List.of())
+            new RoofCase("issue-8-bottom-slab-roof.png", List.of(
+                "fill 97 86 97 103 86 103 minecraft:oak_slab[type=bottom]"
+            )),
+            new RoofCase("issue-8-top-slab-roof.png", List.of(
+                "fill 97 86 97 103 86 103 minecraft:oak_slab[type=top]"
+            )),
+            new RoofCase("issue-8-stone-roof.png", List.of(
+                "fill 97 86 97 103 86 103 minecraft:stone"
+            )),
+            new RoofCase("issue-8-open-sky.png", List.of()),
+            new RoofCase("issue-8-glass-roof.png", List.of(
+                "fill 97 86 97 103 86 103 minecraft:glass"
+            )),
+            new RoofCase("issue-8-oak-leaves.png", List.of(
+                "fill 97 86 97 103 86 103 minecraft:oak_leaves[persistent=true,distance=1]"
+            ))
         );
 
         ClientTickEvents.END_CLIENT_TICK.register(new ClientTickEvents.EndTick() {
