@@ -27,10 +27,13 @@ public final class AmbientDebugBootstrap {
                 AmbientDebugOverlay.toggle();
             }
             AmbientDebugOverlayVerifier.endClientTick();
+            OutdoorExposureVerifier.endClientTick();
             Issue6Capture.endClientTick();
         });
 
-        if (Issue6Capture.enabled()) {
+        if (OutdoorExposureVerifier.enabled()) {
+            OutdoorExposureVerifier.hook();
+        } else if (Issue6Capture.enabled()) {
             Issue6Capture.hook();
         } else if (AmbientDebugOverlayVerifier.enabled()) {
             AmbientDebugOverlayVerifier.hook();
